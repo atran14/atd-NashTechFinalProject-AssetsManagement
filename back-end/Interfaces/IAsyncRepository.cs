@@ -1,7 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace BackEndAPI.Repository
+namespace BackEndAPI.Interfaces
 {
     public interface IAsyncRepository<TEntity>
     {
