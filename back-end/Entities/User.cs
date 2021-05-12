@@ -1,4 +1,4 @@
-namespace back_end.Models
+namespace BackEndAPI.Models
 {
     public class User : IEntity
     {

@@ -1,13 +1,20 @@
 using System.Linq;
 using System.Threading.Tasks;
-using back_end.Models;
-using back_end.Repository;
+using BackEndAPI.Models;
+using BackEndAPI.Interfaces;
 
-namespace back_end.Services
+namespace BackEndAPI.Repositories
 {
-    public class UsersRepository : IAsyncRepository<User>
+    public class AsyncGenericRepository<TEntity> : IAsyncRepository<TEntity>
+        where TEntity : class, IEntity
     {
-        public async Task Create(User entity)
+
+        public AsyncGenericRepository()
+        {
+
+        }
+
+        public async Task Create(TEntity entity)
         {
             throw new System.NotImplementedException();
         }
@@ -17,17 +24,17 @@ namespace back_end.Services
             throw new System.NotImplementedException();
         }
 
-        public IQueryable<User> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
             throw new System.NotImplementedException();
         }
 
-        public async Task<User> GetById(int id)
+        public async Task<TEntity> GetById(int id)
         {
             throw new System.NotImplementedException();
         }
 
-        public async Task Update(int id, User entity)
+        public async Task Update(int id, TEntity entity)
         {
             throw new System.NotImplementedException();
         }

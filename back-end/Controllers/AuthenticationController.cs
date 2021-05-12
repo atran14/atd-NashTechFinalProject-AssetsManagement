@@ -1,4 +1,4 @@
-namespace back_end.Controllers
+namespace BackEndAPI.Controllers
 {
     public class AuthenticationController
     {

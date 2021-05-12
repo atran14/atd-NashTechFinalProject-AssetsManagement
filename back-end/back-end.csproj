@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <RootNamespace>back_end</RootNamespace>
+    <RootNamespace>BackEndAPI</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

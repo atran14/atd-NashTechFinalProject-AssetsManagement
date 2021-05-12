@@ -1,4 +1,4 @@
-namespace back_end.DBContext
+namespace BackEndAPI.DBContext
 {
     public class AssetsManagementDBContext
     {
