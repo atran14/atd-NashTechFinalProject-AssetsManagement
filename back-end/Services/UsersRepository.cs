@@ -1,9 +1,9 @@
 using System.Linq;
 using System.Threading.Tasks;
-using back_end.Models;
-using back_end.Repository;
+using BackEndAPI.Models;
+using BackEndAPI.Repository;
 
-namespace back_end.Services
+namespace BackEndAPI.Services
 {
     public class UsersRepository : IAsyncRepository<User>
     {
