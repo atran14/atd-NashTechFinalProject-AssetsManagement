@@ -38,34 +38,31 @@ namespace BackEndAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, EditModel model)
+        public async Task<IActionResult> Put(int id, EditUserModel model)
         {
             try
             {
                 await _userService.Update(id, model);
             }
-            catch (ArgumentException e)
+            catch (ArgumentException a)
             {
-                if (e.InnerException == null)
-                {
-                    return BadRequest(e.Message);
-                }
-                else
-                {
-                    return NotFound(e.Message);
-                }
+                return BadRequest(a.Message);
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-
-            return NoContent();
+            return Ok();
         }
 
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpPut("disable/{id}")]
+        public async Task<IActionResult> Disabled(int id)
         {
+            try
+            {
+                await _userService.Disable(id);
+            }
+            catch (ArgumentException a)
+            {
+                return BadRequest(a.Message);
+            }
+            return Ok();
         }
     }
 }

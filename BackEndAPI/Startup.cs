@@ -43,6 +43,7 @@ namespace BackEndAPI
             services.AddControllers();
 
             services.AddTransient<IAsyncUserRepository, UserRepository>();
+            services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
 
             services.AddScoped<IUserService, UserService>();
 

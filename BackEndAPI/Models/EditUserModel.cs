@@ -1,15 +1,20 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace BackEndAPI.Models
 {
-    public class EditModel
+    public class EditUserModel
     {
+        [Required]
         public DateTime DateOfBirth { get; set; }
 
+        [Required]
         public DateTime JoinedDate { get; set; }
 
+        [Required]
         public Gender Gender { get; set; }
 
+        [Required]
         public UserType Type { get; set; }
     }
 }
