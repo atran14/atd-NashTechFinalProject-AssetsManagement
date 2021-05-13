@@ -140,8 +140,8 @@ namespace BackEndAPI.Migrations
                 columns: new[] { "Id", "DateOfBirth", "FirstName", "Gender", "JoinedDate", "LastName", "Location", "Password", "StaffCode", "Status", "Type", "Username" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Binh", 0, "binhnv@20011993", "SD0001", 0, 0, "binhnv" },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Binh", 0, "binhnt@12011994", "SD0002", 0, 1, "binhnt" }
+                    { 1, new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, "binhnv@20011993", "SD0001", 0, 0, "binhnv" },
+                    { 2, new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, "binhnt@12011994", "SD0002", 0, 1, "binhnt" }
                 });
 
             migrationBuilder.CreateIndex(

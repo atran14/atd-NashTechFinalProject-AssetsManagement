@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
-    [Migration("20210512101943_Initial")]
+    [Migration("20210513113642_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -214,11 +214,11 @@ namespace BackEndAPI.Migrations
                         new
                         {
                             Id = 1,
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FirstName = "Nguyen Van",
+                            DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Binh",
                             Gender = 0,
-                            JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastName = "Binh",
+                            JoinedDate = new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Van",
                             Location = 0,
                             Password = "binhnv@20011993",
                             StaffCode = "SD0001",
@@ -229,11 +229,11 @@ namespace BackEndAPI.Migrations
                         new
                         {
                             Id = 2,
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            FirstName = "Nguyen Thi",
+                            DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FirstName = "Binh",
                             Gender = 1,
-                            JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastName = "Binh",
+                            JoinedDate = new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Thi",
                             Location = 0,
                             Password = "binhnt@12011994",
                             StaffCode = "SD0002",

@@ -18,10 +18,11 @@ namespace BackEndAPI.Repositories
             _context = context;
         }
 
-        public async Task Create(TEntity entity)
+        public async Task<TEntity> Create(TEntity entity)
         {
-            _context.Set<TEntity>().Add(entity);
+             _context.Set<TEntity>().Add(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public IQueryable<TEntity> GetAll()
