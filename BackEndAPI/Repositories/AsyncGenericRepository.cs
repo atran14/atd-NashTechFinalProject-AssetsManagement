@@ -2,41 +2,49 @@ using System.Linq;
 using System.Threading.Tasks;
 using BackEndAPI.Models;
 using BackEndAPI.Interfaces;
+using BackEndAPI.DBContext;
+using Microsoft.EntityFrameworkCore;
 
 namespace BackEndAPI.Repositories
 {
-    public class AsyncGenericRepository<TEntity> : IAsyncRepository<TEntity>
+    public abstract class AsyncGenericRepository<TEntity> : IAsyncRepository<TEntity>
         where TEntity : class, IEntity
     {
 
-        public AsyncGenericRepository()
-        {
+        private protected readonly AssetsManagementDBContext _context;
 
+        public AsyncGenericRepository(AssetsManagementDBContext context)
+        {
+            _context = context;
         }
 
         public async Task Create(TEntity entity)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public async Task Delete(int id)
-        {
-            throw new System.NotImplementedException();
+            _context.Set<TEntity>().Add(entity);
+            await _context.SaveChangesAsync();
         }
 
         public IQueryable<TEntity> GetAll()
         {
-            throw new System.NotImplementedException();
+            return _context.Set<TEntity>();
         }
 
         public async Task<TEntity> GetById(int id)
         {
-            throw new System.NotImplementedException();
+            return await _context.Set<TEntity>().FindAsync(id);
         }
 
-        public async Task Update(int id, TEntity entity)
+        public async Task Update(TEntity entity)
         {
-            throw new System.NotImplementedException();
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
         }
+
+        public async Task Delete(TEntity entity)
+        {            
+            _context.Set<TEntity>().Remove(entity);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
