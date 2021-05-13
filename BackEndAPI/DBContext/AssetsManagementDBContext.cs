@@ -16,7 +16,7 @@ namespace BackEndAPI.DBContext
         public DbSet<ReturnRequest> ReturnRequest { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlServer("Server = DESKTOP-L257EVI\\SQLEXPRESS; Database = AssetManagement; Trusted_Connection=True; MultipleActiveResultSets = true");
+            builder.UseSqlServer("Server = LAPTOP-O71PKJ1L\\SQLEXPRESS; Database = AssetManagement; Trusted_Connection=True; MultipleActiveResultSets = true");
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
