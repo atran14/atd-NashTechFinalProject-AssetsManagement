@@ -40,28 +40,14 @@ namespace BackEndAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
-            try
-            {
-                await _userService.Update(id, model);
-            }
-            catch (ArgumentException a)
-            {
-                return BadRequest(a.Message);
-            }
+            await _userService.Update(id, model);
             return Ok();
         }
 
         [HttpPut("disable/{id}")]
         public async Task<IActionResult> Disabled(int id)
         {
-            try
-            {
-                await _userService.Disable(id);
-            }
-            catch (ArgumentException a)
-            {
-                return BadRequest(a.Message);
-            }
+            await _userService.Disable(id);
             return Ok();
         }
     }

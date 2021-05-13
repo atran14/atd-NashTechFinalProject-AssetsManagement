@@ -24,7 +24,7 @@ namespace BackEndAPI.Services
             var user = await _userRepository.GetById(id);
             if(user == null)
             {
-                throw new ArgumentException("Can not find user");
+                throw new InvalidOperationException("Can not find user");
             }
 
             if(userValid > 0)
@@ -48,7 +48,7 @@ namespace BackEndAPI.Services
                 throw new ArgumentException("Can not find user");
             }
             
-            if (DateTime.Now.Year - model.DateOfBirth.Year > 18)
+            if (DateTime.Now.AddYears(-18) > model.DateOfBirth)
             {
                 if (model.JoinedDate > model.DateOfBirth)
                 {
