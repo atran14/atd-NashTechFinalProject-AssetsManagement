@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BackEndAPI.Controllers
 {
+    [Authorize("Admin")]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
