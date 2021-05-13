@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BackEndAPI.DBContext;
+using BackEndAPI.Interfaces;
+using BackEndAPI.Repositories;
+using BackEndAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -38,6 +41,11 @@ namespace BackEndAPI
                 opts => opts.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
               );
             services.AddControllers();
+
+            services.AddTransient<IAsyncUserRepository, UserRepository>();
+
+            services.AddScoped<IUserService, UserService>();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "back_end", Version = "v1" });

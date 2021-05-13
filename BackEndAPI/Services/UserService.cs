@@ -1,12 +1,13 @@
 using BackEndAPI.Repositories;
+using BackEndAPI.Interfaces;
 
 namespace BackEndAPI.Services
 {
-    public class UserService
+    public class UserService : IUserService
     {
-        private readonly UserRepository _repository;
+        private readonly IAsyncUserRepository _repository;
 
-        public UserService(UserRepository repository)
+        public UserService(IAsyncUserRepository repository)
         {
             _repository = repository;
         }
