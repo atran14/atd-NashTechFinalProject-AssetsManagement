@@ -1,5 +1,7 @@
-using BackEndAPI.Repositories;
+using System.Linq;
+using System.Collections.Generic;
 using BackEndAPI.Interfaces;
+using BackEndAPI.Models;
 
 namespace BackEndAPI.Services
 {
@@ -11,6 +13,11 @@ namespace BackEndAPI.Services
         {
             _repository = repository;
         }
-                
+
+        public IQueryable<User> GetAllUsers()
+        {
+            return _repository.GetAll()
+                .Where(u => u.Status == UserStatus.Active);
+        }
     }
 }
