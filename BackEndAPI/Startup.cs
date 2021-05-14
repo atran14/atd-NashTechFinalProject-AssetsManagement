@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using BackEndAPI.DBContext;
 using BackEndAPI.Filters;
 using BackEndAPI.Interfaces;
-using BackEndAPI.Models;
+using BackEndAPI.Entities;
 using BackEndAPI.Repositories;
 using BackEndAPI.Services;
 using Microsoft.AspNetCore.Builder;
@@ -51,11 +51,11 @@ namespace BackEndAPI
 
             services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
-
-            services.AddIdentity<User, IdentityRole>()
-                     .AddEntityFrameworkStores<AssetsManagementDBContext>();
-
             services.AddScoped<IUserService, UserService>();
+
+            services.AddIdentity<User, Role>()
+                             .AddEntityFrameworkStores<AssetsManagementDBContext>()
+                             .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(c =>
             {

@@ -1,6 +1,6 @@
 using System;
 
-namespace BackEndAPI.Models
+namespace BackEndAPI.Entities
 {
     public class ReturnRequest : IEntity
     {

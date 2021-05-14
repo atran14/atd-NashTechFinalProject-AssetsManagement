@@ -1,6 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
-using BackEndAPI.Models;
+using BackEndAPI.Entities;
 using BackEndAPI.Interfaces;
 using BackEndAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace BackEndAPI.Repositories
 {
     public abstract class AsyncGenericRepository<TEntity> : IAsyncRepository<TEntity>
-        where TEntity : class, IEntity
+        where TEntity : class
     {
 
         private protected readonly AssetsManagementDBContext _context;

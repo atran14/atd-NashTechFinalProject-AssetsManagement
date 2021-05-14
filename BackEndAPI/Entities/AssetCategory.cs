@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace BackEndAPI.Models
+namespace BackEndAPI.Entities
 {
     public class AssetCategory : IEntity
     {

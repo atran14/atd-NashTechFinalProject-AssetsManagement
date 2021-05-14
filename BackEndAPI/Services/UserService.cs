@@ -3,6 +3,7 @@ using BackEndAPI.Repositories;
 using BackEndAPI.Interfaces;
 using System.Threading.Tasks;
 using BackEndAPI.Models;
+using BackEndAPI.Entities;
 using System;
 
 namespace BackEndAPI.Services

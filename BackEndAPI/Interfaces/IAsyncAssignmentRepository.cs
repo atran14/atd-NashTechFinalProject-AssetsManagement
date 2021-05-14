@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using BackEndAPI.Models;
+using BackEndAPI.Entities;
 
 namespace BackEndAPI.Interfaces
 {
