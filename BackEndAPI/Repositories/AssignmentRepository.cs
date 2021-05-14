@@ -16,8 +16,7 @@ namespace BackEndAPI.Repositories
         public int CountUser(int id)
         {
             return _context.Assignments.Count(x => x.AssignedToUserId == id 
-            && x.State == AssignmentState.Accepted
-            && x.State == AssignmentState.WaitingForAcceptance);
+            && x.State != AssignmentState.Declined );
         }
     }
 }

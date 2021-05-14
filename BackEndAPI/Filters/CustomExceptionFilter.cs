@@ -1,8 +1,9 @@
 using System;
+using System.Web.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace BackEndAPI.Filter
+namespace BackEndAPI.Filters
 {
     public class CustomExceptionFilter : IExceptionFilter
     {
@@ -16,7 +17,11 @@ namespace BackEndAPI.Filter
                 case InvalidOperationException:
                     context.Result = new NotFoundObjectResult(context.Exception.Message);
                     break;
+                case Exception:
+                    context.Result = new BadRequestObjectResult(context.Exception.Message);
+                    break;
                 default:
+                    context.Result = new BadRequestObjectResult(context.Exception.Message);
                     break;
             }
         }
