@@ -36,22 +36,7 @@ namespace BackEndAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
-            try
-            {
                 return Ok(await _userService.Create(user));
-            }
-            catch (ArgumentException e)
-            {
-                if (e.InnerException == null)
-                {
-                    return BadRequest(e.Message);
-                }
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                throw;
-            }
-            return NoContent();
         }
 
         [HttpPut("{id}")]

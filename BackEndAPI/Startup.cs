@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using BackEndAPI.DBContext;
+using BackEndAPI.Filters;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Repositories;
 using BackEndAPI.Services;
@@ -40,7 +41,11 @@ namespace BackEndAPI
               .AddNewtonsoftJson(
                 opts => opts.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
               );
-            services.AddControllers();
+            
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(CustomExceptionFilter));
+            });
 
             services.AddTransient<IAsyncUserRepository, UserRepository>();
 
