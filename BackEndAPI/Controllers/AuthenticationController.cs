@@ -1,3 +1,5 @@
+using System;
+using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -22,7 +24,7 @@ namespace BackEndAPI.Controllers
             var response = _userService.Authenticate(model);
 
             if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(Message.LoginFailed);
 
             return Ok(response);
         }

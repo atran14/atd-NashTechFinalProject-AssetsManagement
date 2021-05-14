@@ -17,19 +17,17 @@ namespace BackEndAPI.Services
     public class UserService : IUserService
     {
         private readonly IAsyncUserRepository _repository;
-        private AssetsManagementDBContext _context;
         private readonly AppSettings _appSettings;
 
         public UserService(IAsyncUserRepository repository, AssetsManagementDBContext context, IOptions<AppSettings> appSettings)
         {
             _repository = repository;
-            _context = context;
             _appSettings = appSettings.Value;
         }
         
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
-            var user = _context.Users.SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
+            var user = _repository.GetAll().SingleOrDefault(x => x.Username == model.Username && x.Password == model.Password);
 
             // return null if user not found
             if (user == null) return null;
@@ -42,7 +40,7 @@ namespace BackEndAPI.Services
 
         public IEnumerable<User> GetAll()
         {
-            return _context.Users.WithoutPasswords();
+            return _repository.GetAll().WithoutPasswords();
         }
 
         //Generate JwtToken
