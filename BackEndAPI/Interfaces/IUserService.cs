@@ -6,7 +6,6 @@ namespace BackEndAPI.Interfaces
 {
     public interface IUserService
     {
-        IQueryable<User> GetAllUsers();
-        
+        GetUsersListPagedResponseDTO GetUsers(PaginationParameters paginationParameters);        
     }
 }
