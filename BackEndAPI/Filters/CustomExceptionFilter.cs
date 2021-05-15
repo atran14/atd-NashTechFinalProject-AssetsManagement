@@ -21,7 +21,12 @@ namespace BackEndAPI.Filters
                     context.Result = new NotFoundObjectResult(context.Exception.Message);
                     break;
 
+                case Exception:
+                    context.Result = new BadRequestObjectResult(context.Exception.Message);
+                    break;
+
                 default:
+                    context.Result = new BadRequestObjectResult(context.Exception.Message);
                     break;
 
             }

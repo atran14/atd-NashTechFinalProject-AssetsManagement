@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using BackEndAPI.Entities;
 using BackEndAPI.Models;
 
 namespace BackEndAPI.Interfaces

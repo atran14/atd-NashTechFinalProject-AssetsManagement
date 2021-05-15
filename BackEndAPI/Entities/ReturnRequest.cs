@@ -1,6 +1,7 @@
 using System;
+using BackEndAPI.Enums;
 
-namespace BackEndAPI.Models
+namespace BackEndAPI.Entities
 {
     public class ReturnRequest : IEntity
     {

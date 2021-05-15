@@ -1,5 +1,6 @@
 using System;
-using BackEndAPI.Models;
+using BackEndAPI.Entities;
+using BackEndAPI.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -9,7 +10,8 @@ namespace BackEndAPI.DBContext
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-            builder.HasKey(e => e.Id);
+
+            builder.ToTable("User");
 
             builder.Property(e => e.Id)
                     .ValueGeneratedOnAdd();
@@ -34,21 +36,12 @@ namespace BackEndAPI.DBContext
             builder.Property(e => e.Type)
                     .IsRequired();
 
-            builder.Property(e => e.StaffCode)
-                    .IsRequired();
-
-            builder.Property(e => e.Username)
-                    .IsRequired();
-
-            builder.Property(e => e.Password)
-                    .IsRequired();
-
             builder.Property(e => e.Location)
                     .IsRequired();
 
             builder.Property(e => e.Status)
                     .IsRequired();
-                    
+
             builder.HasData(
                     new User
                     {
@@ -56,11 +49,11 @@ namespace BackEndAPI.DBContext
                         StaffCode = "SD0001",
                         FirstName = "Binh",
                         LastName = "Nguyen Van",
-                        DateOfBirth = new DateTime(1993,01,20),
-                        JoinedDate = new DateTime(2021,12,05),
+                        DateOfBirth = new DateTime(1993, 01, 20),
+                        JoinedDate = new DateTime(2021, 12, 05),
                         Gender = Gender.Male,
                         Type = UserType.Admin,
-                        Username = "binhnv",
+                        UserName = "binhnv",
                         Password = "binhnv@20011993",
                         Location = Location.HaNoi,
                         Status = UserStatus.Active
@@ -71,11 +64,11 @@ namespace BackEndAPI.DBContext
                         StaffCode = "SD0002",
                         FirstName = "Binh",
                         LastName = "Nguyen Thi",
-                        DateOfBirth = new DateTime(1994,01,12).Date,
-                        JoinedDate = new DateTime(2021,12,05).Date,
+                        DateOfBirth = new DateTime(1994, 01, 12).Date,
+                        JoinedDate = new DateTime(2021, 12, 05).Date,
                         Gender = Gender.Female,
                         Type = UserType.User,
-                        Username = "binhnt",
+                        UserName = "binhnt",
                         Password = "binhnt@12011994",
                         Location = Location.HaNoi,
                         Status = UserStatus.Active

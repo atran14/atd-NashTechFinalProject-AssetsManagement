@@ -1,12 +1,11 @@
-using System.Threading.Tasks;
-using BackEndAPI.Models;
+using BackEndAPI.Entities;
 
 namespace BackEndAPI.Interfaces
 {
     public interface IAsyncUserRepository : IAsyncRepository<User>
     {
 
-        bool CheckUsernameExist(string username);
+        int CountUsername(string username);
 
     }
 }

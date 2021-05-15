@@ -1,4 +1,5 @@
 using System;
+using BackEndAPI.Enums;
 
 namespace BackEndAPI.Models
 {
@@ -17,6 +18,6 @@ namespace BackEndAPI.Models
         public UserType Type { get; set; }
 
         public Location Location { get; set; }
-        
+
     }
 }

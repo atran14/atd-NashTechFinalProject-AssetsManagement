@@ -1,21 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BackEndAPI.DBContext;
 using BackEndAPI.Filters;
+using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Repositories;
 using BackEndAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace BackEndAPI
@@ -33,15 +27,18 @@ namespace BackEndAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services.AddDbContext<AssetsManagementDBContext>(
               opts => opts.UseLazyLoadingProxies()
-                          .UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
+                          .UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
 
             services.AddControllers()
               .AddNewtonsoftJson(
                 opts => opts.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
               );
-            
+
+            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+
             services.AddControllers(options =>
             {
                 options.Filters.Add(typeof(CustomExceptionFilter));
