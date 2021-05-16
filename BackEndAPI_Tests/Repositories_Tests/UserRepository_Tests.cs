@@ -83,12 +83,18 @@ namespace BackEndAPI_Tests.Services
         }
 
         [TestCase(null)]
-        public void CountUsername_NullUsernameInserted_IsFalse(string username)
+        public void CountUsername_NullUsernameInserted_ThrowExceptionMessage(string username)
         {
 
+            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
+                        .UseInMemoryDatabase(databaseName: "CountUsername_NullUsernameInserted_ThrowExceptionMessage")
+                        .Options;
             _repository = new UserRepository(_context);
 
-            Assert.Throws<ArgumentNullException>(() => _repository.CountUsername(username));
+            var result = Assert.Throws<ArgumentNullException>(() => _repository.CountUsername(username));
+
+            Assert.AreEqual("Value cannot be null. (Parameter 'Username can not be null!')", result.Message);
+            //I don't know how to fix this one
 
         }
 
@@ -97,8 +103,8 @@ namespace BackEndAPI_Tests.Services
         {
 
             var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                    .UseInMemoryDatabase(databaseName: "CountUsername_ValidUsernameInserted_ReturnNumberOfGivenUsername")
-                .Options;
+                        .UseInMemoryDatabase(databaseName: "CountUsername_ValidUsernameInserted_ReturnNumberOfGivenUsername")
+                        .Options;
 
             _context = new AssetsManagementDBContext(options);
             _repository = new UserRepository(_context);
