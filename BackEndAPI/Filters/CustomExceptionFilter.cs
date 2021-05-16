@@ -13,7 +13,7 @@ namespace BackEndAPI.Filters
             switch (context.Exception)
             {
 
-                case ArgumentException:
+                case ArgumentNullException:
                     context.Result = new BadRequestObjectResult(context.Exception.Message);
                     break;
 

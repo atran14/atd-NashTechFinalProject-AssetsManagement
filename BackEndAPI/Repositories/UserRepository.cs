@@ -2,6 +2,7 @@ using System.Linq;
 using BackEndAPI.Entities;
 using BackEndAPI.Interfaces;
 using BackEndAPI.DBContext;
+using System;
 
 namespace BackEndAPI.Repositories
 {
@@ -12,7 +13,13 @@ namespace BackEndAPI.Repositories
 
         public int CountUsername(string username)
         {
-            
+            if (username == null)
+            {
+
+                throw new ArgumentNullException("Username can not be null!");
+
+            }
+
             return _context.Set<User>().Where(c => c.UserName.Contains(username)).Count();
 
         }
