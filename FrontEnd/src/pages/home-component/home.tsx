@@ -1,18 +1,17 @@
-import axios from "axios";
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AuthenticationService } from "../../services/AuthenticationService";
 
 export function Home() {
   let history = useHistory();
-  // const service = new AuthenticationSerivce();
   let onLogout = () => {
-    axios.post("https://localhost:5001/logout")
+    
+    let authService = AuthenticationService.getInstance();
+    authService.logout()
       .then((res) => {
         if (res.status === 200) {
           sessionStorage.clear();
           history.push("/");
-          // history.go(0);
           alert("Logout successfully!");
         }
       });
