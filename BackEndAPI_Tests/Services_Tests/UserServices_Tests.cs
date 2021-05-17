@@ -8,6 +8,7 @@ using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using BackEndAPI.Services;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 
@@ -16,6 +17,7 @@ namespace BackEndAPI_Tests.Services_Tests
     [TestFixture]
     public class UserServices_Tests
     {
+
         private static IQueryable<User> Users
         {
             get
@@ -107,8 +109,18 @@ namespace BackEndAPI_Tests.Services_Tests
 
         private static IMapper _mapper;
 
+        private static IOptions<AppSettings> Settings
+        {
+            get
+            {
+                return Options.Create<AppSettings>(new AppSettings());
+            }
+        }
+
         private Mock<IAsyncUserRepository> _userRepositoryMock;
         private Mock<IAsyncAssignmentRepository> _assignmentRepositoryMock;
+
+        private Mock<IOptions<AppSettings>> _optionsMock;
 
         public UserServices_Tests()
         {
@@ -128,6 +140,7 @@ namespace BackEndAPI_Tests.Services_Tests
         {
             _userRepositoryMock = new Mock<IAsyncUserRepository>(behavior: MockBehavior.Strict);
             _assignmentRepositoryMock = new Mock<IAsyncAssignmentRepository>(behavior: MockBehavior.Strict);
+            _optionsMock = new Mock<IOptions<AppSettings>>(behavior: MockBehavior.Strict);
         }
 
         [Test]
@@ -136,10 +149,12 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
-                _mapper
+                _mapper,
+                _optionsMock.Object
             );
 
             PaginationParameters parameters = new PaginationParameters
@@ -167,10 +182,12 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
-                _mapper
+                _mapper,
+                _optionsMock.Object
             );
 
             var expectedTotalPages = (int)Math.Ceiling(Users.Count() / (double)pageSize);
@@ -210,10 +227,12 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
-                _mapper
+                _mapper,
+                _optionsMock.Object
             );
 
             PaginationParameters parameters = new PaginationParameters
@@ -239,10 +258,12 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
-                _mapper
+                _mapper,
+                _optionsMock.Object
             );
 
             PaginationParameters parameters = new PaginationParameters
@@ -268,10 +289,12 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
-                _mapper
+                _mapper,
+                _optionsMock.Object
             );
 
             PaginationParameters parameters = new PaginationParameters

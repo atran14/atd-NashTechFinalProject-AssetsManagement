@@ -10,13 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
-<<<<<<< HEAD:BackEndAPI/Migrations/20210517083726_InitialCreate.Designer.cs
-    [Migration("20210517083726_InitialCreate")]
+    [Migration("20210517114957_InitialCreate")]
     partial class InitialCreate
-=======
-    [Migration("20210517054505_Initial")]
-    partial class Initial
->>>>>>> develop:BackEndAPI/Migrations/20210517054505_Initial.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -298,11 +293,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-<<<<<<< HEAD:BackEndAPI/Migrations/20210517083726_InitialCreate.Designer.cs
-                            ConcurrencyStamp = "75c8cec6-83fa-4754-b1fc-88ac7acac75c",
-=======
-                            ConcurrencyStamp = "cf731f4a-25dc-45c8-b1f5-e942a68a258e",
->>>>>>> develop:BackEndAPI/Migrations/20210517054505_Initial.Designer.cs
+                            ConcurrencyStamp = "36108176-0a00-4573-bf9c-e74212564854",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -323,11 +314,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-<<<<<<< HEAD:BackEndAPI/Migrations/20210517083726_InitialCreate.Designer.cs
-                            ConcurrencyStamp = "4b5cdaa5-a57d-40ea-9c56-15bff7183934",
-=======
-                            ConcurrencyStamp = "66aa0a52-67cc-4de1-b5aa-70ae1452e0b4",
->>>>>>> develop:BackEndAPI/Migrations/20210517054505_Initial.Designer.cs
+                            ConcurrencyStamp = "83054a3b-1e40-4ad2-92f9-0c7c90d10321",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
