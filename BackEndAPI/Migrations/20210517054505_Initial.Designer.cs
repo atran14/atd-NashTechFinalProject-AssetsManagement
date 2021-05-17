@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
-    [Migration("20210515150932_Initial")]
+    [Migration("20210517054505_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -170,10 +170,6 @@ namespace BackEndAPI.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -190,16 +186,6 @@ namespace BackEndAPI.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ConcurrencyStamp = "0b627772-ac6c-4831-860b-4fc08e0403d2",
-                            Description = "Admin role",
-                            Name = "Admin",
-                            NormalizedName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.User", b =>
@@ -259,6 +245,9 @@ namespace BackEndAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -272,7 +261,6 @@ namespace BackEndAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("StaffCode")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
@@ -305,24 +293,43 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "96aac871-1733-46d1-a81b-2f7def590f2e",
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            EmailConfirmed = true,
-                            FirstName = "Nguyen Van",
+                            ConcurrencyStamp = "cf731f4a-25dc-45c8-b1f5-e942a68a258e",
+                            DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = false,
+                            FirstName = "Binh",
                             Gender = 0,
-                            JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            LastName = "Binh",
+                            JoinedDate = new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Van",
                             Location = 0,
                             LockoutEnabled = false,
-                            NormalizedUserName = "Admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEk1EBFjnNJ9NrJGHisvS79mGPBp4SK8J8lIxbWZATiATcQYwjEZHrkRZNafyTCh0Q==",
+                            Password = "binhnv@20011993",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
                             StaffCode = "SD0001",
                             Status = 0,
                             TwoFactorEnabled = false,
                             Type = 0,
                             UserName = "binhnv"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "66aa0a52-67cc-4de1-b5aa-70ae1452e0b4",
+                            DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = false,
+                            FirstName = "Binh",
+                            Gender = 1,
+                            JoinedDate = new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Thi",
+                            Location = 0,
+                            LockoutEnabled = false,
+                            Password = "binhnt@12011994",
+                            PhoneNumberConfirmed = false,
+                            StaffCode = "SD0002",
+                            Status = 0,
+                            TwoFactorEnabled = false,
+                            Type = 1,
+                            UserName = "binhnt"
                         });
                 });
 
@@ -404,13 +411,6 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRole");
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = 1,
-                            RoleId = 1
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>

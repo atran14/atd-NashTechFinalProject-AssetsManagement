@@ -6,10 +6,11 @@ namespace BackEndAPI.Interfaces
 {
     public interface IUserService
     {
+        
+        Task<User> Create(CreateUserModel user);
         Task Update(int id, EditUserModel model);
         Task Disable(int id);
 
-        Task<User> Create(CreateUserModel user);
          
     }
 }

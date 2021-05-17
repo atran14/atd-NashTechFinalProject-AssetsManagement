@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
-using BackEndAPI.Entities;
 
 namespace BackEndAPI.Repositories
 {
