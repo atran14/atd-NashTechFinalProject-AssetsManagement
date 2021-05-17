@@ -21,6 +21,12 @@ namespace BackEndAPI_Tests.Services
         [OneTimeSetUp]
         public void Setup()
         {
+            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
+                   .UseInMemoryDatabase(databaseName: "UserDatabase")
+                .Options;
+
+            _context = new AssetsManagementDBContext(options);
+            _repository = new UserRepository(_context);
         }
 
         [Test]
@@ -43,12 +49,6 @@ namespace BackEndAPI_Tests.Services
                 Location = Location.HaNoi,
                 Status = UserStatus.Active
             };
-            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                    .UseInMemoryDatabase(databaseName: "Create_AddNewUser_WritesToDatabase")
-                .Options;
-
-            _context = new AssetsManagementDBContext(options);
-            _repository = new UserRepository(_context);
 
             //Act
             var _user = await _repository.Create(user);
@@ -79,21 +79,19 @@ namespace BackEndAPI_Tests.Services
 
             Assert.AreEqual(Location.HaNoi, _context.Users.Single().Location);
 
+            _context.Database.EnsureDeleted();
+
         }
 
         [TestCase(null)]
         public void CountUsername_NullUsernameInserted_ThrowExceptionMessage(string username)
         {
 
-            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                        .UseInMemoryDatabase(databaseName: "CountUsername_NullUsernameInserted_ThrowExceptionMessage")
-                        .Options;
-            _repository = new UserRepository(_context);
-
+            //Act
             var result = Assert.Throws<ArgumentNullException>(() => _repository.CountUsername(username));
 
+            //Assert
             Assert.AreEqual("Value cannot be null. (Parameter 'Username can not be null!')", result.Message);
-            //I don't know how to fix this one
 
         }
 
@@ -101,28 +99,19 @@ namespace BackEndAPI_Tests.Services
         public void CountUsername_ValidUsernameInserted_ReturnNumberOfGivenUsername(string username)
         {
 
-            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                        .UseInMemoryDatabase(databaseName: "CountUsername_ValidUsernameInserted_ReturnNumberOfGivenUsername")
-                        .Options;
+            //Act
+            var result = _repository.CountUsername(username);
 
-            _context = new AssetsManagementDBContext(options);
-            _repository = new UserRepository(_context);
-
-            Assert.AreEqual(0, _repository.CountUsername(username));
+            //Assert
+            Assert.AreEqual(0, result);
 
         }
 
         [Test]
         public async Task Update_write_to_database()
         {
+
             //Arrange
-
-            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                   .UseInMemoryDatabase(databaseName: "Update_write_to_database()")
-                .Options;
-
-            _context = new AssetsManagementDBContext(options);
-            _repository = new UserRepository(_context);
             User user = new User
             {
                 Id = 1,
@@ -154,7 +143,8 @@ namespace BackEndAPI_Tests.Services
             //Act
             await _repository.Update(user);
             await _context.SaveChangesAsync();
-
+            var result = _context.Users.Count();
+            
             //Assert
 
             Assert.AreEqual(1, _context.Users.Count());
