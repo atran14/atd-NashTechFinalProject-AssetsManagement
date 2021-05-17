@@ -362,6 +362,37 @@ namespace BackEndAPI_Tests.Services_Tests
             Assert.IsFalse(usersPagedListResponse.HasPrevious);
         }
 
+        [Test]
+        public async Task GetUsers_UserNotAdmin_ShouldThrowException()
+        {
+            _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new User { Type = UserType.User });
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            PaginationParameters parameters = new PaginationParameters
+            {
+                PageNumber = 1,
+                PageSize = 100
+            };
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () =>
+                {
+                    await userService.GetUsers(parameters, 70);
+                }
+            );
+
+            Assert.AreEqual("Unauthorized access", exception.Message);
+        }
+
         [TearDown]
         public void TearDown()
         {
