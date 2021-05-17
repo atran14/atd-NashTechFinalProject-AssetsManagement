@@ -33,7 +33,7 @@ namespace BackEndAPI.Services
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
-        
+
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
             var user = _repository.GetAll().SingleOrDefault(x => x.UserName == model.UserName && x.Password == model.Password);
@@ -47,10 +47,23 @@ namespace BackEndAPI.Services
             return new AuthenticateResponse(user, token);
         }
 
-        public GetUsersListPagedResponseDTO GetUsers(PaginationParameters paginationParameters)
+        public async Task<GetUsersListPagedResponseDTO> GetUsers(
+            PaginationParameters paginationParameters,
+            int adminId
+        )
         {
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
             var users = PagedList<User>.ToPagedList(
-                _repository.GetAll().Where(u => u.Status == UserStatus.Active),
+                _repository.GetAll()
+                    .Where(u => 
+                    u.Status == UserStatus.Active
+                    && u.Location == adminUser.Location
+                ),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -80,7 +93,7 @@ namespace BackEndAPI.Services
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] 
+                Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Type.ToString())
@@ -145,7 +158,7 @@ namespace BackEndAPI.Services
             user.Type = model.Type;
             await _repository.Update(user);
         }
-        
+
         public async Task<User> Create(CreateUserModel model)
         {
 

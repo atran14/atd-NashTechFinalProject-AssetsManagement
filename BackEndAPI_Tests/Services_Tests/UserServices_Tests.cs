@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using BackEndAPI.Entities;
 using BackEndAPI.Enums;
@@ -48,40 +49,40 @@ namespace BackEndAPI_Tests.Services_Tests
                         DateOfBirth = new DateTime(1994, 01, 12).Date,
                         JoinedDate = new DateTime(2021, 12, 05).Date,
                         Gender = Gender.Female,
-                        Type = UserType.User,
+                        Type = UserType.Admin,
                         UserName = "binhnt",
                         Password = "binhnt@12011994",
-                        Location = Location.HaNoi,
+                        Location = Location.HoChiMinh,
                         Status = UserStatus.Active
                     },
-                    new User{ Id = 3},
-                    new User{ Id = 4},
-                    new User{ Id = 5},
-                    new User{ Id = 6},
-                    new User{ Id = 7},
-                    new User{ Id = 8},
-                    new User{ Id = 9},
-                    new User{ Id = 10},
-                    new User{ Id = 11},
-                    new User{ Id = 12},
-                    new User{ Id = 13},
-                    new User{ Id = 14},
-                    new User{ Id = 15},
-                    new User{ Id = 16},
-                    new User{ Id = 17},
-                    new User{ Id = 18},
-                    new User{ Id = 19},
-                    new User{ Id = 20},
-                    new User{ Id = 21},
-                    new User{ Id = 22},
-                    new User{ Id = 23},
-                    new User{ Id = 24},
-                    new User{ Id = 25},
-                    new User{ Id = 26},
-                    new User{ Id = 27},
-                    new User{ Id = 28},
-                    new User{ Id = 29},
-                    new User{ Id = 30}
+                    new User{ Id = 3, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 4, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 5, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 6, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 7, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 8, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 9, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 10, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 11, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 12, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 13, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 14, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 15, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 16, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 17, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 18, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 19, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 20, Location = Location.HaNoi, Type = UserType.User},
+                    new User{ Id = 21, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 22, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 23, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 24, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 25, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 26, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 27, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 28, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 29, Location = Location.HoChiMinh, Type = UserType.User},
+                    new User{ Id = 30, Location = Location.HoChiMinh, Type = UserType.User}
                 }
                 .AsQueryable();
             }
@@ -144,10 +145,11 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
-        public void GetUsers_WithDefaultValidPaginationParameters_ShouldReturnProperlyPagedListResponse()
+        public async Task GetUsers_WithDefaultValidPaginationParameters_ShouldReturnProperlyPagedListResponse()
         {
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
@@ -164,10 +166,11 @@ namespace BackEndAPI_Tests.Services_Tests
             };
 
             //Act
-            var usersPagedListResponse = userService.GetUsers(parameters);
+            var usersPagedListResponse = await userService.GetUsers(parameters, 1);
 
             //Assert
-            Assert.AreEqual(30, usersPagedListResponse.TotalCount);
+            var expectedCount = Users.Where(u => u.Location == Location.HaNoi).Count();
+            Assert.AreEqual(expectedCount, usersPagedListResponse.TotalCount);
             Assert.AreEqual(1, usersPagedListResponse.CurrentPage);
             Assert.AreEqual(1, usersPagedListResponse.TotalPages);
             Assert.IsFalse(usersPagedListResponse.HasNext);
@@ -177,10 +180,11 @@ namespace BackEndAPI_Tests.Services_Tests
         [TestCase(10)]
         [TestCase(15)]
         [TestCase(20)]
-        public void GetUsers_WithDifferentValidPageSize_ShouldReturnProperlyPagedListResponse(int pageSize)
+        public async Task GetUsers_WithDifferentValidPageSize_ShouldReturnProperlyPagedListResponse(int pageSize)
         {
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
@@ -189,8 +193,10 @@ namespace BackEndAPI_Tests.Services_Tests
                 _mapper,
                 _optionsMock.Object
             );
+            var expectedCount = Users.Where(u => u.Location == Location.HaNoi).Count();
 
-            var expectedTotalPages = (int)Math.Ceiling(Users.Count() / (double)pageSize);
+
+            var expectedTotalPages = (int)Math.Ceiling(expectedCount / (double)pageSize);
             List<PaginationParameters> parametersList = new List<PaginationParameters>();
             for (int i = 1; i <= expectedTotalPages; i++)
             {
@@ -202,12 +208,12 @@ namespace BackEndAPI_Tests.Services_Tests
                     }
                 );
             }
-            
+
             int actualCount = 0;
             foreach (var parameters in parametersList)
             {
                 //Act
-                var usersPagedListResponse = userService.GetUsers(parameters);
+                var usersPagedListResponse = await userService.GetUsers(parameters, 1);
                 actualCount += usersPagedListResponse.Items.Count();
 
                 //Assert
@@ -217,15 +223,16 @@ namespace BackEndAPI_Tests.Services_Tests
                 Assert.AreEqual(parameters.PageNumber > 1, usersPagedListResponse.HasPrevious);
             }
 
-            Assert.AreEqual(Users.Count(), actualCount);
+            Assert.AreEqual(expectedCount, actualCount);
 
         }
 
         [Test]
-        public void GetUsers_WithNegativePageNumber_ShouldReturnPagedListResponseWithDefaultPageNumberOf1()
+        public async Task GetUsers_WithNegativePageNumber_ShouldReturnPagedListResponseWithDefaultPageNumberOf1()
         {
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
@@ -242,10 +249,11 @@ namespace BackEndAPI_Tests.Services_Tests
             };
 
             //Act
-            var usersPagedListResponse = userService.GetUsers(parameters);
+            var usersPagedListResponse = await userService.GetUsers(parameters, 1);
 
             //Assert
-            Assert.AreEqual(30, usersPagedListResponse.TotalCount);
+            var expectedCount = Users.Where(u => u.Location == Location.HaNoi).Count();
+            Assert.AreEqual(expectedCount, usersPagedListResponse.TotalCount);
             Assert.AreEqual(1, usersPagedListResponse.CurrentPage);
             Assert.AreEqual(1, usersPagedListResponse.TotalPages);
             Assert.IsFalse(usersPagedListResponse.HasNext);
@@ -253,10 +261,11 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
-        public void GetUsers_WithPageSizeSmallerThanMinOf10_ShouldReturnPagedListResponseWithDefaultMinPageSizeOf10()
+        public async Task GetUsers_WithPageSizeSmallerThanMinOf10_ShouldReturnPagedListResponseWithDefaultMinPageSizeOf10()
         {
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
@@ -273,21 +282,24 @@ namespace BackEndAPI_Tests.Services_Tests
             };
 
             //Act
-            var usersPagedListResponse = userService.GetUsers(parameters);
+            var usersPagedListResponse = await userService.GetUsers(parameters, 1);
 
             //Assert
-            Assert.AreEqual(30, usersPagedListResponse.TotalCount);
+            var expectedCount = Users.Where(u => u.Location == Location.HaNoi).Count();
+            var expectedTotalPages = (int)Math.Ceiling(expectedCount / 10.0);
+            Assert.AreEqual(expectedCount, usersPagedListResponse.TotalCount);
             Assert.AreEqual(1, usersPagedListResponse.CurrentPage);
-            Assert.AreEqual(3, usersPagedListResponse.TotalPages);
+            Assert.AreEqual(expectedTotalPages, usersPagedListResponse.TotalPages);
             Assert.IsTrue(usersPagedListResponse.HasNext);
             Assert.IsFalse(usersPagedListResponse.HasPrevious);
         }
 
         [Test]
-        public void GetUsers_WithPageSizeBiggerThanMaxOf50_ShouldReturnPagedListResponseWithDefaultMinPageSizeOf50()
+        public async Task GetUsers_WithPageSizeBiggerThanMaxOf50_ShouldReturnPagedListResponseWithDefaultMinPageSizeOf50()
         {
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
             _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
@@ -304,10 +316,46 @@ namespace BackEndAPI_Tests.Services_Tests
             };
 
             //Act
-            var usersPagedListResponse = userService.GetUsers(parameters);
+            var usersPagedListResponse = await userService.GetUsers(parameters, 1);
 
             //Assert
-            Assert.AreEqual(30, usersPagedListResponse.TotalCount);
+            var expectedCount = Users.Where(u => u.Location == Location.HaNoi).Count();
+            Assert.AreEqual(expectedCount, usersPagedListResponse.TotalCount);
+            Assert.AreEqual(1, usersPagedListResponse.CurrentPage);
+            Assert.AreEqual(1, usersPagedListResponse.TotalPages);
+            Assert.IsFalse(usersPagedListResponse.HasNext);
+            Assert.IsFalse(usersPagedListResponse.HasPrevious);
+        }
+
+        [TestCase(1)] //for Hanoi
+        [TestCase(2)] //for HoChiMinh
+        public async Task GetUsers_TwoAdminsFromTwoDifferentLocations_ShouldReturnPagedListResponseOfUsersOfSameLocation(int adminId)
+        {
+            //Arrange
+            _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == adminId));
+            _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+            var adminUser = Users.Single(u => u.Id == adminId);
+
+            PaginationParameters parameters = new PaginationParameters
+            {
+                PageNumber = 1,
+                PageSize = 30
+            };
+
+            //Act
+            var usersPagedListResponse = await userService.GetUsers(parameters, 1);
+
+            //Assert
+            var expectedCount = Users.Where(u => u.Location == adminUser.Location).Count();
+            Assert.AreEqual(expectedCount, usersPagedListResponse.TotalCount);
             Assert.AreEqual(1, usersPagedListResponse.CurrentPage);
             Assert.AreEqual(1, usersPagedListResponse.TotalPages);
             Assert.IsFalse(usersPagedListResponse.HasNext);

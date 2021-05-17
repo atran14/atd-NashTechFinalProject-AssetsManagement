@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
@@ -51,8 +53,8 @@ namespace BackEndAPI.Controllers
             [FromQuery] PaginationParameters paginationParameters
         )
         {
-        // var admin = System.Web.HttpContext.Current;
-            var users = _userService.GetUsers(paginationParameters);
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);            
+            var users = _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
 
             return Ok(users);
         }
