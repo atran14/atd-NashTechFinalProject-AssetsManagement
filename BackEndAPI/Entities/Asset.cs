@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BackEndAPI.Enums;
 
 namespace BackEndAPI.Entities
 {

@@ -1,5 +1,6 @@
 using System;
 using BackEndAPI.Entities;
+using BackEndAPI.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -41,7 +42,40 @@ namespace BackEndAPI.DBContext
                     .IsRequired();
 
             builder.Property(e => e.Status)
-                    .IsRequired();       
-}
+                    .IsRequired();
+
+            builder.HasData(
+                    new User
+                    {
+                        Id = 1,
+                        StaffCode = "SD0001",
+                        FirstName = "Binh",
+                        LastName = "Nguyen Van",
+                        DateOfBirth = new DateTime(1993, 01, 20),
+                        JoinedDate = new DateTime(2021, 12, 05),
+                        Gender = Gender.Male,
+                        Type = UserType.Admin,
+                        UserName = "binhnv",
+                        Password = "binhnv@20011993",
+                        Location = Location.HaNoi,
+                        Status = UserStatus.Active
+                    },
+                    new User
+                    {
+                        Id = 2,
+                        StaffCode = "SD0002",
+                        FirstName = "Binh",
+                        LastName = "Nguyen Thi",
+                        DateOfBirth = new DateTime(1994, 01, 12).Date,
+                        JoinedDate = new DateTime(2021, 12, 05).Date,
+                        Gender = Gender.Female,
+                        Type = UserType.User,
+                        UserName = "binhnt",
+                        Password = "binhnt@12011994",
+                        Location = Location.HaNoi,
+                        Status = UserStatus.Active
+                    }
+            );
+        }
     }
 }

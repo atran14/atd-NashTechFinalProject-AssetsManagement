@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using BackEndAPI.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace BackEndAPI.Entities
@@ -19,6 +20,8 @@ namespace BackEndAPI.Entities
         public UserType Type { get; set; }
 
         public string StaffCode { get; set; }
+
+        public string Password { get; set; }
 
         public Location Location { get; set; }
 

@@ -8,10 +8,9 @@ namespace BackEndAPI.DBContext
     {
            public void Configure(EntityTypeBuilder<Role> builder)
         {
+            
             builder.ToTable("Role");
             
-            builder.Property(e => e.Description)
-                    .HasMaxLength(200);
         }
     }
 }

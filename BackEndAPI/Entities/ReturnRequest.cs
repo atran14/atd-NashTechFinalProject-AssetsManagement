@@ -1,4 +1,5 @@
 using System;
+using BackEndAPI.Enums;
 
 namespace BackEndAPI.Entities
 {

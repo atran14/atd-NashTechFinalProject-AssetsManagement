@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
@@ -49,6 +50,10 @@ namespace BackEndAPI.Controllers
         {
             await _userService.Disable(id);
             return Ok();
+        }
+        public async Task<IActionResult> Post([FromBody] CreateUserModel user)
+        {
+                return Ok(await _userService.Create(user));
         }
     }
 }

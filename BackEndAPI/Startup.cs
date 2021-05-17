@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using BackEndAPI.DBContext;
 using BackEndAPI.Filters;
+using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Entities;
 using BackEndAPI.Repositories;
@@ -17,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 namespace BackEndAPI
@@ -35,6 +31,7 @@ namespace BackEndAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
+
             services.AddDbContext<AssetsManagementDBContext>(
               opts => opts.UseLazyLoadingProxies()
                           .UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
@@ -48,6 +45,8 @@ namespace BackEndAPI
                 opts.Filters.Add(typeof(CustomExceptionFilter));
             });
             services.AddControllers();
+
+            services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
             services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
