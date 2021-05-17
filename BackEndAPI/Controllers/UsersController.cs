@@ -1,16 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
 namespace BackEndAPI.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
-
         private readonly IUserService _userService;
 
         public UsersController(IUserService userService)
@@ -31,18 +34,26 @@ namespace BackEndAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateUserModel user)
+        public void Post([FromBody] string value)
         {
-                return Ok(await _userService.Create(user));
         }
 
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, EditUserModel model)
         {
+            await _userService.Update(id, model);
+            return Ok();
         }
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+
+        [HttpPut("disable/{id}")]
+        public async Task<IActionResult> Disabled(int id)
         {
+            await _userService.Disable(id);
+            return Ok();
+        }
+        public async Task<IActionResult> Post([FromBody] CreateUserModel user)
+        {
+                return Ok(await _userService.Create(user));
         }
     }
 }

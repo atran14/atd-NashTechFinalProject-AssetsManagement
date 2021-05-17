@@ -10,7 +10,6 @@ namespace BackEndAPI.DBContext
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-
             builder.ToTable("User");
 
             builder.Property(e => e.Id)
@@ -34,6 +33,9 @@ namespace BackEndAPI.DBContext
                     .IsRequired();
 
             builder.Property(e => e.Type)
+                    .IsRequired();
+
+            builder.Property(e => e.StaffCode)
                     .IsRequired();
 
             builder.Property(e => e.Location)

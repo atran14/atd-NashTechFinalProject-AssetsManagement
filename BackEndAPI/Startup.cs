@@ -2,10 +2,14 @@ using BackEndAPI.DBContext;
 using BackEndAPI.Filters;
 using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
+using BackEndAPI.Entities;
 using BackEndAPI.Repositories;
 using BackEndAPI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,17 +40,21 @@ namespace BackEndAPI
               .AddNewtonsoftJson(
                 opts => opts.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
               );
+            services.AddControllers(opts =>
+            {
+                opts.Filters.Add(typeof(CustomExceptionFilter));
+            });
+            services.AddControllers();
 
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
-            services.AddControllers(options =>
-            {
-                options.Filters.Add(typeof(CustomExceptionFilter));
-            });
-
             services.AddTransient<IAsyncUserRepository, UserRepository>();
-
+            services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddIdentity<User, Role>()
+                             .AddEntityFrameworkStores<AssetsManagementDBContext>()
+                             .AddDefaultTokenProviders();
 
             services.AddSwaggerGen(c =>
             {

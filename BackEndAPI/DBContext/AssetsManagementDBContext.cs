@@ -13,6 +13,10 @@ namespace BackEndAPI.DBContext
         {
         }
 
+        
+        
+  
+
         public DbSet<AssetCategory> AssetCategories { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Assignment> Assignments { get; set; }

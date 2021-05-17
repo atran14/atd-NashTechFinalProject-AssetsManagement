@@ -1,6 +1,7 @@
 using BackEndAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
 namespace BackEndAPI.DBContext
 {
     public class RoleConfiguration : IEntityTypeConfiguration<Role>
