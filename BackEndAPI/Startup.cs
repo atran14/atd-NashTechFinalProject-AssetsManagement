@@ -37,7 +37,7 @@ namespace BackEndAPI
 
             services.AddDbContext<AssetsManagementDBContext>(
               opts => opts.UseLazyLoadingProxies()
-                          .UseSqlServer(Configuration.GetConnectionString("sqlConnection")));
+                          .UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
 
             services.AddControllers()
               .AddNewtonsoftJson(

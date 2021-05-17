@@ -17,6 +17,6 @@ namespace BackEndAPI.Repositories
         {
             return _context.Assignments.Count(x => x.AssignedToUserId == id 
             && x.State != AssignmentState.Declined);
-        }
+        }   
     }
 }

@@ -50,7 +50,6 @@ namespace BackEndAPI.Migrations
                     Gender = table.Column<int>(type: "int", nullable: false),
                     Type = table.Column<int>(type: "int", nullable: false),
                     StaffCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -264,12 +263,26 @@ namespace BackEndAPI.Migrations
             migrationBuilder.InsertData(
                 table: "AssetCategories",
                 columns: new[] { "Id", "CategoryCode", "CategoryName" },
-                values: new object[] { 1, "LA", "Laptop" });
+                values: new object[,]
+                {
+                    { 1, "LA", "Laptop" },
+                    { 2, "PC", "PC" }
+                });
 
             migrationBuilder.InsertData(
-                table: "AssetCategories",
-                columns: new[] { "Id", "CategoryCode", "CategoryName" },
-                values: new object[] { 2, "PC", "PC" });
+                table: "Role",
+                columns: new[] { "Id", "ConcurrencyStamp", "Description", "Name", "NormalizedName" },
+                values: new object[] { 1, "0b627772-ac6c-4831-860b-4fc08e0403d2", "Admin role", "Admin", "Admin" });
+
+            migrationBuilder.InsertData(
+                table: "User",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "JoinedDate", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StaffCode", "Status", "TwoFactorEnabled", "Type", "UserName" },
+                values: new object[] { 1, 0, "96aac871-1733-46d1-a81b-2f7def590f2e", new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), null, true, "Nguyen Van", 0, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), "Binh", 0, false, null, null, "Admin", "AQAAAAEAACcQAAAAEEk1EBFjnNJ9NrJGHisvS79mGPBp4SK8J8lIxbWZATiATcQYwjEZHrkRZNafyTCh0Q==", null, false, "", "SD0001", 0, false, 0, "binhnv" });
+
+            migrationBuilder.InsertData(
+                table: "UserRole",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { 1, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_CategoryId",

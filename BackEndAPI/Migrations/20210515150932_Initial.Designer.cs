@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
-    [Migration("20210514110830_Initial")]
+    [Migration("20210515150932_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -190,6 +190,16 @@ namespace BackEndAPI.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Role");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ConcurrencyStamp = "0b627772-ac6c-4831-860b-4fc08e0403d2",
+                            Description = "Admin role",
+                            Name = "Admin",
+                            NormalizedName = "Admin"
+                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.User", b =>
@@ -249,10 +259,6 @@ namespace BackEndAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
@@ -293,6 +299,31 @@ namespace BackEndAPI.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("User");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "96aac871-1733-46d1-a81b-2f7def590f2e",
+                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = true,
+                            FirstName = "Nguyen Van",
+                            Gender = 0,
+                            JoinedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Binh",
+                            Location = 0,
+                            LockoutEnabled = false,
+                            NormalizedUserName = "Admin",
+                            PasswordHash = "AQAAAAEAACcQAAAAEEk1EBFjnNJ9NrJGHisvS79mGPBp4SK8J8lIxbWZATiATcQYwjEZHrkRZNafyTCh0Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "",
+                            StaffCode = "SD0001",
+                            Status = 0,
+                            TwoFactorEnabled = false,
+                            Type = 0,
+                            UserName = "binhnv"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -373,6 +404,13 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("UserRole");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            RoleId = 1
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<int>", b =>

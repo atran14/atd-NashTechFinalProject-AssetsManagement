@@ -49,19 +49,19 @@ namespace BackEndAPI.Services
                 throw new InvalidOperationException("Can not find user");
             }
 
-            if (!(DateTime.Now.AddYears(-18) > model.DateOfBirth))
+            if (DateTime.Now.AddYears(-18) < model.DateOfBirth)
             {
 
                 throw new Exception("User is under 18. Please select different date");
             }
            
-            if (!(model.JoinedDate.DayOfWeek != DayOfWeek.Saturday
-                   && model.JoinedDate.DayOfWeek != DayOfWeek.Sunday))
+            if (model.JoinedDate.DayOfWeek == DayOfWeek.Saturday
+                   && model.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
             {
                 throw new Exception("Join Date is Saturday or Sunday. Please select different date");
             }
            
-            if (!(model.JoinedDate > model.DateOfBirth))
+            if (model.JoinedDate < model.DateOfBirth)
             {
 
                 throw new Exception("Join Date is not later than Date Of Birth. Please select different date");

@@ -20,8 +20,6 @@ namespace BackEndAPI.Entities
 
         public string StaffCode { get; set; }
 
-        public string Password { get; set; }
-
         public Location Location { get; set; }
 
         public UserStatus Status { get; set; }
