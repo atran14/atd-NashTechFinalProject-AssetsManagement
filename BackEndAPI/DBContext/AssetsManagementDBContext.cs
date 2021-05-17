@@ -1,4 +1,6 @@
 using BackEndAPI.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace BackEndAPI.DBContext
@@ -14,10 +16,12 @@ namespace BackEndAPI.DBContext
         public DbSet<Asset> Assets { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<ReturnRequest> ReturnRequest { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder builder)
         {
-            builder.UseSqlServer("Server = DESKTOP-L257EVI\\SQLEXPRESS; Database = AssetManagement; Trusted_Connection=True; MultipleActiveResultSets = true");
+            builder.UseSqlServer("Server = .; Database = AssetManagement; Trusted_Connection=True; MultipleActiveResultSets = true");
         }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfigurationsFromAssembly(typeof(AssetConfiguration).Assembly);
