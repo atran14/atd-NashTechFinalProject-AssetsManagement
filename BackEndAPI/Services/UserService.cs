@@ -1,15 +1,10 @@
 using System.Linq;
-using System.Collections.Generic;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using System;
 using BackEndAPI.Helpers;
-using BackEndAPI.Interfaces;
 using System.Threading.Tasks;
-using BackEndAPI.Models;
-using System;
 using BackEndAPI.Entities;
-using BackEndAPI.Helpers;
 using BackEndAPI.Enums;
 using AutoMapper;
 
@@ -19,7 +14,6 @@ namespace BackEndAPI.Services
     {
         private readonly IAsyncUserRepository _repository;
         private readonly IAsyncAssignmentRepository _assignmentRepository;
-
         private readonly IMapper _mapper;
 
         public UserService(IAsyncUserRepository repository, IAsyncAssignmentRepository assignmentRepository, IMapper mapper)
@@ -45,7 +39,7 @@ namespace BackEndAPI.Services
                 TotalPages = users.TotalPages,
                 HasNext = users.HasNext,
                 HasPrevious = users.HasPrevious,
-                Items = users.Select(u => UserToDTO(u))
+                Items = users.Select(u => _mapper.Map<UserDTO>(u))
             };
         }
 
@@ -149,24 +143,7 @@ namespace BackEndAPI.Services
             return _user;
 
         }
-        private UserDTO UserToDTO(User user)
-        {
-            return new UserDTO
-            {
-                Id = user.Id,
-                Username = user.UserName,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                DateOfBirth = user.DateOfBirth,
-                Gender = user.Gender,
-                JoinedDate = user.JoinedDate,
-                Location = user.Location,
-                StaffCode = user.StaffCode,
-                Type = user.Type,
-            };
-        }
-
+        
     }
-
 
 }

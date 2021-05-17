@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
@@ -21,11 +20,11 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
+        // [HttpGet]
+        // public ActionResult<IEnumerable<string>> Get()
+        // {
+        //     return new string[] { "value1", "value2" };
+        // }
 
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
@@ -33,10 +32,10 @@ namespace BackEndAPI.Controllers
             return "value";
         }
 
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        // [HttpPost]
+        // public void Post([FromBody] string value)
+        // {
+        // }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
@@ -51,6 +50,8 @@ namespace BackEndAPI.Controllers
             await _userService.Disable(id);
             return Ok();
         }
+
+        [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
                 return Ok(await _userService.Create(user));
