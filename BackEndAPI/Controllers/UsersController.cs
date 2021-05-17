@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BackEndAPI.Controllers
 {
@@ -34,8 +30,9 @@ namespace BackEndAPI.Controllers
         }
 
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
+                return Ok(await _userService.Create(user));
         }
 
         [HttpPut("{id}")]
@@ -51,9 +48,6 @@ namespace BackEndAPI.Controllers
             await _userService.Disable(id);
             return Ok();
         }
-        public async Task<IActionResult> Post([FromBody] CreateUserModel user)
-        {
-                return Ok(await _userService.Create(user));
-        }
+        
     }
 }

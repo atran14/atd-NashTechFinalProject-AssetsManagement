@@ -1,5 +1,4 @@
 using BackEndAPI.Entities;
-using BackEndAPI.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -12,10 +11,6 @@ namespace BackEndAPI.DBContext
              : base(options)
         {
         }
-
-        
-        
-  
 
         public DbSet<AssetCategory> AssetCategories { get; set; }
         public DbSet<Asset> Assets { get; set; }

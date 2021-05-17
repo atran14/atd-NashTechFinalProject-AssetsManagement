@@ -168,10 +168,6 @@ namespace BackEndAPI.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
                     b.Property<string>("Name")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -188,16 +184,6 @@ namespace BackEndAPI.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ConcurrencyStamp = "0b627772-ac6c-4831-860b-4fc08e0403d2",
-                            Description = "Admin role",
-                            Name = "Admin",
-                            NormalizedName = "Admin"
-                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.User", b =>
@@ -305,10 +291,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "96aac871-1733-46d1-a81b-2f7def590f2e",
-                            DateOfBirth = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            EmailConfirmed = true,
-                            ConcurrencyStamp = "dc0bb1f3-dd6d-4c61-a266-de5bdf60dc66",
+                            ConcurrencyStamp = "cf731f4a-25dc-45c8-b1f5-e942a68a258e",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -317,10 +300,6 @@ namespace BackEndAPI.Migrations
                             LastName = "Nguyen Van",
                             Location = 0,
                             LockoutEnabled = false,
-                            NormalizedUserName = "Admin",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEk1EBFjnNJ9NrJGHisvS79mGPBp4SK8J8lIxbWZATiATcQYwjEZHrkRZNafyTCh0Q==",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
                             Password = "binhnv@20011993",
                             PhoneNumberConfirmed = false,
                             StaffCode = "SD0001",
@@ -328,97 +307,30 @@ namespace BackEndAPI.Migrations
                             TwoFactorEnabled = false,
                             Type = 0,
                             UserName = "binhnv"
-                        });
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("RoleClaim");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<int>", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserClaim");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<int>", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("UserId");
-
-                    b.ToTable("UserLogins");
-                });
-
-            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<int>", b =>
-                {
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("UserRole");
-
-                    b.HasData(
+                        },
                         new
                         {
-                            UserId = 1,
-                            RoleId = 1
+                            Id = 2,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "66aa0a52-67cc-4de1-b5aa-70ae1452e0b4",
+                            DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = false,
+                            FirstName = "Binh",
+                            Gender = 1,
+                            JoinedDate = new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Thi",
+                            Location = 0,
+                            LockoutEnabled = false,
+                            Password = "binhnt@12011994",
+                            PhoneNumberConfirmed = false,
+                            StaffCode = "SD0002",
+                            Status = 0,
+                            TwoFactorEnabled = false,
+                            Type = 1,
+                            UserName = "binhnt"
                         });
                 });
 
-           
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -473,10 +385,6 @@ namespace BackEndAPI.Migrations
                     b.Property<string>("LoginProvider")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Value");
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
 
@@ -485,11 +393,6 @@ namespace BackEndAPI.Migrations
 
                     b.HasKey("UserId");
 
-                    b.ToTable("UserTokens");
-                });
-
-            modelBuilder.Entity("BackEndAPI.Entities.Asset", b =>
-                {
                     b.ToTable("UserLogins");
                 });
 
