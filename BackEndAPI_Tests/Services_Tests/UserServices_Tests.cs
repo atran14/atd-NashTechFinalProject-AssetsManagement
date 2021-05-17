@@ -363,7 +363,7 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
-        public async Task GetUsers_UserNotAdmin_ShouldThrowException()
+        public void GetUsers_UserNotAdmin_ShouldThrowException()
         {
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new User { Type = UserType.User });
