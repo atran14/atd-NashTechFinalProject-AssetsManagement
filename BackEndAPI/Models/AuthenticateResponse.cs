@@ -1,4 +1,6 @@
 using System;
+using BackEndAPI.Entities;
+using BackEndAPI.Enums;
 
 namespace BackEndAPI.Models
 {
@@ -20,7 +22,7 @@ namespace BackEndAPI.Models
 
         public UserStatus Status { get; set; }
 
-        public string Username { get; set; }
+        public string UserName { get; set; }
         public string Token { get; set; }
 
 
@@ -36,7 +38,7 @@ namespace BackEndAPI.Models
             StaffCode = user.StaffCode;
             Location = user.Location;
             Status = user.Status;
-            Username = user.Username;
+            UserName = user.UserName;
             Token = token;
         }
     }

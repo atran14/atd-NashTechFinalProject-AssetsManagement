@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using BackEndAPI.Entities;
 using BackEndAPI.Models;
 
 namespace BackEndAPI.Helpers
