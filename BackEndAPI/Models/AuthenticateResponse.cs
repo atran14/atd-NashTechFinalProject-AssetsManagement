@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 using System;
 
->>>>>>> e4ccf6d0
 namespace BackEndAPI.Models
 {
     public class AuthenticateResponse
@@ -10,8 +7,6 @@ namespace BackEndAPI.Models
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-<<<<<<< HEAD
-=======
         public DateTime DateOfBirth { get; set; }
 
         public DateTime JoinedDate { get; set; }
@@ -25,7 +20,6 @@ namespace BackEndAPI.Models
 
         public UserStatus Status { get; set; }
 
->>>>>>> e4ccf6d0
         public string Username { get; set; }
         public string Token { get; set; }
 
@@ -35,8 +29,6 @@ namespace BackEndAPI.Models
             Id = user.Id;
             FirstName = user.FirstName;
             LastName = user.LastName;
-<<<<<<< HEAD
-=======
             DateOfBirth = user.DateOfBirth;
             JoinedDate = user.JoinedDate;
             Gender = user.Gender;
@@ -44,7 +36,6 @@ namespace BackEndAPI.Models
             StaffCode = user.StaffCode;
             Location = user.Location;
             Status = user.Status;
->>>>>>> e4ccf6d0
             Username = user.Username;
             Token = token;
         }
