@@ -17,16 +17,10 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<UserInfo> Get(int id)
         {
-            return "value";
+            return await _userService.GetById(id);
         }
 
         [HttpPost]
