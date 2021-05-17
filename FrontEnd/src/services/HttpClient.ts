@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { StatusCode } from './status-code-enum';
+import { StatusCode } from './StatusCode';
 
 declare module 'axios' {
   interface AxiosResponse<T = any> extends Promise<T> { }
