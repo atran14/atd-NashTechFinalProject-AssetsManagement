@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using BackEndAPI.Enums;
+using Microsoft.AspNetCore.Identity;
 
-namespace BackEndAPI.Models
+namespace BackEndAPI.Entities
 {
-    public class User : IEntity
+    public class User : IdentityUser<int>
     {
-        public int Id { get; set; }
 
         public string FirstName { get; set; }
 
@@ -20,8 +21,6 @@ namespace BackEndAPI.Models
         public UserType Type { get; set; }
 
         public string StaffCode { get; set; }
-
-        public string Username { get; set; }
 
         public string Password { get; set; }
 
