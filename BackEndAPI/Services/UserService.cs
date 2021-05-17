@@ -9,8 +9,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
-using BackEndAPI.DBContext;
-using System.Linq;
 using System.Threading.Tasks;
 using BackEndAPI.Entities;
 using BackEndAPI.Enums;
@@ -106,7 +104,7 @@ namespace BackEndAPI.Services
         }
         public async Task Disable(int id)
         {
-            int userValid = _assignmentRepository.CountUser(id);
+            int userValid = _assignmentRepository.GetCountUser(id);
             var user = await _repository.GetById(id);
             if (user == null)
             {

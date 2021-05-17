@@ -150,7 +150,7 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
-            _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
@@ -185,7 +185,7 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
-            _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
@@ -233,7 +233,7 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
-            _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
@@ -266,7 +266,7 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
-            _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
@@ -300,7 +300,7 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == 1));
-            _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
@@ -334,7 +334,7 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange
             _userRepositoryMock.Setup(x => x.GetAll()).Returns(Users);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(Users.Single(u => u.Id == adminId));
-            _assignmentRepositoryMock.Setup(x => x.CountUser(It.IsAny<int>())).Returns(1);
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
