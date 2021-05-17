@@ -23,7 +23,7 @@ export function Login() {
   };
 
   let history = useHistory();
-  const service = new AuthenticationService();
+  const service = AuthenticationService.getInstance();
 
   const onFinish = (data: UserLogin) => {
     console.log('Success:', data);
