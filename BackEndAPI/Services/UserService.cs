@@ -12,9 +12,10 @@ namespace BackEndAPI.Services
 {
     public class UserService : IUserService
     {
+
+        private readonly IMapper _mapper;
         private readonly IAsyncUserRepository _repository;
         private readonly IAsyncAssignmentRepository _assignmentRepository;
-        private readonly IMapper _mapper;
 
         public UserService(IAsyncUserRepository repository, IAsyncAssignmentRepository assignmentRepository, IMapper mapper)
         {
@@ -103,7 +104,7 @@ namespace BackEndAPI.Services
 
             if (model == null)
             {
-                throw new ArgumentNullException("Entity can not be null!");
+                throw new ArgumentNullException("User can not be null!");
             }
 
             bool isOlderThan18 = (model.DateOfBirth.Date <= DateTime.Now.Date.AddYears(-18));

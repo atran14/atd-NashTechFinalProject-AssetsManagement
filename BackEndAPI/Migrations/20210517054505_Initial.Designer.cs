@@ -10,8 +10,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
+<<<<<<< HEAD:BackEndAPI/Migrations/20210517052034_InitialCreate.Designer.cs
+    [Migration("20210517052034_InitialCreate")]
+    partial class InitialCreate
+=======
     [Migration("20210517054505_Initial")]
     partial class Initial
+>>>>>>> develop:BackEndAPI/Migrations/20210517054505_Initial.Designer.cs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -294,7 +299,11 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
+<<<<<<< HEAD:BackEndAPI/Migrations/20210517052034_InitialCreate.Designer.cs
+                            ConcurrencyStamp = "29cc665e-faa2-4ef7-a4a5-3387774ff2c5",
+=======
                             ConcurrencyStamp = "cf731f4a-25dc-45c8-b1f5-e942a68a258e",
+>>>>>>> develop:BackEndAPI/Migrations/20210517054505_Initial.Designer.cs
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -315,7 +324,11 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
+<<<<<<< HEAD:BackEndAPI/Migrations/20210517052034_InitialCreate.Designer.cs
+                            ConcurrencyStamp = "24ba113a-f8a8-4da7-9da1-9d9a6513c670",
+=======
                             ConcurrencyStamp = "66aa0a52-67cc-4de1-b5aa-70ae1452e0b4",
+>>>>>>> develop:BackEndAPI/Migrations/20210517054505_Initial.Designer.cs
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",

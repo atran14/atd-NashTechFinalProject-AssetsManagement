@@ -9,10 +9,11 @@ namespace BackEndAPI.Interfaces
     public interface IUserService
     {
         GetUsersListPagedResponseDTO GetUsers(PaginationParameters paginationParameters);        
+        
+        Task<User> Create(CreateUserModel user);
         Task Update(int id, EditUserModel model);
         Task Disable(int id);
 
-        Task<User> Create(CreateUserModel user);
          
     }
 }

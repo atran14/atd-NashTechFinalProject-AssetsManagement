@@ -6,7 +6,6 @@ using BackEndAPI.Entities;
 using BackEndAPI.Enums;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Repositories;
-using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using NUnit.Framework;
@@ -22,6 +21,12 @@ namespace BackEndAPI_Tests.Services
         [OneTimeSetUp]
         public void Setup()
         {
+            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
+                   .UseInMemoryDatabase(databaseName: "UserDatabase")
+                .Options;
+
+            _context = new AssetsManagementDBContext(options);
+            _repository = new UserRepository(_context);
         }
 
         [Test]
@@ -44,12 +49,6 @@ namespace BackEndAPI_Tests.Services
                 Location = Location.HaNoi,
                 Status = UserStatus.Active
             };
-            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                    .UseInMemoryDatabase(databaseName: "Create_AddNewUser_WritesToDatabase")
-                .Options;
-
-            _context = new AssetsManagementDBContext(options);
-            _repository = new UserRepository(_context);
 
             //Act
             var _user = await _repository.Create(user);
@@ -80,21 +79,19 @@ namespace BackEndAPI_Tests.Services
 
             Assert.AreEqual(Location.HaNoi, _context.Users.Single().Location);
 
+            _context.Database.EnsureDeleted();
+
         }
 
         [TestCase(null)]
         public void CountUsername_NullUsernameInserted_ThrowExceptionMessage(string username)
         {
 
-            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                        .UseInMemoryDatabase(databaseName: "CountUsername_NullUsernameInserted_ThrowExceptionMessage")
-                        .Options;
-            _repository = new UserRepository(_context);
-
+            //Act
             var result = Assert.Throws<ArgumentNullException>(() => _repository.CountUsername(username));
 
+            //Assert
             Assert.AreEqual("Value cannot be null. (Parameter 'Username can not be null!')", result.Message);
-            //I don't know how to fix this one
 
         }
 
@@ -102,15 +99,58 @@ namespace BackEndAPI_Tests.Services
         public void CountUsername_ValidUsernameInserted_ReturnNumberOfGivenUsername(string username)
         {
 
-            var options = new DbContextOptionsBuilder<AssetsManagementDBContext>()
-                        .UseInMemoryDatabase(databaseName: "CountUsername_ValidUsernameInserted_ReturnNumberOfGivenUsername")
-                        .Options;
+            //Act
+            var result = _repository.CountUsername(username);
 
-            _context = new AssetsManagementDBContext(options);
-            _repository = new UserRepository(_context);
+            //Assert
+            Assert.AreEqual(0, result);
 
-            Assert.AreEqual(0, _repository.CountUsername(username));
+        }
 
+        [Test]
+        public async Task Update_write_to_database()
+        {
+
+            //Arrange
+            User user = new User
+            {
+                Id = 1,
+                StaffCode = "SD0001",
+                FirstName = "Nguyen Van",
+                LastName = "Binh",
+                DateOfBirth = new DateTime(01 / 20 / 1993),
+                JoinedDate = new DateTime(12 / 05 / 2021),
+                Gender = Gender.Male,
+                Type = UserType.Admin,
+                UserName = "binhnv",
+                PasswordHash = "binhnv@20011993",
+                Location = Location.HaNoi,
+                Status = UserStatus.Active,
+                NormalizedUserName = "Admin",
+                Email = null,
+                NormalizedEmail = null,
+                EmailConfirmed = true,
+                SecurityStamp = string.Empty
+            };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+
+            user.DateOfBirth = new DateTime(01 / 20 / 1999);
+            user.JoinedDate = new DateTime(12 / 05 / 2020);
+            user.Gender = Gender.Female;
+
+
+            //Act
+            await _repository.Update(user);
+            await _context.SaveChangesAsync();
+            var result = _context.Users.Count();
+            
+            //Assert
+
+            Assert.AreEqual(1, _context.Users.Count());
+            Assert.AreEqual(new DateTime(01 / 20 / 1999), _context.Users.SingleOrDefault(x => x.Id == 1).DateOfBirth);
+            Assert.AreEqual(new DateTime(12 / 05 / 2020), _context.Users.SingleOrDefault(x => x.Id == 1).JoinedDate);
+            Assert.AreEqual(Gender.Female, _context.Users.SingleOrDefault(x => x.Id == 1).Gender);
         }
 
         [OneTimeTearDown]
