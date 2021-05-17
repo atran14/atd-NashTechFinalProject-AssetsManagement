@@ -2,7 +2,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace BackEndAPI.Controllers
 {
@@ -43,11 +45,13 @@ namespace BackEndAPI.Controllers
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public ActionResult<GetUsersListPagedResponseDTO> GetAllUsers(
             [FromQuery] PaginationParameters paginationParameters
         )
         {
+        // var admin = System.Web.HttpContext.Current;
             var users = _userService.GetUsers(paginationParameters);
 
             return Ok(users);
