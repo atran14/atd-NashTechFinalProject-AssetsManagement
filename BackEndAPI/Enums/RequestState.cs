@@ -1,4 +1,4 @@
-namespace BackEndAPI.Models
+namespace BackEndAPI.Enums
 {
     public enum RequestState
     {
