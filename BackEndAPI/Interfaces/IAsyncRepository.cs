@@ -9,7 +9,7 @@ namespace BackEndAPI.Interfaces
 
         Task<TEntity> GetById(int id);
 
-        Task Create(TEntity entity);
+        Task<TEntity> Create(TEntity entity);
 
         Task Update(TEntity entity);
 

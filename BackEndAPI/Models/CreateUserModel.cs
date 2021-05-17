@@ -3,10 +3,8 @@ using BackEndAPI.Enums;
 
 namespace BackEndAPI.Models
 {
-    public class UserDTO
+    public class CreateUserModel
     {
-        public int Id { get; set; }
-
         public string FirstName { get; set; }
 
         public string LastName { get; set; }
@@ -19,10 +17,7 @@ namespace BackEndAPI.Models
 
         public UserType Type { get; set; }
 
-        public string StaffCode { get; set; }
-
-        public string Username { get; set; }
-
         public Location Location { get; set; }
+
     }
 }

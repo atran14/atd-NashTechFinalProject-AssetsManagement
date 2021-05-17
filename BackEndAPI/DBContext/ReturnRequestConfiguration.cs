@@ -1,4 +1,4 @@
-using BackEndAPI.Models;
+using BackEndAPI.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

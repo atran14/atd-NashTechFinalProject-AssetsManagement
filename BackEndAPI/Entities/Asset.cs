@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using BackEndAPI.Enums;
 
-namespace BackEndAPI.Models
+namespace BackEndAPI.Entities
 {
     public class Asset : IEntity
     {

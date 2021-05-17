@@ -1,14 +1,14 @@
 using System.Linq;
 using System.Threading.Tasks;
-using BackEndAPI.Models;
 using BackEndAPI.Interfaces;
 using BackEndAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
+using BackEndAPI.Entities;
 
 namespace BackEndAPI.Repositories
 {
     public abstract class AsyncGenericRepository<TEntity> : IAsyncRepository<TEntity>
-        where TEntity : class, IEntity
+        where TEntity : class
     {
 
         private protected readonly AssetsManagementDBContext _context;
@@ -18,10 +18,11 @@ namespace BackEndAPI.Repositories
             _context = context;
         }
 
-        public async Task Create(TEntity entity)
+        public async Task<TEntity> Create(TEntity entity)
         {
-            _context.Set<TEntity>().Add(entity);
+             _context.Set<TEntity>().Add(entity);
             await _context.SaveChangesAsync();
+            return entity;
         }
 
         public IQueryable<TEntity> GetAll()
