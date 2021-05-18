@@ -37,11 +37,11 @@ namespace BackEndAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-
             services.AddDbContext<AssetsManagementDBContext>(
               opts => opts.UseLazyLoadingProxies()
                           .UseSqlServer(Configuration.GetConnectionString("SqlConnection")));
+
+            services.AddCors();
 
             services.AddControllers()
               .AddNewtonsoftJson(
@@ -77,7 +77,7 @@ namespace BackEndAPI
                     ValidateAudience = false
                 };
             });
-            //
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("Admin",
@@ -118,6 +118,13 @@ namespace BackEndAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "back_end v1"));
             }
+
+            app.UseCors(
+                options => options.WithOrigins("http://localhost:3000")
+                                    .AllowAnyMethod()
+                                    .AllowAnyHeader()
+                                    .AllowCredentials()
+            );
 
             app.UseHttpsRedirection();
 

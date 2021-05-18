@@ -49,12 +49,12 @@ namespace BackEndAPI.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
-        public ActionResult<GetUsersListPagedResponseDTO> GetAllUsers(
-            [FromQuery] PaginationParameters paginationParameters
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
+            [FromBody] PaginationParameters paginationParameters
         )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);            
-            var users = _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
+            var users = await _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
 
             return Ok(users);
         }

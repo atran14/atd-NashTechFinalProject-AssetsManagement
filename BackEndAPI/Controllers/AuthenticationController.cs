@@ -18,6 +18,7 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
+        [Route("/login")]
         [HttpPost("authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
