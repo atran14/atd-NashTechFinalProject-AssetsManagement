@@ -43,12 +43,7 @@ const routes = [
     path: '/users/create',
     component: CreateUser,
     key: '/users/update',
-  }
-  // {
-  //   path: '/users/delete/:userId',
-  //   component: DeleteUser,
-  //   key: '/users/update/:userId'
-  // }
+  },
 ];
 
 export function RoutingList(): JSX.Element {

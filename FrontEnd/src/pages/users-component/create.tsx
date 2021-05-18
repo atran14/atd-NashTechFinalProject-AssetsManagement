@@ -31,7 +31,6 @@ export function CreateUser() {
         forceUpdate({});
     }, []);
 
-    // sessionStorage.setItem("Location", Location.HANOI.toString());
     let service = UserService.getInstance();
 
     let history = useHistory();
