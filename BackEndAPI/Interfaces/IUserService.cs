@@ -14,6 +14,7 @@ namespace BackEndAPI.Interfaces
         Task<User> Create(CreateUserModel user);
         Task Update(int id, EditUserModel model);
         Task Disable(int id);
+        Task<UserInfo> GetById(int id);
 
          
     }

@@ -5,6 +5,7 @@ import { NotFound } from '../pages/error-component/NotFound';
 import { Home } from '../pages/home-component/home';
 import { Login } from '../pages/login-component/login';
 import { ListUsers } from '../pages/users-component/list';
+import { UpdateUser } from '../pages/user-component/update/update';
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: '/users',
     component: ListUsers,
     key: '/users'
+  },
+  {
+    path: '/users/update/:userId',
+    component: UpdateUser,
+    key: '/users/update/:userId',
   }
 ];
 

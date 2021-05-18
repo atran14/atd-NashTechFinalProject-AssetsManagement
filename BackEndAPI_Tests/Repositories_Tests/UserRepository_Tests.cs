@@ -153,6 +153,52 @@ namespace BackEndAPI_Tests.Repositories_Tests
         }
 
         [Test]
+        public async Task Find_searches_byId()
+        {
+             //Arrange
+            User user = new User
+            {
+                Id = 1,
+                StaffCode = "SD0001",
+                FirstName = "Nguyen Van",
+                LastName = "Binh",
+                DateOfBirth = new DateTime(01 / 20 / 1993),
+                JoinedDate = new DateTime(12 / 05 / 2021),
+                Gender = Gender.Male,
+                Type = UserType.Admin,
+                UserName = "binhnv",
+                PasswordHash = "binhnv@20011993",
+                Location = Location.HaNoi,
+                Status = UserStatus.Active,
+                NormalizedUserName = "Admin",
+                Email = null,
+                NormalizedEmail = null,
+                EmailConfirmed = true,
+                SecurityStamp = string.Empty
+            };
+            _context.Users.Add(user);
+            await _context.SaveChangesAsync();
+            //Act
+            var userInfo = await _repository.GetById(1);
+            var result = _context.Users.Count();
+             //Assert
+            Assert.AreEqual(1, _context.Users.Count());
+            Assert.AreEqual(1, userInfo.Id);
+            Assert.AreEqual("SD0001", userInfo.StaffCode);
+            Assert.AreEqual("Nguyen Van", userInfo.FirstName);
+            Assert.AreEqual("Binh", userInfo.LastName);
+            Assert.AreEqual(new DateTime(01 / 20 / 1993), userInfo.DateOfBirth);
+            Assert.AreEqual(new DateTime(12 / 05 / 2021), userInfo.JoinedDate);
+            Assert.AreEqual(Gender.Male, userInfo.Gender);
+            Assert.AreEqual(UserType.Admin, userInfo.Type);
+            Assert.AreEqual("binhnv", userInfo.UserName);
+            Assert.AreEqual("binhnv@20011993", userInfo.PasswordHash);
+            Assert.AreEqual(Location.HaNoi, userInfo.Location);
+            Assert.AreEqual(UserStatus.Active, userInfo.Status);
+            Assert.AreEqual("Admin", userInfo.NormalizedUserName);
+        }
+
+        [OneTimeTearDown]
         public async Task GetAllUsers_Default_ShouldGetAllAvailableUsers()
         {
             //Arrange

@@ -1,4 +1,4 @@
-import { LoggedInUser, UserLogin } from "../models/user";
+import { LoggedInUser, UserLogin } from "../models/User";
 import { HttpClient } from "./HttpClient";
 
 export class AuthenticationService extends HttpClient{

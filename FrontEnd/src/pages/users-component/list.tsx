@@ -2,7 +2,7 @@ import { Table } from 'antd'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { UsersPagedListResponse } from '../../models/PagedListResponse'
-import { User, UserType } from '../../models/user'
+import { User, UserType } from '../../models/User'
 import { UserService } from '../../services/UserServices'
 
 const columns = [
