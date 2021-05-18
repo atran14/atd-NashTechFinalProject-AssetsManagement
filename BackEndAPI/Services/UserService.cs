@@ -139,7 +139,7 @@ namespace BackEndAPI.Services
             }
 
             if (model.JoinedDate.DayOfWeek == DayOfWeek.Saturday
-                   && model.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
+                   || model.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
             {
                 throw new Exception("Join Date is Saturday or Sunday. Please select different date");
             }
@@ -201,6 +201,24 @@ namespace BackEndAPI.Services
             await _repository.Update(_user);
             return _user;
 
+        }
+
+        public async Task<UserInfo> GetById(int id)
+        {
+            var user = await _repository.GetById(id);
+            if(user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            UserInfo userInfo = new UserInfo {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                DateOfBirth = user.DateOfBirth,
+                JoinedDate = user.JoinedDate,
+                Gender = user.Gender,
+                Type = user.Type
+            };
+            return userInfo;
         }
     }
 }

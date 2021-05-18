@@ -4,6 +4,7 @@ import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
 import { Login } from '../pages/login-component/login';
 import { Register } from '../pages/register-component/register';
+import { UpdateUser } from '../pages/user-component/update/update';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path: '/home',
     component: Login,
     key: '/home',
+  },
+  {
+    path: '/user/update/:userId',
+    component: UpdateUser,
+    key: '/update/user/:userId',
   }
 ];
 

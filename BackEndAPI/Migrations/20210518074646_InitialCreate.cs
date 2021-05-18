@@ -274,8 +274,8 @@ namespace BackEndAPI.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "JoinedDate", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "Password", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StaffCode", "Status", "TwoFactorEnabled", "Type", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "36108176-0a00-4573-bf9c-e74212564854", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "83054a3b-1e40-4ad2-92f9-0c7c90d10321", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
+                    { 1, 0, "00d8a280-3fe3-45e0-8fb5-ab4f41071f14", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
+                    { 2, 0, "1aeffdf6-d020-4757-b227-e169932a0147", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
                 });
 
             migrationBuilder.CreateIndex(
