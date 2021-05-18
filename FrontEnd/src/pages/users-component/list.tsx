@@ -11,7 +11,10 @@ import {
 } from 'antd'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { PaginationParameters, UsersPagedListResponse } from '../../models/Pagination'
+import {
+  PaginationParameters,
+  UsersPagedListResponse,
+} from '../../models/Pagination'
 import { Location, User, UserGender, UserType } from '../../models/User'
 import { UserService } from '../../services/UserService'
 import {
@@ -20,25 +23,31 @@ import {
   SearchOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 const { Option } = Select
 
 export function ListUsers() {
+  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === 'ADMIN')
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
-  
-  useEffect(() => {
-    ;(async () => {
-      setIsFetchingData(true)
-      let userServices = UserService.getInstance()
-      let usersPagedResponse = await userServices.getUsers()
+  let history = useHistory()
 
-      setUsersPagedList(usersPagedResponse)
-      setUsersList(usersPagedResponse.items)
-      setIsFetchingData(false)
-    })()
+  useEffect(() => {
+    if (isAdminAuthorized) {
+      ;(async () => {
+        setIsFetchingData(true)
+        let userServices = UserService.getInstance()
+        let usersPagedResponse = await userServices.getUsers()
+
+        setUsersPagedList(usersPagedResponse)
+        setUsersList(usersPagedResponse.items)
+        setIsFetchingData(false)
+      })()
+    } else {
+      history.push('/401-access-denied')
+    }
   }, [])
 
   function confirmDisableUser(id: number) {
@@ -114,20 +123,20 @@ export function ListUsers() {
     )
   }
 
-  const onPaginationConfigChanged = (page : number, pageSize? : number) => {
-    (async () => {
+  const onPaginationConfigChanged = (page: number, pageSize?: number) => {
+    ;(async () => {
       setIsFetchingData(true)
-      let userService = UserService.getInstance();
-      let parameters : PaginationParameters = {
+      let userService = UserService.getInstance()
+      let parameters: PaginationParameters = {
         PageNumber: page,
-        PageSize: pageSize ?? 10
-      };
+        PageSize: pageSize ?? 10,
+      }
 
-      let usersPagedResponse = await userService.getUsers(parameters);
+      let usersPagedResponse = await userService.getUsers(parameters)
       setUsersPagedList(usersPagedResponse)
       setUsersList(usersPagedResponse.items)
       setIsFetchingData(false)
-    })();
+    })()
   }
 
   const columns: any = [
@@ -232,7 +241,7 @@ export function ListUsers() {
 
   return (
     <>
-      {usersPagedList !== undefined && (
+      {isAdminAuthorized && usersPagedList !== undefined && (
         <>
           <Form
             onFinish={onFinish}
@@ -250,7 +259,12 @@ export function ListUsers() {
               </Form.Item>
 
               <Form.Item name="searchText">
-                <Input allowClear disabled={isFetchingData} style={{ width: '75%' }} defaultValue="Nguyen Van A" />
+                <Input
+                  allowClear
+                  disabled={isFetchingData}
+                  style={{ width: '75%' }}
+                  defaultValue="Nguyen Van A"
+                />
               </Form.Item>
 
               <Form.Item>
