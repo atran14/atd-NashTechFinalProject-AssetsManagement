@@ -3,7 +3,8 @@ import { Route } from 'react-router-dom';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
 import { Login } from '../pages/login-component/login';
-import { CreateUser } from '../pages/user-component/create';
+import { CreateUser } from '../pages/user-component/create/create';
+import { UpdateUser } from '../pages/user-component/update/update';
 
 const routes = [
   {
@@ -29,7 +30,12 @@ const routes = [
   {
     path: '/users/create',
     component: CreateUser,
-    key: '/users/create',
+    key: '/users/create'
+  },
+  {
+    path: '/user/update/:userId',
+    component: UpdateUser,
+    key: '/update/user/:userId',
   }
 ];
 

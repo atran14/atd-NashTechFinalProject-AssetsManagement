@@ -2,8 +2,8 @@ import { Button, DatePicker, Form, Input, Radio, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { CreateUserModel } from "../../models/user";
-import { UserSerivce } from "../../services/UserService";
+import { CreateUserModel } from "../../../models/user";
+import { UserSerivce } from "../../../services/UserService";
 
 const { Option } = Select;
 
@@ -40,10 +40,9 @@ export function CreateUser() {
 
     const onFinish = (data: CreateUserModel) => {
         data.location = location;
-        console.log(data);
         (async () => {
             await service.create(data);
-            // history.push("/users");
+            history.push("/users");
         })();
     };
     const dateFormat = "YYYY-MM-DD";

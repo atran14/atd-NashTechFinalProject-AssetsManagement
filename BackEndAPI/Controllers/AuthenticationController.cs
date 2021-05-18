@@ -2,6 +2,7 @@ using System;
 using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

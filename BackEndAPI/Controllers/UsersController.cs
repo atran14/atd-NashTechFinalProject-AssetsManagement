@@ -22,9 +22,9 @@ namespace BackEndAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<UserInfo> Get(int id)
         {
-            return "value";
+            return await _userService.GetById(id);
         }
 
         // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
