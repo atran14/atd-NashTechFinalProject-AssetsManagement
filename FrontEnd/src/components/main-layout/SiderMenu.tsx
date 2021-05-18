@@ -31,6 +31,11 @@ function SiderMenu() {
           <Menu.Item key="1">
             <Link to="/users">List</Link>
           </Menu.Item>
+          
+          <Menu.Item key="2">
+            <Link to="/users/create">Create</Link>
+          </Menu.Item>
+        
         </SubMenu>
         <SubMenu key="sub4" icon={<LoginOutlined />} title="Login">
           <Menu.Item key="9"><Link to="/login">Login</Link></Menu.Item>

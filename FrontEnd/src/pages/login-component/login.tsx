@@ -32,6 +32,7 @@ export function Login() {
       sessionStorage.setItem("type", UserType[userLogin.type]);
       sessionStorage.setItem("username", userLogin.userName);
       sessionStorage.setItem("token", userLogin.token);
+      sessionStorage.setItem("location", userLogin.location.toString());
       history.replace("/home");
     })();
   };

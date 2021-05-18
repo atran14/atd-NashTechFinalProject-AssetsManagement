@@ -5,7 +5,7 @@ import {
 import React from 'react';
 import 'antd/dist/antd.css';
 import history from './router/history';
-import MainLayout from './component/main-layout/MainLayout';
+import MainLayout from './components/main-layout/MainLayout';
 
 function App() {
   return (

@@ -6,15 +6,15 @@ export function Home() {
   let history = useHistory();
   let onLogout = () => {
     
-    let authService = AuthenticationService.getInstance();
-    authService.logout()
-      .then((res) => {
-        if (res.status === 200) {
-          sessionStorage.clear();
-          history.push("/");
-          alert("Logout successfully!");
-        }
-      });
+    // let authService = AuthenticationService.getInstance();
+    // authService.logout()
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       sessionStorage.clear();
+    //       history.push("/");
+    //       alert("Logout successfully!");
+    //     }
+    //   });
   };
 
   return (

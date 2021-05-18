@@ -2,21 +2,22 @@ import { LoggedInUser, UserLogin } from "../models/User";
 import { HttpClient } from "./HttpClient";
 
 export class AuthenticationService extends HttpClient{
-  private static classInstance?: AuthenticationService;
+  private static instance?: AuthenticationService;
 
   private constructor() {
     super('https://localhost:5001');
   }
 
   public static getInstance = () : AuthenticationService => {
-    if (AuthenticationService.classInstance === undefined) {
-      AuthenticationService.classInstance = new AuthenticationService();
+    if (AuthenticationService.instance === undefined) {
+      AuthenticationService.instance = new AuthenticationService();
     }
 
-    return AuthenticationService.classInstance;
+    return AuthenticationService.instance;
   } 
 
   public login = (user: UserLogin) => this.instance.post<LoggedInUser>("/login", user);
 
-  public logout = ()=>this.instance.post("/logout");
+  //todo Only need to delete the token from the session storage
+  // public logout = ()=>this.instance.post("/logout");
 }

@@ -9,7 +9,7 @@ export type UserInfo = {
   type : number
 }
 
-export type UserInput  = {
+export type EditUserModel  = {
   dateOfBirth: Date,
   joinedDate: Date,
   gender: number,
@@ -33,6 +33,16 @@ export interface User {
   userName: string;
   location: number;
   status: number;
+}
+
+export type CreateUserModel = {
+  firstName: string,
+  lastName: string,
+  datOfBirth: Date,
+  gender: number,
+  joinedDate: Date,
+  type: number,
+  location: number
 }
 
 export interface LoggedInUser extends User {
