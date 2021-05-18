@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
 import { Login } from '../pages/login-component/login';
-import { Register } from '../pages/register-component/register';
+import { CreateUser } from '../pages/user-component/create';
 
 const routes = [
   {
@@ -22,14 +22,14 @@ const routes = [
     key: '/login',
   },
   {
-    path: '/register',
-    component: Register,
-    key: '/register',
-  },
-  {
     path: '/home',
     component: Login,
     key: '/home',
+  },
+  {
+    path: '/users/create',
+    component: CreateUser,
+    key: '/users/create',
   }
 ];
 

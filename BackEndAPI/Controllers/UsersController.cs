@@ -27,10 +27,11 @@ namespace BackEndAPI.Controllers
             return "value";
         }
 
+        // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
-                return Ok(await _userService.Create(user));
+            return Ok(await _userService.Create(user));
         }
 
         [HttpPut("{id}")]

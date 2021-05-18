@@ -37,7 +37,6 @@ namespace BackEndAPI_Tests.Repositories_Tests
             //Arrange
             User user = new User()
             {
-                Id = 3,
                 StaffCode = "SD0003",
                 FirstName = "Thang",
                 LastName = "Doan Viet",
@@ -90,7 +89,7 @@ namespace BackEndAPI_Tests.Repositories_Tests
             var result = Assert.Throws<ArgumentNullException>(() => _repository.CountUsername(username));
 
             //Assert
-            Assert.AreEqual("Value cannot be null. (Parameter 'Username can not be null!')", result.Message);
+            Assert.AreEqual("Username can not be null!", result.ParamName);
 
         }
 

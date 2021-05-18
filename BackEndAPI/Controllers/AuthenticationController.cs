@@ -29,7 +29,7 @@ namespace BackEndAPI.Controllers
             return Ok(response);
         }
 
-        [Authorize("Admin")]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public IActionResult GetAll()
         {

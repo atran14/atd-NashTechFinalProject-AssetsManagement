@@ -19,3 +19,13 @@ export type User = {
     name: string
   }
 }
+
+export type CreateUserModel = {
+  firstName: string,
+  lastName: string,
+  datOfBirth: Date,
+  gender: number,
+  joinedDate: Date,
+  type: number,
+  location: number
+}

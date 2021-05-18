@@ -38,6 +38,18 @@ namespace BackEndAPI
         public void ConfigureServices(IServiceCollection services)
         {
 
+            services.AddCors(options =>
+              {
+                  options.AddDefaultPolicy(
+                  builder =>
+                  {
+                      builder.WithOrigins("https://localhost:5001",
+                                    "http://localhost:3000")
+                                    .AllowAnyHeader()
+                                    .AllowAnyMethod()
+                                    .AllowCredentials();
+                  });
+              });
 
             services.AddDbContext<AssetsManagementDBContext>(
               opts => opts.UseLazyLoadingProxies()
@@ -122,6 +134,7 @@ namespace BackEndAPI
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
 
