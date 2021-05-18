@@ -1,3 +1,4 @@
+using System.Linq;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using System.Collections.Generic;
@@ -8,8 +9,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System;
-using BackEndAPI.DBContext;
-using System.Linq;
 using System.Threading.Tasks;
 using BackEndAPI.Entities;
 using BackEndAPI.Enums;
@@ -32,7 +31,7 @@ namespace BackEndAPI.Services
             _mapper = mapper;
             _appSettings = appSettings.Value;
         }
-        
+
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
             var user = _repository.GetAll().SingleOrDefault(x => x.UserName == model.UserName && x.Password == model.Password);
@@ -44,6 +43,39 @@ namespace BackEndAPI.Services
             var token = generateJwtToken(user);
 
             return new AuthenticateResponse(user, token);
+        }
+
+        public async Task<GetUsersListPagedResponseDTO> GetUsers(
+            PaginationParameters paginationParameters,
+            int adminId
+        )
+        {
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
+            var users = PagedList<User>.ToPagedList(
+                _repository.GetAll()
+                    .Where(u => 
+                    u.Status == UserStatus.Active
+                    && u.Location == adminUser.Location
+                ),
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = users.CurrentPage,
+                PageSize = users.PageSize,
+                TotalCount = users.TotalCount,
+                TotalPages = users.TotalPages,
+                HasNext = users.HasNext,
+                HasPrevious = users.HasPrevious,
+                Items = users.Select(u => _mapper.Map<UserDTO>(u))
+            };
         }
 
         public IEnumerable<User> GetAll()
@@ -59,7 +91,7 @@ namespace BackEndAPI.Services
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] 
+                Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString()),
                     new Claim(ClaimTypes.Role, user.Type.ToString())
@@ -72,7 +104,7 @@ namespace BackEndAPI.Services
         }
         public async Task Disable(int id)
         {
-            int userValid = _assignmentRepository.CountUser(id);
+            int userValid = _assignmentRepository.GetCountUser(id);
             var user = await _repository.GetById(id);
             if (user == null)
             {
@@ -124,6 +156,7 @@ namespace BackEndAPI.Services
             user.Type = model.Type;
             await _repository.Update(user);
         }
+
         public async Task<User> Create(CreateUserModel model)
         {
 

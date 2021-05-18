@@ -7,6 +7,7 @@ namespace BackEndAPI.Interfaces
 {
     public interface IUserService
     {
+        Task<GetUsersListPagedResponseDTO> GetUsers(PaginationParameters paginationParameters, int adminId);        
         AuthenticateResponse Authenticate(AuthenticateRequest model);
         IEnumerable<User> GetAll();
         

@@ -1,8 +1,12 @@
+using System.Security.Claims;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace BackEndAPI.Controllers
 {
@@ -15,12 +19,6 @@ namespace BackEndAPI.Controllers
         public UsersController(IUserService userService)
         {
             _userService = userService;
-        }
-
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
         }
 
         [HttpGet("{id}")]
@@ -48,6 +46,17 @@ namespace BackEndAPI.Controllers
             await _userService.Disable(id);
             return Ok();
         }
-        
+
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpGet]
+        public ActionResult<GetUsersListPagedResponseDTO> GetAllUsers(
+            [FromQuery] PaginationParameters paginationParameters
+        )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);            
+            var users = _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
+
+            return Ok(users);
+        }
     }
 }
