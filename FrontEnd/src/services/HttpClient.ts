@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCode } from './StatusCode';
 
 declare module 'axios' {
@@ -11,18 +11,29 @@ export abstract class HttpClient {
   public constructor(baseURL: string) {
     this.instance = axios.create({
       baseURL,
-      withCredentials: true
+      // withCredentials: true,      
     });
 
     this._initializeResponseInterceptor();
   }
 
   private _initializeResponseInterceptor = () => {
+    this.instance.interceptors.request.use(
+      this._handleRequestConfig
+    )
+
     this.instance.interceptors.response.use(
       this._handleResponse,
       this._handleError,
     );
   };
+
+  private _handleRequestConfig = (config: AxiosRequestConfig): AxiosRequestConfig => {
+    const token = sessionStorage.getItem("token");    
+    config.headers.Authorization = `Bearer ${token}`;
+
+    return config;
+  }
 
   private _handleResponse = ({ data }: AxiosResponse) => {
     console.log(data);

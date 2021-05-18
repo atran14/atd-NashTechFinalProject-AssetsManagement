@@ -1,4 +1,4 @@
-import { User, UserLogin } from "../models/user";
+import { LoggedInUser, UserLogin } from "../models/user";
 import { HttpClient } from "./HttpClient";
 
 export class AuthenticationService extends HttpClient{
@@ -16,7 +16,7 @@ export class AuthenticationService extends HttpClient{
     return AuthenticationService.classInstance;
   } 
 
-  public login = (user: UserLogin) => this.instance.post<User>("/login", user);
+  public login = (user: UserLogin) => this.instance.post<LoggedInUser>("/login", user);
 
   public logout = ()=>this.instance.post("/logout");
 }

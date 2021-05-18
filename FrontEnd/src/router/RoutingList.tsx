@@ -2,8 +2,9 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
+import { Home } from '../pages/home-component/home';
 import { Login } from '../pages/login-component/login';
-import { Register } from '../pages/register-component/register';
+import { ListUsers } from '../pages/users-component/list';
 
 const routes = [
   {
@@ -22,14 +23,14 @@ const routes = [
     key: '/login',
   },
   {
-    path: '/register',
-    component: Register,
-    key: '/register',
+    path: '/home',
+    component: Home,
+    key: '/home',
   },
   {
-    path: '/home',
-    component: Login,
-    key: '/home',
+    path: '/users',
+    component: ListUsers,
+    key: '/users'
   }
 ];
 

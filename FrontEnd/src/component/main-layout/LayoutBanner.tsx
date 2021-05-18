@@ -8,7 +8,7 @@ const { Header } = Layout;
 const { SubMenu } = Menu;
 
 function LayoutBanner() {
-  const service = new AuthenticationService();
+  const service = AuthenticationService.getInstance();
   let OnLogout = () => {
     (async () => {
       await service.logout();

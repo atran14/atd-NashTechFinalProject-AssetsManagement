@@ -1,8 +1,8 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
-import {
-  ContainerOutlined,
+import {  
   UnorderedListOutlined,
+  LoginOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
@@ -27,30 +27,13 @@ function SiderMenu() {
         defaultOpenKeys={['sub1']}
         style={{ height: '100%', borderRight: 0 }}
       >
-        <SubMenu key="sub1" icon={<UnorderedListOutlined />} title="Category">
+        <SubMenu key="sub1" icon={<UserOutlined />} title="Users">
           <Menu.Item key="1">
-            <Link to="/category">List</Link>
+            <Link to="/users">List</Link>
           </Menu.Item>
         </SubMenu>
-        <SubMenu key="sub2" icon={<ContainerOutlined />} title="Book">
-          <Menu.Item key="3">
-            <Link to="/book">List</Link>
-          </Menu.Item>
-          <Menu.Item key="4">
-            <Link to="/book/create">Create</Link>
-          </Menu.Item>
-        </SubMenu>
-        <SubMenu key="sub3" icon={<ContainerOutlined />} title="Request">
-          <Menu.Item key="5">
-            <Link to="/request">List</Link>
-          </Menu.Item>
-          <Menu.Item key="6">
-            <Link to="/request/create">Create</Link>
-          </Menu.Item>
-        </SubMenu>
-        <SubMenu key="sub4" icon={<UserOutlined />} title="Login">
+        <SubMenu key="sub4" icon={<LoginOutlined />} title="Login">
           <Menu.Item key="9"><Link to="/login">Login</Link></Menu.Item>
-          <Menu.Item key="10"><Link to="/register">Register</Link></Menu.Item>
         </SubMenu>
       </Menu>
     </Sider>
