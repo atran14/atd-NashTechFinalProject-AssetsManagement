@@ -1,10 +1,19 @@
-import { Button, DatePicker, Form, Input, message, Radio, Select, Space } from "antd";
+import {
+  Button,
+  DatePicker,
+  Form,
+  Input,
+  message,
+  Radio,
+  Select,
+  Space,
+} from "antd";
 import { useForm } from "antd/lib/form/Form";
 import Title from "antd/lib/typography/Title";
 import React, { useEffect } from "react";
-import { Link, useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { UserService } from "../../../services/UserService";
-import { UserInfo, UserInput } from "../../../models/user";
+import {  UserInput } from "../../../models/user";
 import moment from "moment";
 
 export function UpdateUser() {
@@ -27,6 +36,8 @@ export function UpdateUser() {
 
   const { userId } = useParams<any>();
 
+ 
+
   let service = new UserService();
 
   let history = useHistory();
@@ -38,38 +49,33 @@ export function UpdateUser() {
     (async () => {
       try {
         await service.updateUser(data, userId)
-        .then(
-          (res) => {
-              if (res.status === 200) {
-                message.success('Updated Successfully');
-              }
-          }
-      );
-     } catch  {
-       message.error('Something went wrong ! Date of birth or join date is not allowed')
-       
-     };
-        
-        //history.push("/category");
-      
-    
+          .then(
+            (res) => {
+                if (res.status === 200) {
+                 console.log('Updated Successfully');
+                }
+            }
+        );
+        message.success('Updated Successfully');
+      } catch {
+        message.error(
+          "Join date is Saturday or Sunday or User is under 18"
+        );
+      }
     })();
   };
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
-
   const [form] = useForm();
+
   useEffect(() => {
     (async () => {
-     let user = await service.getUser(userId);
+      let user = await service.getUser(userId);
       form.setFieldsValue({
         firstName: user.firstName,
         lastName: user.lastName,
-        //dateOfBirth: user.dateOfBirth,
+        dateOfBirth: moment(user.dateOfBirth),
         gender: user.gender,
-        //joinedDate: user.joinedDate,
+        joinedDate: moment(user.joinedDate),
         type: user.type,
       });
     })();
@@ -77,12 +83,11 @@ export function UpdateUser() {
 
   return (
     <>
-      <Title>Update Category</Title>
+      <Title>Update User</Title>
       <Form
         {...layout}
         form={form}
         onFinish={onFinish}
-        onFinishFailed={onFinishFailed}
       >
         <Form.Item name="firstName" label="Last Name">
           <Input disabled />
@@ -96,7 +101,7 @@ export function UpdateUser() {
           label="Date Of Birth"
           rules={[{ required: true, message: "Please select date of birth!" }]}
         >
-          <DatePicker format={dateFormat} />
+          <DatePicker format={dateFormat}  />
         </Form.Item>
 
         <Form.Item name="gender" label="Gender">
@@ -111,7 +116,7 @@ export function UpdateUser() {
           label="Joined Date"
           rules={[{ required: true, message: "Please select join date !" }]}
         >
-          <DatePicker format={dateFormat} />
+          <DatePicker format={dateFormat}  />
         </Form.Item>
 
         <Form.Item
@@ -132,7 +137,7 @@ export function UpdateUser() {
               Update
             </Button>
             <Button type="primary" danger>
-            <a href="/"> Cancel </a> 
+              <a href="/"> Cancel </a>
             </Button>
           </Space>
         </Form.Item>
