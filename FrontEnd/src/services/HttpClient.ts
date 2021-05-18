@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { StatusCode } from './StatusCodeEnum';
+import { StatusCode } from './StatusCode';
 
 declare module 'axios' {
   interface AxiosResponse<T = any> extends Promise<T> { }
@@ -36,7 +36,7 @@ export abstract class HttpClient {
     }
     else if (error.response.status === StatusCode.ClientErrorNotFound) {
       console.log("400 Not Found!");
-      //window.location.replace("/400-not-found");
+      window.location.replace("/400-not-found");
     }
     else if (error.response.status === StatusCode.ClientErrorAccessDenied) {
       console.log("401 Access Denied!");

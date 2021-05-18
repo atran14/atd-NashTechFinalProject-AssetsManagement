@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading.Tasks;
 using BackEndAPI.Entities;
 using BackEndAPI.Interfaces;
 using BackEndAPI.DBContext;
@@ -14,7 +13,7 @@ namespace BackEndAPI.Repositories
 
         }
 
-        public int CountUser(int id)
+        public int GetCountUser(int id)
         {
             return _context.Assignments.Count(x => x.AssignedToUserId == id 
             && x.State != AssignmentState.Declined);
