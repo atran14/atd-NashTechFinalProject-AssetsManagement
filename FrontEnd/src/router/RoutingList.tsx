@@ -2,7 +2,10 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
+import { Home } from '../pages/home-component/home';
 import { Login } from '../pages/login-component/login';
+import { CreateUser } from '../pages/users-component/create';
+import { ListUsers } from '../pages/users-component/list';
 import { UpdateUser } from '../pages/users-component/update';
 
 const routes = [
@@ -23,14 +26,24 @@ const routes = [
   },
   {
     path: '/home',
-    component: Login,
+    component: Home,
     key: '/home',
+  },
+  {
+    path: '/users',
+    component: ListUsers,
+    key: '/users'
   },
   {
     path: '/users/update/:userId',
     component: UpdateUser,
     key: '/users/update/:userId',
-  }
+  },
+  {
+    path: '/users/create',
+    component: CreateUser,
+    key: '/users/update',
+  },
 ];
 
 export function RoutingList(): JSX.Element {

@@ -2,8 +2,8 @@ import { Button, Form, Input } from "antd";
 import Title from "antd/lib/typography/Title";
 import React from "react";
 import { useHistory } from "react-router-dom";
-import { UserLogin } from "../../models/User";
 import { AuthenticationService } from "../../services/AuthenticationService";
+import { UserLogin, UserType } from "../../models/user";
 
 export function Login() {
   const layout = {
@@ -26,13 +26,14 @@ export function Login() {
   const service = AuthenticationService.getInstance();
 
   const onFinish = (data: UserLogin) => {
-    console.log('Success:', data);
     (async () => {
       let userLogin = await service.login(data);
       sessionStorage.setItem("id", userLogin.id.toString());
-      sessionStorage.setItem("role", userLogin.role.name);
-      sessionStorage.setItem("username", userLogin.username);
-      history.push("/category");
+      sessionStorage.setItem("type", UserType[userLogin.type]);
+      sessionStorage.setItem("username", userLogin.userName);
+      sessionStorage.setItem("token", userLogin.token);
+      sessionStorage.setItem("location", userLogin.location.toString());
+      history.replace("/home");
     })();
   };
 
