@@ -36,7 +36,6 @@ export abstract class HttpClient {
   }
 
   private _handleResponse = ({ data }: AxiosResponse) => {
-    console.log(data);
     return data;
   };
 
