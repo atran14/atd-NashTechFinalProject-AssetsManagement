@@ -1,5 +1,10 @@
 import { User } from './User'
 
+export type PaginationParameters = {
+  PageNumber: number;
+  PageSize: number;
+}
+
 interface PagedListResponse<TModel> {
   totalCount: number
   pageSize: number
