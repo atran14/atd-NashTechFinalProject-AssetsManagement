@@ -9,7 +9,7 @@ export type UserInfo = {
   type : number
 }
 
-export type UserInput  = {
+export type EditUserModel  = {
   dateOfBirth: Date,
   joinedDate: Date,
   gender: number,

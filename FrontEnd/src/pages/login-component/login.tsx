@@ -2,8 +2,8 @@ import { Button, Form, Input } from "antd";
 import Title from "antd/lib/typography/Title";
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { UserLogin } from "../../models/User";
 import { AuthenticationService } from "../../services/AuthenticationService";
-import { UserLogin } from "../../models/user";
 
 export function Login() {
   const layout = {

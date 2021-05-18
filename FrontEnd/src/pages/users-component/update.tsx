@@ -12,8 +12,8 @@ import { useForm } from "antd/lib/form/Form";
 import Title from "antd/lib/typography/Title";
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { UserService } from "../../../services/UserService";
-import {  UserInput } from "../../../models/user";
+import { UserService } from "../../services/UserService";
+import {  EditUserModel } from "../../models/User";
 import moment from "moment";
 
 export function UpdateUser() {
@@ -44,7 +44,7 @@ export function UpdateUser() {
 
   const dateFormat = "YYYY-MM-DD";
 
-  const onFinish = (data: UserInput) => {
+  const onFinish = (data: EditUserModel) => {
     console.log("Success:", data);
     (async () => {
       try {
@@ -64,6 +64,14 @@ export function UpdateUser() {
       }
     })();
   };
+  
+  const onFinishFailed = (errorInfo: any) => {
+    message.error(
+      "Something went wrong"
+    );
+    console.log('Failed:', errorInfo);
+  };
+
 
   const [form] = useForm();
 
@@ -88,6 +96,7 @@ export function UpdateUser() {
         {...layout}
         form={form}
         onFinish={onFinish}
+        onFinishFailed={onFinishFailed}
       >
         <Form.Item name="firstName" label="Last Name">
           <Input disabled />
