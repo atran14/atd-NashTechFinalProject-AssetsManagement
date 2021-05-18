@@ -50,7 +50,7 @@ namespace BackEndAPI.Controllers
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
-            [FromBody] PaginationParameters paginationParameters
+            [FromQuery] PaginationParameters paginationParameters
         )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);            

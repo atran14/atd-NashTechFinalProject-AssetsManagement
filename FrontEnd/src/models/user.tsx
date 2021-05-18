@@ -11,12 +11,12 @@ export interface User {
   lastName: string;
   dateOfBirth: Date;
   joinedDate: Date;
-  gender: UserGender;
-  type: UserType;
+  gender: number;
+  type: number;
   staffCode: string;
   userName: string;
-  location: Location;
-  status: UserStatus;
+  location: number;
+  status: number;
 }
 
 export interface LoggedInUser extends User {
