@@ -12,9 +12,9 @@ import { useForm } from "antd/lib/form/Form";
 import Title from "antd/lib/typography/Title";
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import {  UserInput } from "../../../models/user";
+import {  EditUserModel, UserGender, UserType } from "../../models/User";
 import moment from "moment";
-import { UserSerivce } from "../../../services/UserService";
+import { UserService } from "../../services/UserService";
 
 export function UpdateUser() {
   const layout = {
@@ -38,13 +38,13 @@ export function UpdateUser() {
 
  
 
-  let service = UserSerivce.getInstance();
+  let service = UserService.getInstance();
 
   let history = useHistory();
 
   const dateFormat = "YYYY-MM-DD";
 
-  const onFinish = (data: UserInput) => {
+  const onFinish = (data: EditUserModel) => {
     console.log("Success:", data);
     (async () => {
       try {
@@ -57,6 +57,7 @@ export function UpdateUser() {
             }
         );
         message.success('Updated Successfully');
+        history.push('/users');
       } catch {
         message.error(
           "Join date is Saturday or Sunday or User is under 18"
@@ -106,8 +107,8 @@ export function UpdateUser() {
 
         <Form.Item name="gender" label="Gender">
           <Radio.Group>
-            <Radio value={0}>Male</Radio>
-            <Radio value={1}>Female</Radio>
+            <Radio value={UserGender.MALE}>Male</Radio>
+            <Radio value={UserGender.FEMALE}>Female</Radio>
           </Radio.Group>
         </Form.Item>
 
@@ -126,8 +127,8 @@ export function UpdateUser() {
           rules={[{ required: true, message: "Please select type of user!" }]}
         >
           <Select>
-            <Option value={0}>Admin</Option>
-            <Option value={1}>User</Option>
+            <Option value={UserType.ADMIN}>Admin</Option>
+            <Option value={UserType.USER}>User</Option>
           </Select>
         </Form.Item>
 

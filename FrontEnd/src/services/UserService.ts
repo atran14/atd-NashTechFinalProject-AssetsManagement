@@ -1,25 +1,29 @@
-import { CreateUserModel, User, UserInfo, UserInput } from "../models/user";
+
+import { UsersPagedListResponse } from "../models/PagedListResponse";
+import { User, UserInfo, EditUserModel, CreateUserModel } from "../models/User";
 import { HttpClient } from "./HttpClient";
+export class UserService extends HttpClient {
 
-export class UserSerivce extends HttpClient {
-    private static classInstance?: UserSerivce;
+  private static instance?: UserService;
 
-    private constructor() {
-        super('https://localhost:5001');
+  public constructor() {
+    super("https://localhost:5001");
+  }
+
+  public static getInstance = (): UserService => {
+    if (UserService.instance === undefined) {
+      UserService.instance = new UserService();
     }
 
-    public static getInstance() {
-        if (!this.classInstance) {
-            this.classInstance = new UserSerivce();
-        }
+    return UserService.instance;
+  }
 
-        return this.classInstance;
-    }
+  public create = (user: CreateUserModel) => this.instance.post<User>("/api/users", user);
 
-    public create = (user: CreateUserModel) => this.instance.post<User>("/api/users", user);
-    
-    public getUser = (id: number) => this.instance.get<UserInfo>(`/api/Users/${id}`);
+  public getUsers = () => this.instance.get<UsersPagedListResponse>("/api/Users");
 
-    public updateUser = (user: UserInput, id: number) => this.instance.put<UserInput>(`/api/Users/${id}`, user);
+  public getUser = (id: number) => this.instance.get<UserInfo>(`/api/Users/${id}`);
+
+  public updateUser = (user: EditUserModel, id: number) => this.instance.put<EditUserModel>(`/api/Users/${id}`, user);
 
 }

@@ -11,11 +11,11 @@ function LayoutBanner() {
   const service = AuthenticationService.getInstance();
   let OnLogout = () => {
     (async () => {
-      await service.logout();
+      // await service.logout();
     })();
   };
   return (
-    <Header className="header" style={{ position: 'fixed', width: '100%', float: 'right' }}>
+    <Header className="header" style={{ position: 'fixed', width: '100%', float: 'right', zIndex: 0 }}>
       <div className="logo" />
       <Menu
         key="1" style={{ float: 'right' }} theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>

@@ -10,14 +10,14 @@ import MainLayout from './components/main-layout/MainLayout';
 function App() {
   return (
     <div className="App">
-    <Router history={history}>
-      <div>
-        <Switch>
-          <MainLayout />
-        </Switch>
-      </div>
-    </Router>
-</div>
+        <Router history={history}>
+          <div>
+            <Switch>
+              <MainLayout />
+            </Switch>
+          </div>
+        </Router>
+    </div>
   );
 }
 

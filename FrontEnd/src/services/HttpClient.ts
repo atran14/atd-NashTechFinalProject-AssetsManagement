@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { StatusCode } from './StatusCode';
 
 declare module 'axios' {
@@ -11,18 +11,29 @@ export abstract class HttpClient {
   public constructor(baseURL: string) {
     this.instance = axios.create({
       baseURL,
-      withCredentials: true
+      // withCredentials: true,      
     });
 
     this._initializeResponseInterceptor();
   }
 
   private _initializeResponseInterceptor = () => {
+    this.instance.interceptors.request.use(
+      this._handleRequestConfig
+    )
+
     this.instance.interceptors.response.use(
       this._handleResponse,
       this._handleError,
     );
   };
+
+  private _handleRequestConfig = (config: AxiosRequestConfig): AxiosRequestConfig => {
+    const token = sessionStorage.getItem("token");    
+    config.headers.Authorization = `Bearer ${token}`;
+
+    return config;
+  }
 
   private _handleResponse = ({ data }: AxiosResponse) => {
     console.log(data);
@@ -36,7 +47,7 @@ export abstract class HttpClient {
     }
     else if (error.response.status === StatusCode.ClientErrorNotFound) {
       console.log("400 Not Found!");
-      window.location.replace("/400-not-found");
+      // window.location.replace("/400-not-found");
     }
     else if (error.response.status === StatusCode.ClientErrorAccessDenied) {
       console.log("401 Access Denied!");

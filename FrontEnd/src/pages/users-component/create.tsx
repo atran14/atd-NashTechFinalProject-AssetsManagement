@@ -1,9 +1,9 @@
 import { Button, DatePicker, Form, Input, Radio, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
 import { useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { CreateUserModel } from "../../../models/user";
-import { UserSerivce } from "../../../services/UserService";
+import { Link, useHistory } from "react-router-dom";
+import { CreateUserModel, UserGender, UserType } from "../../models/User";
+import { UserService } from "../../services/UserService";
 
 const { Option } = Select;
 
@@ -31,12 +31,24 @@ export function CreateUser() {
         forceUpdate({});
     }, []);
 
-    sessionStorage.setItem("Location", "0");
-    let service = UserSerivce.getInstance();
+    let service = UserService.getInstance();
 
     let history = useHistory();
 
-    const location: number = Number(sessionStorage.getItem("Location"));
+    const location: number = Number(sessionStorage.getItem("location"));
+
+    const validateDob = (rule: any, value: any, callback: any) => {
+        if (value) {
+            const datOfBirth: Date = form.getFieldValue('dateOfBirth');
+            const today = new Date();
+            if (datOfBirth.getFullYear() > (today.getFullYear() - 18)) {
+                callback(`User is under 18. Please select a different date`);
+            }
+        }
+        else {
+            callback();
+        }
+    };
 
     const onFinish = (data: CreateUserModel) => {
         data.location = location;
@@ -66,9 +78,9 @@ export function CreateUser() {
                     name="firstName"
                     rules={[
                         { required: true, message: "First Name is required!" },
-                        { pattern: /^[A-Za-z ]+$/i, message: "Alphebet characters only!" },
+                        { pattern: /^[A-Za-z ]+$/i, message: "Alphabet characters only!" },
                         { max: 50, message: "Maximum 50 characters!" },
-                        { whitespace: true, message: "First Name can not be emty!" },
+                        { whitespace: true, message: "First Name can not be empty!" },
                     ]}
                 >
                     <Input />
@@ -79,9 +91,9 @@ export function CreateUser() {
                     name="lastName"
                     rules={[
                         { required: true, message: "Last Name is required!" },
-                        { pattern: /^[A-Za-z ]+$/i, message: "Alphebet characters only!" },
+                        { pattern: /^[A-Za-z ]+$/i, message: "Alphabet characters only!" },
                         { max: 50, message: "Maximum 50 characters!" },
-                        { whitespace: true, message: "Last Name can not be emty!" },
+                        { whitespace: true, message: "Last Name can not be empty!" },
                     ]}
                 >
                     <Input />
@@ -91,7 +103,7 @@ export function CreateUser() {
                     label="Date Of Birth"
                     name="dateOfBirth"
                     rules={
-                        [{ required: true, message: "Date Of Birth is required!" }]}
+                        [{ required: true, message: "Date Of Birth is required!" }, { validator: validateDob }]}
                 >
                     <DatePicker format={dateFormat} />
                 </Form.Item>
@@ -102,8 +114,8 @@ export function CreateUser() {
                     rules={[{ required: true, message: "Gender is required!" }]}
                 >
                     <Radio.Group>
-                        <Radio value={0}>Male</Radio>
-                        <Radio value={1}>Female</Radio>
+                        <Radio value={UserGender.MALE}>Male</Radio>
+                        <Radio value={UserGender.FEMALE}>Female</Radio>
                     </Radio.Group>
                 </Form.Item>
 
@@ -112,7 +124,7 @@ export function CreateUser() {
                     name="joinedDate"
                     rules={[{ required: true, message: "Joined Date is required!" }]}
                 >
-                    <DatePicker format={dateFormat}  />
+                    <DatePicker format={dateFormat} />
                 </Form.Item>
 
                 <Form.Item
@@ -121,8 +133,8 @@ export function CreateUser() {
                     rules={[{ required: true, message: "Type is required!" }]}
                 >
                     <Select style={{ width: 200 }} placeholder="Select a type" >
-                        <Option key={0} value={0}>Admin</Option>
-                        <Option key={1} value={1}>User</Option>
+                        <Option key={0} value={UserType.ADMIN}>Admin</Option>
+                        <Option key={1} value={UserType.USER}>User</Option>
                     </Select>
                 </Form.Item>
 
@@ -140,7 +152,9 @@ export function CreateUser() {
                                 Save
                             </Button>
                             <Button>
-                                Cancel
+                                <Link to="/users">
+                                    Cancel
+                                </Link>
                             </Button>
                         </Space>
                     )}
