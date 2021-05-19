@@ -34,7 +34,7 @@ namespace BackEndAPI.Controllers
             return Ok(await _userService.Create(user));
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("id/{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
             await _userService.Update(id, model);
@@ -75,7 +75,7 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{searchText}")]
+        [HttpGet("search/{searchText}")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUsers(
             string searchText,
             [FromQuery] PaginationParameters paginationParameters
