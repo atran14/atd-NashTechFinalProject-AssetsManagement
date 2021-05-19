@@ -1,60 +1,71 @@
-import { Button, Form, Input, message, Modal, Popconfirm, Select, Table } from 'antd'
+import {
+  Button,
+  Form,
+  Input,
+  message,
+  Pagination,
+  Popconfirm,
+  Popover,
+  Select,
+  Table,
+} from 'antd'
 import { useState } from 'react'
 import { useEffect } from 'react'
-import { UsersPagedListResponse } from '../../models/PagedListResponse'
-import { User, UserType } from '../../models/User'
+import {
+  PaginationParameters,
+  UsersPagedListResponse,
+} from '../../models/Pagination'
+import { Location, User, UserGender, UserType } from '../../models/User'
 import { UserService } from '../../services/UserService'
 import {
   EditOutlined,
+  InfoCircleTwoTone,
   SearchOutlined,
   UserDeleteOutlined,
 } from '@ant-design/icons'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 
 const { Option } = Select
 
-
-
-
-
 export function ListUsers() {
+  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === 'ADMIN')
+  let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
-  useEffect(() => {
-    ;(async () => {
-      let userServices = UserService.getInstance()
-      let usersPagedResponse = await userServices.getUsers()
+  let history = useHistory()
 
-      console.log(usersPagedResponse)
-      setUsersPagedList(usersPagedResponse)
-      setUsersList(usersPagedResponse.items)
-    })()
+  useEffect(() => {
+    if (isAdminAuthorized) {
+      ;(async () => {
+        setIsFetchingData(true)
+        let userServices = UserService.getInstance()
+        let usersPagedResponse = await userServices.getUsers()
+
+        setUsersPagedList(usersPagedResponse)
+        setUsersList(usersPagedResponse.items)
+        setIsFetchingData(false)
+      })()
+    } else {
+      history.push('/401-access-denied')
+    }
   }, [])
 
-  function  confirm(id: number) {
-    let userServices = UserService.getInstance();
+  function confirmDisableUser(id: number) {
+    let userServices = UserService.getInstance()
     try {
       userServices.disableUser(id)
       message.success('Disabled Successfully')
-      setUsersList((userId: any[]) => userId.filter(item =>
-        item.id !== id
-    ));
+      setUsersList((userId: any[]) => userId.filter((item) => item.id !== id))
+    } catch {
+      message.success('Something went wrong')
     }
-    catch {
-      Modal.warning({
-        title: 'Can not disable user',
-        content: 'There are valid assignments belonging to this user. Please close all assignments before disabling user.',
-      });
-    }
-   
   }
-  
-  function cancel() {
-    console.log("cancel");
+
+  function cancelDisableUser() {
+    console.log('cancel')
   }
 
   const onFinish = (values: any) => {
-    console.log(values)
     if (usersPagedList !== undefined) {
       let newList: User[]
 
@@ -71,6 +82,61 @@ export function ListUsers() {
 
       setUsersList(newList)
     }
+  }
+
+  const generateDetailedUserContent = (record: User) => {
+    return (
+      <table>
+        <tr>
+          <th>Staff code</th>
+          <td>{record.staffCode}</td>
+        </tr>
+        <tr>
+          <th>Username</th>
+          <td>{record.userName}</td>
+        </tr>
+        <tr>
+          <th>Full name</th>
+          <td>{`${record.firstName} ${record.lastName}`}</td>
+        </tr>
+        <tr>
+          <th>DOB</th>
+          <td>{new Date(record.dateOfBirth).toLocaleDateString()}</td>
+        </tr>
+        <tr>
+          <th>Gender</th>
+          <td>{UserGender[record.gender]}</td>
+        </tr>
+        <tr>
+          <th>Joined date</th>
+          <td>{new Date(record.joinedDate).toLocaleDateString()}</td>
+        </tr>
+        <tr>
+          <th>Type</th>
+          <td>{UserType[record.type]}</td>
+        </tr>
+        <tr>
+          <th>Location</th>
+          <td>{Location[record.location]}</td>
+        </tr>
+      </table>
+    )
+  }
+
+  const onPaginationConfigChanged = (page: number, pageSize?: number) => {
+    ;(async () => {
+      setIsFetchingData(true)
+      let userService = UserService.getInstance()
+      let parameters: PaginationParameters = {
+        PageNumber: page,
+        PageSize: pageSize ?? 10,
+      }
+
+      let usersPagedResponse = await userService.getUsers(parameters)
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+      setIsFetchingData(false)
+    })()
   }
 
   const columns: any = [
@@ -91,7 +157,6 @@ export function ListUsers() {
         return fullNameA.localeCompare(fullNameB)
       },
       render: (text: any, record: User, index: number) => {
-        console.log({ text, record, index })
         return <div>{`${record.firstName} ${record.lastName}`}</div>
       },
       sortDirections: ['ascend', 'descend'],
@@ -112,8 +177,7 @@ export function ListUsers() {
       },
       sorter: (a: User, b: User) => {
         return (
-          new Date(a.joinedDate).getSeconds() -
-          new Date(b.joinedDate).getSeconds()
+          new Date(a.joinedDate).getTime() - new Date(b.joinedDate).getTime()
         )
       },
       sortDirections: ['ascend', 'descend'],
@@ -152,14 +216,23 @@ export function ListUsers() {
               <Button type="primary" icon={<EditOutlined />} />
             </Link>
             <Popconfirm
-                            title="Are you sure to disable this user?"
-                            onConfirm={() => {confirm(record.id)}}
-                            onCancel={cancel}
-                            okText="Yes"
-                            cancelText="No"
-                          >
-            <Button danger type="primary" icon={<UserDeleteOutlined />} />
+              title="Are you sure to disable this user?"
+              onConfirm={() => {
+                confirmDisableUser(record.id)
+              }}
+              onCancel={cancelDisableUser}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button danger type="primary" icon={<UserDeleteOutlined />} />
             </Popconfirm>
+            <Popover
+              trigger="click"
+              title="User Detail"
+              content={generateDetailedUserContent(record)}
+            >
+              <Button icon={<InfoCircleTwoTone />} />
+            </Popover>
           </>
         )
       },
@@ -168,19 +241,30 @@ export function ListUsers() {
 
   return (
     <>
-      {usersPagedList !== undefined && (
+      {isAdminAuthorized && usersPagedList !== undefined && (
         <>
-          <Form onFinish={onFinish}>
+          <Form
+            onFinish={onFinish}
+            initialValues={{
+              searchMode: 'fullName',
+              searchText: '',
+            }}
+          >
             <Input.Group compact>
-              <Form.Item name="searchMode" initialValue="fullName">
-                <Select defaultValue="fullName">
+              <Form.Item name="searchMode">
+                <Select disabled={isFetchingData}>
                   <Option value="fullName">Full name</Option>
                   <Option value="staffCode">Staff code</Option>
                 </Select>
               </Form.Item>
 
-              <Form.Item name="searchText" initialValue="">
-                <Input style={{ width: '75%' }} defaultValue="Nguyen Van A" />
+              <Form.Item name="searchText">
+                <Input
+                  allowClear
+                  disabled={isFetchingData}
+                  style={{ width: '75%' }}
+                  defaultValue="Nguyen Van A"
+                />
               </Form.Item>
 
               <Form.Item>
@@ -189,11 +273,26 @@ export function ListUsers() {
                   icon={<SearchOutlined />}
                   type="primary"
                   htmlType="submit"
+                  disabled={isFetchingData}
                 />
               </Form.Item>
             </Input.Group>
           </Form>
-          <Table dataSource={usersList} columns={columns}></Table>
+          <Table
+            dataSource={usersList}
+            columns={columns}
+            scroll={{ y: 400 }}
+            pagination={false}
+            loading={isFetchingData}
+          />
+          <Pagination
+            disabled={isFetchingData}
+            total={usersPagedList.totalCount}
+            showTotal={(total: number) => `Total: ${total} result(s)`}
+            pageSizeOptions={['10', '20', '50']}
+            showSizeChanger
+            onChange={onPaginationConfigChanged}
+          />
         </>
       )}
     </>

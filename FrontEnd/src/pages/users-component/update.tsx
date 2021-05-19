@@ -87,7 +87,7 @@ export function UpdateUser() {
   
   const onFinishFailed = (errorInfo: any) => {
     message.error(
-      "Something went wrong"
+      "Update Faild ! Please check date of birth or joined date again"
     );
     console.log('Failed:', errorInfo);
   };
@@ -98,6 +98,7 @@ export function UpdateUser() {
   useEffect(() => {
     (async () => {
       let user = await service.getUser(userId);
+      setDob(user.dateOfBirth);
       form.setFieldsValue({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -166,7 +167,7 @@ export function UpdateUser() {
               Update
             </Button>
             <Button type="primary" danger>
-              <a href="/"> Cancel </a>
+              <a href="/users"> Cancel </a>
             </Button>
           </Space>
         </Form.Item>
