@@ -1,6 +1,6 @@
 
 import { UsersPagedListResponse } from "../models/PagedListResponse";
-import { User, UserInfo, EditUserModel, CreateUserModel } from "../models/user";
+import { User, UserInfo, EditUserModel, CreateUserModel } from "../models/User";
 import { HttpClient } from "./HttpClient";
 export class UserService extends HttpClient {
 

@@ -10,10 +10,10 @@ import {
 } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import Title from "antd/lib/typography/Title";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import { UserService } from "../../services/UserService";
-import {  EditUserModel, UserGender, UserType } from "../../models/user";
+import {  EditUserModel, UserGender, UserType } from "../../models/User";
 import moment from "moment";
 
 export function UpdateUser() {
@@ -35,8 +35,27 @@ export function UpdateUser() {
   const { Option } = Select;
 
   const { userId } = useParams<any>();
-
+  const [dob, setDob] = useState<Date>();
  
+  const today = new Date();
+
+    const validateDateOfBirth = async (rule: any, value: any, callback: any) => {
+        if (value && value._d.getFullYear() > (today.getFullYear() - 18)) {
+            throw new Error("User is under 18. Please select a different date!");
+        }
+        setDob(value._d);
+
+    };
+
+    const validateJoinedDate = async (rule: any, value: any, callback: any) => {
+        if (value && (value._d.getDay() === 0 || value._d.getDay() === 6)) {
+
+            throw new Error("Joined date is Saturday or Sunday. Please select a different date!");
+        }
+        else if (value._d < moment(dob)) {
+            throw new Error("Joined date is not later than Date of Birth. Please select a different date!");
+        }
+    };
 
   let service = new UserService();
 
@@ -60,7 +79,7 @@ export function UpdateUser() {
         history.push('/users');
       } catch {
         message.error(
-          "Join date is Saturday or Sunday or User is under 18"
+          "Something went wrong"
         );
       }
     })();
@@ -109,7 +128,7 @@ export function UpdateUser() {
         <Form.Item
           name="dateOfBirth"
           label="Date Of Birth"
-          rules={[{ required: true, message: "Please select date of birth!" }]}
+          rules={[{ required: true, message: "Please select date of birth!" },{ validator: validateDateOfBirth }]}
         >
           <DatePicker format={dateFormat}  />
         </Form.Item>
@@ -124,7 +143,7 @@ export function UpdateUser() {
         <Form.Item
           name="joinedDate"
           label="Joined Date"
-          rules={[{ required: true, message: "Please select join date !" }]}
+          rules={[{ required: true, message: "Please select join date !" },{ validator: validateJoinedDate }]}
         >
           <DatePicker format={dateFormat}  />
         </Form.Item>

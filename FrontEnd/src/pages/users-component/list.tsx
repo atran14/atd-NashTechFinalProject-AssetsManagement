@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Popconfirm, Select, Table } from 'antd'
+import { Button, Form, Input, message, Modal, Popconfirm, Select, Table } from 'antd'
 import { useState } from 'react'
 import { useEffect } from 'react'
 import { UsersPagedListResponse } from '../../models/PagedListResponse'
@@ -13,91 +13,9 @@ import { Link } from 'react-router-dom'
 
 const { Option } = Select
 
-const columns: any = [
-  {
-    title: 'Staff code',
-    dataIndex: 'staffCode',
-    key: 'staffCode',
-    sorter: (a: User, b: User) => a.staffCode.localeCompare(b.staffCode),
-    sortDirections: ['ascend', 'descend'],
-  },
-  {
-    title: 'Full name',
-    dataIndex: 'fullName',
-    key: 'fullName',
-    sorter: (a: User, b: User) => {
-      let fullNameA = `${a.firstName} ${a.lastName}`
-      let fullNameB = `${b.firstName} ${b.lastName}`
-      return fullNameA.localeCompare(fullNameB)
-    },
-    render: (text: any, record: User, index: number) => {
-      console.log({ text, record, index })
-      return <div>{`${record.firstName} ${record.lastName}`}</div>
-    },
-    sortDirections: ['ascend', 'descend'],
-  },
-  {
-    title: 'Username',
-    dataIndex: 'userName',
-    key: 'userName',
-    sorter: (a: User, b: User) => a.userName.localeCompare(b.userName),
-    sortDirections: ['ascend', 'descend'],
-  },
-  {
-    title: 'Joined date',
-    dataIndex: 'joinedDate',
-    key: 'joinedDate',
-    render: (text: any, record: User, index: number) => {
-      return <div>{new Date(record.joinedDate).toLocaleDateString()}</div>
-    },
-    sorter: (a: User, b: User) => {
-      return (
-        new Date(a.joinedDate).getSeconds() -
-        new Date(b.joinedDate).getSeconds()
-      )
-    },
-    sortDirections: ['ascend', 'descend'],
-  },
-  {
-    title: 'Type',
-    dataIndex: 'type',
-    key: 'type',
-    render: (text: any, record: User, index: number) => {
-      return <div>{UserType[record.type]}</div>
-    },
-    filters: [
-      {
-        text: 'ADMIN',
-        value: UserType.ADMIN,
-      },
-      {
-        text: 'USER',
-        value: UserType.USER,
-      },
-    ],
-    onFilter: (value: UserType, record: User) => {
-      return record.type === value
-    },
-    sorter: (a: User, b: User) => a.type - b.type,
-    sortDirections: ['ascend', 'descend'],
-  },
-  {
-    title: '',
-    dataIndex: 'action',
-    key: 'action',
-    render: (text: any, record: User) => {
-      return (
-        <>
-          <Link to={`/users/update/${record.id}`}>
-            <Button type="primary" icon={<EditOutlined />} />
-          </Link>
 
-          <Button danger type="primary" icon={<UserDeleteOutlined />} />
-        </>
-      )
-    },
-  },
-]
+
+
 
 export function ListUsers() {
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
@@ -107,11 +25,33 @@ export function ListUsers() {
       let userServices = UserService.getInstance()
       let usersPagedResponse = await userServices.getUsers()
 
-      // console.log(usersPagedResponse)
+      console.log(usersPagedResponse)
       setUsersPagedList(usersPagedResponse)
       setUsersList(usersPagedResponse.items)
     })()
   }, [])
+
+  function  confirm(id: number) {
+    let userServices = UserService.getInstance();
+    try {
+      userServices.disableUser(id)
+      message.success('Disabled Successfully')
+      setUsersList((userId: any[]) => userId.filter(item =>
+        item.id !== id
+    ));
+    }
+    catch {
+      Modal.warning({
+        title: 'Can not disable user',
+        content: 'There are valid assignments belonging to this user. Please close all assignments before disabling user.',
+      });
+    }
+   
+  }
+  
+  function cancel() {
+    console.log("cancel");
+  }
 
   const onFinish = (values: any) => {
     console.log(values)
@@ -132,6 +72,99 @@ export function ListUsers() {
       setUsersList(newList)
     }
   }
+
+  const columns: any = [
+    {
+      title: 'Staff code',
+      dataIndex: 'staffCode',
+      key: 'staffCode',
+      sorter: (a: User, b: User) => a.staffCode.localeCompare(b.staffCode),
+      sortDirections: ['ascend', 'descend'],
+    },
+    {
+      title: 'Full name',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      sorter: (a: User, b: User) => {
+        let fullNameA = `${a.firstName} ${a.lastName}`
+        let fullNameB = `${b.firstName} ${b.lastName}`
+        return fullNameA.localeCompare(fullNameB)
+      },
+      render: (text: any, record: User, index: number) => {
+        console.log({ text, record, index })
+        return <div>{`${record.firstName} ${record.lastName}`}</div>
+      },
+      sortDirections: ['ascend', 'descend'],
+    },
+    {
+      title: 'Username',
+      dataIndex: 'userName',
+      key: 'userName',
+      sorter: (a: User, b: User) => a.userName.localeCompare(b.userName),
+      sortDirections: ['ascend', 'descend'],
+    },
+    {
+      title: 'Joined date',
+      dataIndex: 'joinedDate',
+      key: 'joinedDate',
+      render: (text: any, record: User, index: number) => {
+        return <div>{new Date(record.joinedDate).toLocaleDateString()}</div>
+      },
+      sorter: (a: User, b: User) => {
+        return (
+          new Date(a.joinedDate).getSeconds() -
+          new Date(b.joinedDate).getSeconds()
+        )
+      },
+      sortDirections: ['ascend', 'descend'],
+    },
+    {
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
+      render: (text: any, record: User, index: number) => {
+        return <div>{UserType[record.type]}</div>
+      },
+      filters: [
+        {
+          text: 'ADMIN',
+          value: UserType.ADMIN,
+        },
+        {
+          text: 'USER',
+          value: UserType.USER,
+        },
+      ],
+      onFilter: (value: UserType, record: User) => {
+        return record.type === value
+      },
+      sorter: (a: User, b: User) => a.type - b.type,
+      sortDirections: ['ascend', 'descend'],
+    },
+    {
+      title: '',
+      dataIndex: 'action',
+      key: 'action',
+      render: (text: any, record: User) => {
+        return (
+          <>
+            <Link to={`/users/update/${record.id}`}>
+              <Button type="primary" icon={<EditOutlined />} />
+            </Link>
+            <Popconfirm
+                            title="Are you sure to disable this user?"
+                            onConfirm={() => {confirm(record.id)}}
+                            onCancel={cancel}
+                            okText="Yes"
+                            cancelText="No"
+                          >
+            <Button danger type="primary" icon={<UserDeleteOutlined />} />
+            </Popconfirm>
+          </>
+        )
+      },
+    },
+  ]
 
   return (
     <>
