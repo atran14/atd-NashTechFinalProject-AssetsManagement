@@ -76,9 +76,9 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("search/{searchText}")]
+        [HttpGet("search")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUsers(
-            string searchText,
+            [FromQuery] string query,
             [FromQuery] PaginationParameters paginationParameters
         )
         {
@@ -86,7 +86,7 @@ namespace BackEndAPI.Controllers
             var users = await _userService.SearchUsers(
                 paginationParameters, 
                 Int32.Parse(adminClaim.Value),
-                searchText
+                query
             );
 
             return Ok(users);

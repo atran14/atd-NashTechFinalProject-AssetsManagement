@@ -262,6 +262,11 @@ namespace BackEndAPI.Services
             string searchText
         )
         {
+            if (searchText == null)
+            {
+                throw new Exception("Null search query");
+            }
+
             var adminUser = await _repository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
