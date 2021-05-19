@@ -21,6 +21,7 @@ namespace BackEndAPI.Models
         public Location Location { get; set; }
 
         public UserStatus Status { get; set; }
+        public OnFirstLogin OnFirstLogin { get; set;}
 
         public string UserName { get; set; }
         public string Token { get; set; }
@@ -38,6 +39,7 @@ namespace BackEndAPI.Models
             StaffCode = user.StaffCode;
             Location = user.Location;
             Status = user.Status;
+            OnFirstLogin = user.OnFirstLogin;
             UserName = user.UserName;
             Token = token;
         }

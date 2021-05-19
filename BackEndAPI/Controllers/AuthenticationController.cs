@@ -19,23 +19,15 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
-        [HttpPost("login")]
+        [HttpPost("authenticate")]
         public IActionResult Authenticate(AuthenticateRequest model)
         {
             var response = _userService.Authenticate(model);
 
             if (response == null)
-                return BadRequest(Message.LoginFailed);
+                return BadRequest(new {message = Message.LoginFailed});
 
             return Ok(response);
-        }
-
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var users = _userService.GetAll();
-            return Ok(users);
         }
     }
 }
