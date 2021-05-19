@@ -131,7 +131,7 @@ export function UpdateUser() {
           label="Date Of Birth"
           rules={[{ required: true, message: "Please select date of birth!" },{ validator: validateDateOfBirth }]}
         >
-          <DatePicker format={dateFormat}  />
+          <DatePicker format={dateFormat}   />
         </Form.Item>
 
         <Form.Item name="gender" label="Gender">
