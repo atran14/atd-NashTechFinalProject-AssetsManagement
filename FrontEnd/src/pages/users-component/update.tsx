@@ -138,7 +138,7 @@ export function UpdateUser() {
               Update
             </Button>
             <Button type="primary" danger>
-              <a href="/"> Cancel </a>
+              <a href="/users"> Cancel </a>
             </Button>
           </Space>
         </Form.Item>

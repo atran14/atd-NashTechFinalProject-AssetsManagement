@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackEndAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -51,7 +52,6 @@ namespace BackEndAPI.Controllers
             return Ok();
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
             [FromQuery] PaginationParameters paginationParameters

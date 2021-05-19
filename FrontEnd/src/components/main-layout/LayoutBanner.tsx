@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import { getUsernameAvatar } from '../UserAvatar';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { AuthenticationService } from '../../services/AuthenticationService';
+import { AuthenticationService } from '../../services/AuthenticationSerivce';
 
 const { Header } = Layout;
 const { SubMenu } = Menu;

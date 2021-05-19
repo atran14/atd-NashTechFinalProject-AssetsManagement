@@ -35,6 +35,16 @@ export interface User {
   status: number;
 }
 
+export type CreateUserModel = {
+  firstName: string,
+  lastName: string,
+  datOfBirth: Date,
+  gender: number,
+  joinedDate: Date,
+  type: number,
+  location: number
+}
+
 export interface LoggedInUser extends User {
   token: string;
 }
@@ -56,14 +66,4 @@ export enum UserStatus {
 export enum Location {
   HANOI,
   HOCHIMINH
-}
-
-export type CreateUserModel = {
-  firstName: string,
-  lastName: string,
-  datOfBirth: Date,
-  gender: number,
-  joinedDate: Date,
-  type: number,
-  location: number
 }
