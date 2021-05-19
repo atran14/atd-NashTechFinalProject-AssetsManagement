@@ -78,16 +78,14 @@ export function UpdateUser() {
         message.success('Updated Successfully');
         history.push('/users');
       } catch {
-        message.error(
-          "Something went wrong"
-        );
+       
       }
     })();
   };
   
   const onFinishFailed = (errorInfo: any) => {
     message.error(
-      "Update Faild ! Please check date of birth or joined date again"
+      "Update Fail ! Please check date of birth or joined date again"
     );
     console.log('Failed:', errorInfo);
   };

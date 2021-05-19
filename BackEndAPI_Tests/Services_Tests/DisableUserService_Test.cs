@@ -30,25 +30,6 @@ namespace BackEndAPI_Tests.Services_Tests
         private static IMapper _mapper;
         Mock<IOptions<AppSettings>> _optionsMock;
 
-        private static IQueryable<Assignment> Assignments
-        {
-            get
-            {
-                return new List<Assignment>
-                {
-                    new Assignment
-                    {
-                        Id = 1,
-                        AssetId = 1,
-                        AssignedByUserId = 1,
-                        AssignedToUserId = 2,
-                        Note = "Testing1",
-                        State = AssignmentState.WaitingForAcceptance
-                    }
-                }
-                .AsQueryable();
-            }
-        }
 
         [SetUp]
         public void Setup()
@@ -81,7 +62,7 @@ namespace BackEndAPI_Tests.Services_Tests
             Assert.AreEqual(UserStatus.Disabled, User.Status);
         }
         [Test]
-        public async Task Disable_ValidInAssignment_ShouldBeFail()
+        public void Disable_ValidInAssignment_ShouldThrowToException()
         {
             var User = new User { };
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
@@ -110,7 +91,7 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
-        public async Task Disable_NotFoundId_ShouldBeFail()
+        public void Disable_NotFoundId_ShouldThrowToException()
         {
             var User = new User { };
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(Task.FromResult<User>(null));

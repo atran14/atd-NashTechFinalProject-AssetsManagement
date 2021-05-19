@@ -71,7 +71,7 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
-        public async Task Update_DateOfBirthEqualsSundayOrSaturday_ShouldBeFail()
+        public void Update_DateOfBirthEqualsSundayOrSaturday_ShouldThrowToException()
         {
             var dontMatterUser = new User { };
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
@@ -106,7 +106,7 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
-        public async Task Update_JoinDatedIsNotLaterThanDateOfBirth_ShouldBeFail()
+        public void Update_JoinDatedIsNotLaterThanDateOfBirth_ShouldThrowToException()
         {
             var dontMatterUser = new User { };
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
@@ -142,7 +142,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
 
         [Test]
-        public async Task Update_UserIsUnder18_ShouldBeFail()
+        public void Update_UserIsUnder18_ShouldThrowToException()
         {
             var dontMatterUser = new User { };
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
