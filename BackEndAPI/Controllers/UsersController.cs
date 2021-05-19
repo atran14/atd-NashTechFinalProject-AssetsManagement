@@ -1,11 +1,16 @@
+using System.Security.Claims;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace BackEndAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -17,22 +22,16 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
         [HttpGet("{id}")]
-        public ActionResult<string> Get(int id)
+        public async Task<UserInfo> Get(int id)
         {
-            return "value";
+            return await _userService.GetById(id);
         }
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
-                return Ok(await _userService.Create(user));
+            return Ok(await _userService.Create(user));
         }
 
         [HttpPut("{id}")]
@@ -48,6 +47,16 @@ namespace BackEndAPI.Controllers
             await _userService.Disable(id);
             return Ok();
         }
-        
+
+        [HttpGet]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
+            [FromQuery] PaginationParameters paginationParameters
+        )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
+
+            return Ok(users);
+        }
     }
 }

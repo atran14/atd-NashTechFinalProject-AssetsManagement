@@ -10,6 +10,7 @@ namespace BackEndAPI.DBContext
         public AssetsManagementDBContext(DbContextOptions<AssetsManagementDBContext> options)
              : base(options)
         {
+
         }
 
         public DbSet<AssetCategory> AssetCategories { get; set; }
