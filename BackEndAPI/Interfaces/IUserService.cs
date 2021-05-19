@@ -15,7 +15,7 @@ namespace BackEndAPI.Interfaces
         Task Update(int id, EditUserModel model);
         Task Disable(int id);
         Task<UserInfo> GetById(int id);
-        Task ChangePassword(int id, string newPassword);
+        Task ChangePassword(int id, string oldPassword, string newPassword);
          
     }
 }

@@ -6,7 +6,7 @@ using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Controllers
 {
@@ -61,10 +61,10 @@ namespace BackEndAPI.Controllers
 
         //Change Password
         [HttpPut("changepassword/{id}")]
-        public async Task<IActionResult> ChangePassword(int id, string newPassword)
+        public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
         {
-            await _userService.ChangePassword(id, newPassword);
-            return Ok();
+            await _userService.ChangePassword(id, oldPassword, newPassword);
+            return Ok(new {message = Message.ChangePasswordSucceed});
         }
     }
 }
