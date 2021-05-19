@@ -26,7 +26,7 @@ namespace BackEndAPI.Controllers
             var response = _userService.Authenticate(model);
 
             if (response == null)
-                return BadRequest(Message.LoginFailed);
+                return BadRequest(new {message = Message.LoginFailed});
 
             return Ok(response);
         }
