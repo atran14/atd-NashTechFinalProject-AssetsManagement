@@ -1,8 +1,9 @@
 import { Button, DatePicker, Form, Input, Radio, Select, Space } from "antd";
 import Title from "antd/lib/typography/Title";
+import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { CreateUserModel, Location, UserGender, UserType } from "../../models/User";
+import { CreateUserModel, UserGender, UserType } from "../../models/User";
 import { UserService } from "../../services/UserService";
 
 const { Option } = Select;
@@ -24,6 +25,7 @@ export function CreateUser() {
         },
     };
 
+    const [dob, setDob] = useState<Date>();
     const [form] = Form.useForm();
     const [, forceUpdate] = useState({}); // To disable submit button at the beginning.
 
@@ -36,17 +38,23 @@ export function CreateUser() {
     let history = useHistory();
 
     const location: number = Number(sessionStorage.getItem("location"));
+    const today = new Date();
 
-    const validateDob = (rule: any, value: any, callback: any) => {
-        if (value) {
-            const datOfBirth: Date = form.getFieldValue('dateOfBirth');
-            const today = new Date();
-            if (datOfBirth.getFullYear() > (today.getFullYear() - 18)) {
-                callback(`User is under 18. Please select a different date`);
-            }
+    const validateDateOfBirth = async (rule: any, value: any, callback: any) => {
+        if (value && value._d.getFullYear() > (today.getFullYear() - 18)) {
+            throw new Error("User is under 18. Please select a different date!");
         }
-        else {
-            callback();
+        setDob(value._d);
+
+    };
+
+    const validateJoinedDate = async (rule: any, value: any, callback: any) => {
+        if (value && (value._d.getDay() === 0 || value._d.getDay() === 6)) {
+
+            throw new Error("Joined date is Saturday or Sunday. Please select a different date!");
+        }
+        else if (value._d < moment(dob)) {
+            throw new Error("Joined date is not later than Date of Birth. Please select a different date!");
         }
     };
 
@@ -65,7 +73,7 @@ export function CreateUser() {
 
     return (
         <>
-            <Title style={{ color: 'red' }}>Create New User</Title>
+            <Title>Create New User</Title>
             <Form
                 {...layout}
                 name="basic"
@@ -103,7 +111,7 @@ export function CreateUser() {
                     label="Date Of Birth"
                     name="dateOfBirth"
                     rules={
-                        [{ required: true, message: "Date Of Birth is required!" }, { validator: validateDob }]}
+                        [{ required: true, message: "Date Of Birth is required!" }, { validator: validateDateOfBirth }]}
                 >
                     <DatePicker format={dateFormat} />
                 </Form.Item>
@@ -122,7 +130,7 @@ export function CreateUser() {
                 <Form.Item
                     label="Joined Date"
                     name="joinedDate"
-                    rules={[{ required: true, message: "Joined Date is required!" }]}
+                    rules={[{ required: true, message: "Joined Date is required!" }, { validator: validateJoinedDate }]}
                 >
                     <DatePicker format={dateFormat} />
                 </Form.Item>
@@ -154,7 +162,7 @@ export function CreateUser() {
                             <Button>
                                 <Link to="/users">
                                     Cancel
-                                </Link>                                
+                                </Link>
                             </Button>
                         </Space>
                     )}

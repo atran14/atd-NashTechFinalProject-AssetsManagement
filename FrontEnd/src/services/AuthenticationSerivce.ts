@@ -16,7 +16,7 @@ export class AuthenticationService extends HttpClient{
     return AuthenticationService.instance;
   } 
 
-  public login = (user: UserLogin) => this.instance.post<LoggedInUser>("/login", user);
+  public login = (user: UserLogin) => this.instance.post<LoggedInUser>("/authentication/login", user);
 
   //todo Only need to delete the token from the session storage
   // public logout = ()=>this.instance.post("/logout");

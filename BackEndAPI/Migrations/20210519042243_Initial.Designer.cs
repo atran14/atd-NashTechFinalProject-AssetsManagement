@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
-    [Migration("20210518084759_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210519042243_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -293,7 +293,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e1e8ce69-fdb0-4264-b6e8-c8aeadc52a5a",
+                            ConcurrencyStamp = "d23b6078-4800-4d31-958c-d599ede25ea3",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -314,7 +314,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a0270809-180d-4dd2-8ff2-e1d9b1405764",
+                            ConcurrencyStamp = "778b83a9-b06d-412b-b982-98b176b87713",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
