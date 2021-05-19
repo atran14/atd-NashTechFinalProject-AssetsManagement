@@ -60,7 +60,7 @@ namespace BackEndAPI.Controllers
         }
 
         //Change Password
-        [HttpPut("changepassword/{id}")]
+        [HttpPut("change-password/{id}")]
         public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
         {
             await _userService.ChangePassword(id, oldPassword, newPassword);
