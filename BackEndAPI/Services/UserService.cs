@@ -220,5 +220,20 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
+        public async Task ChangePassword(int id, string newPassword)
+        {
+            var user = await _repository.GetById(id);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            if (user.OnFirstLogin == OnFirstLogin.Yes){
+                user.OnFirstLogin = OnFirstLogin.No;
+            }
+            user.Password = newPassword ;
+
+            await _repository.Update(user);
+        }
     }
 }
