@@ -30,13 +30,5 @@ namespace BackEndAPI.Controllers
 
             return Ok(response);
         }
-
-        [Authorize(AuthenticationSchemes =  "Bearer", Policy = "Admin")]
-        [HttpGet]
-        public IActionResult GetAll()
-        {
-            var users = _userService.GetAll();
-            return Ok(users);
-        }
     }
 }

@@ -6,7 +6,7 @@ using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using BackEndAPI.Enums;
 
 namespace BackEndAPI.Controllers
 {
@@ -55,6 +55,56 @@ namespace BackEndAPI.Controllers
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
+
+            return Ok(users);
+        }
+
+        [HttpGet("type/{type}")]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersByType(
+            UserType type,
+            [FromQuery] PaginationParameters paginationParameters
+        )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.GetUsers(
+                paginationParameters, 
+                Int32.Parse(adminClaim.Value),
+                type
+            );
+
+            return Ok(users);
+        }
+
+        [HttpGet("fullName/{searchText}")]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUserByFullName(
+        // public void SearchUserByFullName(
+            string searchText,
+            [FromQuery] PaginationParameters paginationParameters
+        )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.SearchUsersByFullName(
+                paginationParameters, 
+                Int32.Parse(adminClaim.Value),
+                searchText
+            );
+
+            return Ok(users);
+        }
+
+        [HttpGet("staffCode/{searchText}")]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUserByStaffCode(
+        // public void SearchUserByStaffCode(
+            string searchText,
+            [FromQuery] PaginationParameters paginationParameters
+        )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.SearchUsersByStaffCode(
+                paginationParameters, 
+                Int32.Parse(adminClaim.Value),
+                searchText
+            );
 
             return Ok(users);
         }

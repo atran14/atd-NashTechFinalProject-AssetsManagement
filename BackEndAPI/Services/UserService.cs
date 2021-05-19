@@ -58,10 +58,114 @@ namespace BackEndAPI.Services
 
             var users = PagedList<User>.ToPagedList(
                 _repository.GetAll()
-                    .Where(u => 
+                    .Where(u =>
                     u.Status == UserStatus.Active
                     && u.Location == adminUser.Location
                 ),
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = users.CurrentPage,
+                PageSize = users.PageSize,
+                TotalCount = users.TotalCount,
+                TotalPages = users.TotalPages,
+                HasNext = users.HasNext,
+                HasPrevious = users.HasPrevious,
+                Items = users.Select(u => _mapper.Map<UserDTO>(u))
+            };
+        }
+
+        public async Task<GetUsersListPagedResponseDTO> GetUsers(
+            PaginationParameters paginationParameters,
+            int adminId,
+            UserType type
+        )
+        {
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
+            var users = PagedList<User>.ToPagedList(
+                _repository.GetAll()
+                    .Where(u =>
+                    u.Status == UserStatus.Active
+                    && u.Location == adminUser.Location
+                    && u.Type == type
+                ),
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = users.CurrentPage,
+                PageSize = users.PageSize,
+                TotalCount = users.TotalCount,
+                TotalPages = users.TotalPages,
+                HasNext = users.HasNext,
+                HasPrevious = users.HasPrevious,
+                Items = users.Select(u => _mapper.Map<UserDTO>(u))
+            };
+        }
+        public async Task<GetUsersListPagedResponseDTO> SearchUsersByFullName(
+            PaginationParameters paginationParameters,
+            int adminId,
+            string searchText
+        )
+        {
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
+            var users = PagedList<User>.ToPagedList(
+                _repository.GetAll()
+                    .Where(u =>
+                    u.Status == UserStatus.Active
+                    && u.Location == adminUser.Location
+                    && (u.FirstName + " " + u.LastName).StartsWith(searchText)
+                    ),
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = users.CurrentPage,
+                PageSize = users.PageSize,
+                TotalCount = users.TotalCount,
+                TotalPages = users.TotalPages,
+                HasNext = users.HasNext,
+                HasPrevious = users.HasPrevious,
+                Items = users.Select(u => _mapper.Map<UserDTO>(u))
+            };
+        }
+
+        public async Task<GetUsersListPagedResponseDTO> SearchUsersByStaffCode(
+            PaginationParameters paginationParameters,
+            int adminId,
+            string searchText
+        )
+        {
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
+            var users = PagedList<User>.ToPagedList(
+                _repository.GetAll()
+                    .Where(u =>
+                    u.Status == UserStatus.Active
+                    && u.Location == adminUser.Location
+                    && u.StaffCode.StartsWith(searchText)
+                    ),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -206,11 +310,12 @@ namespace BackEndAPI.Services
         public async Task<UserInfo> GetById(int id)
         {
             var user = await _repository.GetById(id);
-            if(user == null)
+            if (user == null)
             {
                 throw new InvalidOperationException("Can not find user");
             }
-            UserInfo userInfo = new UserInfo {
+            UserInfo userInfo = new UserInfo
+            {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
@@ -220,5 +325,6 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
+
     }
 }
