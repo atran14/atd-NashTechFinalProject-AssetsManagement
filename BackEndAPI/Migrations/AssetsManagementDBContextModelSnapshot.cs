@@ -243,6 +243,11 @@ namespace BackEndAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int>("OnFirstLogin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
@@ -291,7 +296,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e1e8ce69-fdb0-4264-b6e8-c8aeadc52a5a",
+                            ConcurrencyStamp = "4644c1b5-4eb6-4b49-8931-0c3a49829b4f",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -300,6 +305,7 @@ namespace BackEndAPI.Migrations
                             LastName = "Nguyen Van",
                             Location = 0,
                             LockoutEnabled = false,
+                            OnFirstLogin = 0,
                             Password = "binhnv@20011993",
                             PhoneNumberConfirmed = false,
                             StaffCode = "SD0001",
@@ -312,7 +318,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a0270809-180d-4dd2-8ff2-e1d9b1405764",
+                            ConcurrencyStamp = "52f8ebee-a732-4d8e-be34-0f7ea1c0bbe3",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -321,6 +327,7 @@ namespace BackEndAPI.Migrations
                             LastName = "Nguyen Thi",
                             Location = 0,
                             LockoutEnabled = false,
+                            OnFirstLogin = 0,
                             Password = "binhnt@12011994",
                             PhoneNumberConfirmed = false,
                             StaffCode = "SD0002",

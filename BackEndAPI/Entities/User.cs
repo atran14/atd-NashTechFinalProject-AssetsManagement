@@ -26,6 +26,7 @@ namespace BackEndAPI.Entities
         public Location Location { get; set; }
 
         public UserStatus Status { get; set; }
+        public OnFirstLogin OnFirstLogin {get; set;}
 
         public virtual ICollection<Assignment> Assignments { get; set; }
 
