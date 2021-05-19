@@ -66,7 +66,7 @@ namespace BackEndAPI.Controllers
         )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
-            var users = await _userService.GetUsers(
+            var users = await _userService.GetUsersByType(
                 paginationParameters, 
                 Int32.Parse(adminClaim.Value),
                 type
@@ -75,32 +75,14 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("fullName/{searchText}")]
-        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUserByFullName(
-        // public void SearchUserByFullName(
+        [HttpGet("{searchText}")]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUsers(
             string searchText,
             [FromQuery] PaginationParameters paginationParameters
         )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
-            var users = await _userService.SearchUsersByFullName(
-                paginationParameters, 
-                Int32.Parse(adminClaim.Value),
-                searchText
-            );
-
-            return Ok(users);
-        }
-
-        [HttpGet("staffCode/{searchText}")]
-        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUserByStaffCode(
-        // public void SearchUserByStaffCode(
-            string searchText,
-            [FromQuery] PaginationParameters paginationParameters
-        )
-        {
-            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
-            var users = await _userService.SearchUsersByStaffCode(
+            var users = await _userService.SearchUsers(
                 paginationParameters, 
                 Int32.Parse(adminClaim.Value),
                 searchText

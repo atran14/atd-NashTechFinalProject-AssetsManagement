@@ -13,19 +13,13 @@ namespace BackEndAPI.Interfaces
             int adminId
         );
 
-        Task<GetUsersListPagedResponseDTO> GetUsers(
+        Task<GetUsersListPagedResponseDTO> GetUsersByType(
             PaginationParameters paginationParameters,
             int adminId,
             UserType type
         );
 
-        Task<GetUsersListPagedResponseDTO> SearchUsersByFullName(
-            PaginationParameters paginationParameters,
-            int adminId,
-            string searchText
-        );
-
-        Task<GetUsersListPagedResponseDTO> SearchUsersByStaffCode(
+        Task<GetUsersListPagedResponseDTO> SearchUsers(
             PaginationParameters paginationParameters,
             int adminId,
             string searchText
