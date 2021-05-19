@@ -7,14 +7,14 @@ import {
   Radio,
   Select,
   Space,
-} from "antd";
-import { useForm } from "antd/lib/form/Form";
-import Title from "antd/lib/typography/Title";
-import React, { useEffect, useState } from "react";
-import { useHistory, useParams } from "react-router-dom";
-import { UserService } from "../../services/UserService";
-import {  EditUserModel, UserGender, UserType } from "../../models/User";
-import moment from "moment";
+} from 'antd'
+import { useForm } from 'antd/lib/form/Form'
+import Title from 'antd/lib/typography/Title'
+import React, { useEffect, useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
+import { UserService } from '../../services/UserService'
+import { EditUserModel, UserGender, UserType } from '../../models/User'
+import moment from 'moment'
 
 export function UpdateUser() {
   const layout = {
@@ -27,77 +27,71 @@ export function UpdateUser() {
       span: 16,
       pull: 9,
     },
-  };
+  }
   const tailLayout = {
     wrapperCol: {},
-  };
+  }
 
-  const { Option } = Select;
+  const { Option } = Select
 
-  const { userId } = useParams<any>();
-  const [dob, setDob] = useState<Date>();
- 
-  const today = new Date();
+  const { userId } = useParams<any>()
+  const [dob, setDob] = useState<Date>()
 
-    const validateDateOfBirth = async (rule: any, value: any, callback: any) => {
-        if (value && value._d.getFullYear() > (today.getFullYear() - 18)) {
-            throw new Error("User is under 18. Please select a different date!");
-        }
-        setDob(value._d);
+  const today = new Date()
 
-    };
+  const validateDateOfBirth = async (rule: any, value: any, callback: any) => {
+    if (value && value._d.getFullYear() > today.getFullYear() - 18) {
+      throw new Error('User is under 18. Please select a different date!')
+    }
+    setDob(value._d)
+  }
 
-    const validateJoinedDate = async (rule: any, value: any, callback: any) => {
-        if (value && (value._d.getDay() === 0 || value._d.getDay() === 6)) {
+  const validateJoinedDate = async (rule: any, value: any, callback: any) => {
+    if (value && (value._d.getDay() === 0 || value._d.getDay() === 6)) {
+      throw new Error(
+        'Joined date is Saturday or Sunday. Please select a different date!',
+      )
+    } else if (value._d < moment(dob)) {
+      throw new Error(
+        'Joined date is not later than Date of Birth. Please select a different date!',
+      )
+    }
+  }
 
-            throw new Error("Joined date is Saturday or Sunday. Please select a different date!");
-        }
-        else if (value._d < moment(dob)) {
-            throw new Error("Joined date is not later than Date of Birth. Please select a different date!");
-        }
-    };
+  let service = new UserService()
 
-  let service = new UserService();
+  let history = useHistory()
 
-  let history = useHistory();
-
-  const dateFormat = "YYYY-MM-DD";
+  const dateFormat = 'YYYY-MM-DD'
 
   const onFinish = (data: EditUserModel) => {
-    console.log("Success:", data);
-    (async () => {
+    console.log('Success:', data)
+    ;(async () => {
       try {
-        await service.updateUser(data, userId)
-          .then(
-            (res) => {
-                if (res.status === 200) {
-                 console.log('Updated Successfully');
-                }
-            }
-        );
-        message.success('Updated Successfully');
-        history.push('/users');
+        await service.updateUser(data, userId).then((res) => {
+          if (res.status === 200) {
+            console.log('Updated Successfully')
+          }
+        })
+        message.success('Updated Successfully')
+        history.push('/users')
       } catch {
-        message.error(
-          "Something went wrong"
-        );
+        message.error('Something went wrong')
       }
-    })();
-  };
-  
+    })()
+  }
+
   const onFinishFailed = (errorInfo: any) => {
-    message.error(
-      "Something went wrong"
-    );
-    console.log('Failed:', errorInfo);
-  };
+    message.error('Something went wrong')
+    console.log('Failed:', errorInfo)
+  }
 
-
-  const [form] = useForm();
+  const [form] = useForm()
 
   useEffect(() => {
-    (async () => {
-      let user = await service.getUser(userId);
+    ;(async () => {
+      let user = await service.getUser(userId)
+      setDob(user.dateOfBirth)
       form.setFieldsValue({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -105,9 +99,9 @@ export function UpdateUser() {
         gender: user.gender,
         joinedDate: moment(user.joinedDate),
         type: user.type,
-      });
-    })();
-  }, []);
+      })
+    })()
+  }, [])
 
   return (
     <>
@@ -128,9 +122,12 @@ export function UpdateUser() {
         <Form.Item
           name="dateOfBirth"
           label="Date Of Birth"
-          rules={[{ required: true, message: "Please select date of birth!" },{ validator: validateDateOfBirth }]}
+          rules={[
+            { required: true, message: 'Please select date of birth!' },
+            { validator: validateDateOfBirth },
+          ]}
         >
-          <DatePicker format={dateFormat}  />
+          <DatePicker format={dateFormat} />
         </Form.Item>
 
         <Form.Item name="gender" label="Gender">
@@ -143,16 +140,19 @@ export function UpdateUser() {
         <Form.Item
           name="joinedDate"
           label="Joined Date"
-          rules={[{ required: true, message: "Please select join date !" },{ validator: validateJoinedDate }]}
+          rules={[
+            { required: true, message: 'Please select join date !' },
+            { validator: validateJoinedDate },
+          ]}
         >
-          <DatePicker format={dateFormat}  />
+          <DatePicker format={dateFormat} />
         </Form.Item>
 
         <Form.Item
           name="type"
           label="Type"
           hasFeedback
-          rules={[{ required: true, message: "Please select type of user!" }]}
+          rules={[{ required: true, message: 'Please select type of user!' }]}
         >
           <Select>
             <Option value={UserType.ADMIN}>Admin</Option>
@@ -172,5 +172,5 @@ export function UpdateUser() {
         </Form.Item>
       </Form>
     </>
-  );
+  )
 }

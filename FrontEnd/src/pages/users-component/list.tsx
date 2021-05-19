@@ -48,7 +48,7 @@ export function ListUsers() {
     } else {
       history.push('/401-access-denied')
     }
-  }, [])
+  }, [history, isAdminAuthorized])
 
   function confirmDisableUser(id: number) {
     let userServices = UserService.getInstance()

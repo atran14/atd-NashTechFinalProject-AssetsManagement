@@ -73,7 +73,7 @@ export function CreateUser() {
 
     return (
         <>
-            <Title style={{ color: 'red' }}>Create New User</Title>
+            <Title>Create New User</Title>
             <Form
                 {...layout}
                 name="basic"
@@ -90,6 +90,7 @@ export function CreateUser() {
                         { max: 50, message: "Maximum 50 characters!" },
                         { whitespace: true, message: "First Name can not be empty!" },
                     ]}
+                    hasFeedback
                 >
                     <Input />
                 </Form.Item>
@@ -103,6 +104,7 @@ export function CreateUser() {
                         { max: 50, message: "Maximum 50 characters!" },
                         { whitespace: true, message: "Last Name can not be empty!" },
                     ]}
+                    hasFeedback
                 >
                     <Input />
                 </Form.Item>
@@ -112,6 +114,7 @@ export function CreateUser() {
                     name="dateOfBirth"
                     rules={
                         [{ required: true, message: "Date Of Birth is required!" }, { validator: validateDateOfBirth }]}
+                    hasFeedback
                 >
                     <DatePicker format={dateFormat} />
                 </Form.Item>
@@ -120,6 +123,7 @@ export function CreateUser() {
                     label="Gender"
                     name="gender"
                     rules={[{ required: true, message: "Gender is required!" }]}
+                    hasFeedback
                 >
                     <Radio.Group>
                         <Radio value={UserGender.MALE}>Male</Radio>
@@ -131,6 +135,7 @@ export function CreateUser() {
                     label="Joined Date"
                     name="joinedDate"
                     rules={[{ required: true, message: "Joined Date is required!" }, { validator: validateJoinedDate }]}
+                    hasFeedback
                 >
                     <DatePicker format={dateFormat} />
                 </Form.Item>
@@ -139,6 +144,7 @@ export function CreateUser() {
                     label="Type"
                     name="type"
                     rules={[{ required: true, message: "Type is required!" }]}
+                    hasFeedback
                 >
                     <Select style={{ width: 200 }} placeholder="Select a type" >
                         <Option key={0} value={UserType.ADMIN}>Admin</Option>
@@ -146,7 +152,7 @@ export function CreateUser() {
                     </Select>
                 </Form.Item>
 
-                <Form.Item {...tailLayout} shouldUpdate>
+                <Form.Item {...tailLayout} shouldUpdate hasFeedback>
                     {() => (
                         <Space>
                             <Button
