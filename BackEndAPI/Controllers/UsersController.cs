@@ -7,6 +7,7 @@ using BackEndAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BackEndAPI.Enums;
+using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Controllers
 {
@@ -89,6 +90,13 @@ namespace BackEndAPI.Controllers
             );
 
             return Ok(users);
+        }
+        
+        [HttpPut("change-password/{id}")]
+        public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
+        {
+            await _userService.ChangePassword(id, oldPassword, newPassword);
+            return Ok(new {message = Message.ChangePasswordSucceed});
         }
     }
 }

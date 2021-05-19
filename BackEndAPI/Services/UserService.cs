@@ -256,7 +256,6 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
-
         public async Task<GetUsersListPagedResponseDTO> SearchUsers(
             PaginationParameters paginationParameters,
             int adminId,
@@ -294,6 +293,26 @@ namespace BackEndAPI.Services
                 HasPrevious = users.HasPrevious,
                 Items = users.Select(u => _mapper.Map<UserDTO>(u))
             };
+        }
+        
+        public async Task ChangePassword(int id, string oldPassword, string newPassword)
+        {
+            var user = await _repository.GetById(id);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException(Message.UserNotFound);
+            }
+            if (user.Password != oldPassword)
+            {
+                throw new InvalidOperationException(Message.OldPasswordIncorrect);
+            }
+            if (user.OnFirstLogin == OnFirstLogin.Yes){
+                user.OnFirstLogin = OnFirstLogin.No;
+            }
+            user.Password = newPassword ;
+
+            await _repository.Update(user);
         }
     }
 }
