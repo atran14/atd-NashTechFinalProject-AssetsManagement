@@ -9,30 +9,61 @@ export type UserInfo = {
   type : number
 }
 
-export type UserInput  = {
+export type EditUserModel  = {
   dateOfBirth: Date,
   joinedDate: Date,
   gender: number,
   type : number
 }
 
-
-export type UserOnRegister = {
-  username: string,
-  password: string,
-  passwordConfirm: string
-}
-
 export type UserLogin = {
-  username: string,
+  username: string
   password: string
 }
 
-export type User = {
-  id: number,
-  username: string,
-  password: string,
-  role: {
-    name: string
-  }
+export interface User {
+  id: number
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date;
+  joinedDate: Date;
+  gender: number;
+  type: number;
+  staffCode: string;
+  userName: string;
+  location: number;
+  status: number;
+}
+
+export type CreateUserModel = {
+  firstName: string,
+  lastName: string,
+  datOfBirth: Date,
+  gender: number,
+  joinedDate: Date,
+  type: number,
+  location: number
+}
+
+export interface LoggedInUser extends User {
+  token: string;
+}
+
+export enum UserGender {
+  MALE,
+  FEMALE
+}
+
+export enum UserType {
+  ADMIN, USER
+}
+
+export enum UserStatus {
+  ACTIVE,
+  DISABLED
+}
+
+export enum Location {
+  HANOI,
+  HOCHIMINH
 }

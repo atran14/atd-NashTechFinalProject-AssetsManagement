@@ -2,9 +2,11 @@ import React from 'react';
 import { Route } from 'react-router-dom';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
+import { Home } from '../pages/home-component/home';
 import { Login } from '../pages/login-component/login';
-import { Register } from '../pages/register-component/register';
-import { UpdateUser } from '../pages/user-component/update/update';
+import { CreateUser } from '../pages/users-component/create';
+import { ListUsers } from '../pages/users-component/list';
+import { UpdateUser } from '../pages/users-component/update';
 
 const routes = [
   {
@@ -23,20 +25,25 @@ const routes = [
     key: '/login',
   },
   {
-    path: '/register',
-    component: Register,
-    key: '/register',
-  },
-  {
     path: '/home',
-    component: Login,
+    component: Home,
     key: '/home',
   },
   {
-    path: '/user/update/:userId',
+    path: '/users',
+    component: ListUsers,
+    key: '/users'
+  },
+  {
+    path: '/users/update/:userId',
     component: UpdateUser,
-    key: '/update/user/:userId',
-  }
+    key: '/users/update/:userId',
+  },
+  {
+    path: '/users/create',
+    component: CreateUser,
+    key: '/users/update',
+  },
 ];
 
 export function RoutingList(): JSX.Element {

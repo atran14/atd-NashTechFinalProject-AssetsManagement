@@ -6,20 +6,20 @@ export function Home() {
   let history = useHistory();
   let onLogout = () => {
     
-    let authService = AuthenticationService.getInstance();
-    authService.logout()
-      .then((res) => {
-        if (res.status === 200) {
-          sessionStorage.clear();
-          history.push("/");
-          alert("Logout successfully!");
-        }
-      });
+    // let authService = AuthenticationService.getInstance();
+    // authService.logout()
+    //   .then((res) => {
+    //     if (res.status === 200) {
+    //       sessionStorage.clear();
+    //       history.push("/");
+    //       alert("Logout successfully!");
+    //     }
+    //   });
   };
 
   return (
     <div>
-      <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      {/* <nav className="navbar navbar-expand-lg navbar-light bg-light">
         <div className="container-fluid">
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
@@ -38,7 +38,7 @@ export function Home() {
             </ul>
           </div>
         </div>
-      </nav>
+      </nav> */}
     </div>
   );
 }

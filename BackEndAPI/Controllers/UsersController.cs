@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BackEndAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -30,7 +31,7 @@ namespace BackEndAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
-                return Ok(await _userService.Create(user));
+            return Ok(await _userService.Create(user));
         }
 
         [HttpPut("{id}")]
@@ -47,14 +48,13 @@ namespace BackEndAPI.Controllers
             return Ok();
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
-        public ActionResult<GetUsersListPagedResponseDTO> GetAllUsers(
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
             [FromQuery] PaginationParameters paginationParameters
         )
         {
-            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);            
-            var users = _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
 
             return Ok(users);
         }
