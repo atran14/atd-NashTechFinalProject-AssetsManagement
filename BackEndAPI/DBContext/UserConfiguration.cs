@@ -39,6 +39,10 @@ namespace BackEndAPI.DBContext
             builder.Property(e => e.Status)
                     .IsRequired();
 
+            builder.Property(e => e.OnFirstLogin)
+                    .IsRequired()
+                    .HasDefaultValue(OnFirstLogin.Yes);
+
             builder.HasData(
                     new User
                     {

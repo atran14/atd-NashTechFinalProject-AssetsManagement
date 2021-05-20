@@ -58,7 +58,7 @@ namespace BackEndAPI.Services
 
             var users = PagedList<User>.ToPagedList(
                 _repository.GetAll()
-                    .Where(u => 
+                    .Where(u =>
                     u.Status == UserStatus.Active
                     && u.Location == adminUser.Location
                 ),
@@ -135,19 +135,19 @@ namespace BackEndAPI.Services
             if (DateTime.Now.AddYears(-18) < model.DateOfBirth)
             {
 
-                throw new Exception("User is under 18. Please select different date");
+                throw new Exception(Message.RestrictedAge);
             }
 
             if (model.JoinedDate.DayOfWeek == DayOfWeek.Saturday
                    || model.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                throw new Exception("Join Date is Saturday or Sunday. Please select different date");
+                throw new Exception(Message.JoinedBeforeBirth);
             }
 
             if (model.JoinedDate < model.DateOfBirth)
             {
 
-                throw new Exception("Join Date is not later than Date Of Birth. Please select different date");
+                throw new Exception(Message.WeekendJoinedDate);
             }
 
             user.DateOfBirth = model.DateOfBirth;
@@ -162,7 +162,7 @@ namespace BackEndAPI.Services
 
             if (model == null)
             {
-                throw new ArgumentNullException("User can not be null!");
+                throw new ArgumentNullException(Message.NullUser);
             }
 
             bool isOlderThan18 = (model.DateOfBirth.Date <= DateTime.Now.Date.AddYears(-18));
@@ -172,14 +172,14 @@ namespace BackEndAPI.Services
             if (!isOlderThan18)
             {
 
-                throw new Exception("User is under 18. Please select a different date");
+                throw new Exception(Message.RestrictedAge);
 
             }
 
             if (!isEarlierThanDob)
             {
 
-                throw new Exception("Joined date is not later than Date of Birth. Please select a different date");
+                throw new Exception(Message.JoinedBeforeBirth);
 
             }
 
@@ -187,7 +187,7 @@ namespace BackEndAPI.Services
             if (isWeekend)
             {
 
-                throw new Exception("Joined date is Saturday or Sunday. Please select a different date");
+                throw new Exception(Message.WeekendJoinedDate);
 
             }
 
@@ -206,11 +206,12 @@ namespace BackEndAPI.Services
         public async Task<UserInfo> GetById(int id)
         {
             var user = await _repository.GetById(id);
-            if(user == null)
+            if (user == null)
             {
                 throw new InvalidOperationException("Can not find user");
             }
-            UserInfo userInfo = new UserInfo {
+            UserInfo userInfo = new UserInfo
+            {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 DateOfBirth = user.DateOfBirth,
@@ -219,6 +220,25 @@ namespace BackEndAPI.Services
                 Type = user.Type
             };
             return userInfo;
+        }
+        public async Task ChangePassword(int id, string oldPassword, string newPassword)
+        {
+            var user = await _repository.GetById(id);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException(Message.UserNotFound);
+            }
+            if (user.Password != oldPassword)
+            {
+                throw new InvalidOperationException(Message.OldPasswordIncorrect);
+            }
+            if (user.OnFirstLogin == OnFirstLogin.Yes){
+                user.OnFirstLogin = OnFirstLogin.No;
+            }
+            user.Password = newPassword ;
+
+            await _repository.Update(user);
         }
     }
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import { getUsernameAvatar } from '../UserAvatar';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { AuthenticationService } from '../../services/AuthenticationService';
+import { AuthenticationService } from '../../services/AuthenticationSerivce';
 
 const { Header } = Layout;
 const { SubMenu } = Menu;
@@ -15,7 +15,7 @@ function LayoutBanner() {
     })();
   };
   return (
-    <Header className="header" style={{ position: 'fixed', width: '100%', float: 'right' }}>
+    <Header className="header" style={{ position: 'fixed', width: '100%', float: 'right', zIndex: 0 }}>
       <div className="logo" />
       <Menu
         key="1" style={{ float: 'right' }} theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
-    [Migration("20210518115503_InitialCreate")]
+    [Migration("20210520052448_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -245,6 +245,11 @@ namespace BackEndAPI.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<int>("OnFirstLogin")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
@@ -293,7 +298,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6a9ebddb-4d4c-486a-b32e-354b0ccbb99d",
+                            ConcurrencyStamp = "f3b120a1-4226-4201-b882-4cba00326fea",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -302,6 +307,7 @@ namespace BackEndAPI.Migrations
                             LastName = "Nguyen Van",
                             Location = 0,
                             LockoutEnabled = false,
+                            OnFirstLogin = 0,
                             Password = "binhnv@20011993",
                             PhoneNumberConfirmed = false,
                             StaffCode = "SD0001",
@@ -314,7 +320,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "af6a6337-a84a-4520-8fc9-7761d4dfeab6",
+                            ConcurrencyStamp = "e9d0671c-f7a6-451d-8d03-bc53743cc2da",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -323,6 +329,7 @@ namespace BackEndAPI.Migrations
                             LastName = "Nguyen Thi",
                             Location = 0,
                             LockoutEnabled = false,
+                            OnFirstLogin = 0,
                             Password = "binhnt@12011994",
                             PhoneNumberConfirmed = false,
                             StaffCode = "SD0002",
