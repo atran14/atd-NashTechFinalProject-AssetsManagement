@@ -393,6 +393,161 @@ namespace BackEndAPI_Tests.Services_Tests
             Assert.AreEqual("Unauthorized access", exception.Message);
         }
 
+        [Test]
+        public void Create_NullUserInserted_ThrowsExceptionMessage()
+        {
+
+            //Arrange
+            CreateUserModel user = null;
+
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            //Act
+            var result = Assert.ThrowsAsync<ArgumentNullException>(async () => await userService.Create(user));
+
+            //Assert
+            Assert.AreEqual(Message.NullUser, result.ParamName);
+
+        }
+
+        [Test]
+        public void Create_UserAgeUnder18_ThrowsExceptionMessage()
+        {
+
+            //Arrange
+            CreateUserModel user = new CreateUserModel
+            {
+                DateOfBirth = new DateTime(2010, 12, 12)
+            };
+
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            //Act
+            var result = Assert.ThrowsAsync<Exception>(async () => await userService.Create(user));
+
+            //Assert
+            Assert.AreEqual(Message.RestrictedAge, result.Message);
+
+        }
+
+        [Test]
+        public void Create_JoinedDateEarlierThanDob_ThrowsExceptionMessage()
+        {
+
+            //Arrange
+            CreateUserModel user = new CreateUserModel
+            {
+                DateOfBirth = new DateTime(2000, 12, 12),
+                JoinedDate = new DateTime(2000, 01, 01)
+            };
+
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            //Act
+            var result = Assert.ThrowsAsync<Exception>(async () => await userService.Create(user));
+
+            //Assert
+            Assert.AreEqual(Message.JoinedBeforeBirth, result.Message);
+
+        }
+
+        [Test]
+        public void Create_JoinedDateAtWeekend_ThrowsExceptionMessage()
+        {
+
+            //Arrange
+            CreateUserModel user = new CreateUserModel
+            {
+                JoinedDate = new DateTime(2010, 05, 16)
+            };
+
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            //Act
+            var result = Assert.ThrowsAsync<Exception>(async () => await userService.Create(user));
+
+            //Assert
+            Assert.AreEqual(Message.WeekendJoinedDate, result.Message);
+
+        }
+
+        [Test]
+        public void Create_ValidUserInserted_ReturnsCreatedUser()
+        {
+
+            //Arrange
+            CreateUserModel user = new CreateUserModel
+            {
+                FirstName = "Thang",
+                LastName = "Doan Viet",
+                DateOfBirth = new DateTime(1995, 06, 03),
+                Gender = Gender.Male,
+                JoinedDate = new DateTime(2021, 05, 19),
+                Type = UserType.Admin,
+                Location = Location.HaNoi
+            };
+
+            User _user = _mapper.Map<User>(user);
+
+            User createdUser = new User
+            {
+                FirstName = "Thang",
+                LastName = "Doan Viet",
+                DateOfBirth = new DateTime(1995, 06, 03),
+                Gender = Gender.Male,
+                JoinedDate = new DateTime(2021, 05, 19),
+                Type = UserType.Admin,
+                Location = Location.HaNoi,
+                StaffCode = "SD0001",
+                UserName = "thangdv",
+                Password = "thangdv@03061995"
+            };
+
+            _userRepositoryMock.Setup(x => x.CountUsername("thangdv")).Returns(0);
+            _userRepositoryMock.Setup(x => x.Create(_user)).ReturnsAsync(createdUser);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            //Act
+
+            var result = userService.Create(user);
+
+            //Assert
+            Assert.AreEqual("Thang", createdUser.FirstName);
+            Assert.AreEqual("Doan Viet", createdUser.LastName);
+            Assert.AreEqual(new DateTime(1995, 06, 03), createdUser.DateOfBirth);
+
+        }
+
         [TearDown]
         public void TearDown()
         {

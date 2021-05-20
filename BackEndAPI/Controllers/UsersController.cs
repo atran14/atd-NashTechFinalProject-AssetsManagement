@@ -22,18 +22,21 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("{id}")]
         public async Task<UserInfo> Get(int id)
         {
             return await _userService.GetById(id);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
             return Ok(await _userService.Create(user));
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
@@ -41,6 +44,7 @@ namespace BackEndAPI.Controllers
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("disable/{id}")]
         public async Task<IActionResult> Disabled(int id)
         {

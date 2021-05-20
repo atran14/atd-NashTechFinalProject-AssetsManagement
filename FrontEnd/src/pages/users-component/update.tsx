@@ -12,9 +12,9 @@ import { useForm } from "antd/lib/form/Form";
 import Title from "antd/lib/typography/Title";
 import React, { useEffect } from "react";
 import { useHistory, useParams } from "react-router-dom";
-import { UserService } from "../../services/UserService";
 import {  EditUserModel, UserGender, UserType } from "../../models/User";
 import moment from "moment";
+import { UserService } from "../../services/UserService";
 
 export function UpdateUser() {
   const layout = {
@@ -38,7 +38,7 @@ export function UpdateUser() {
 
  
 
-  let service = new UserService();
+  let service = UserService.getInstance();
 
   let history = useHistory();
 

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BackEndAPI.DBContext;
 using BackEndAPI.Entities;
 using BackEndAPI.Enums;
+using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -37,7 +38,6 @@ namespace BackEndAPI_Tests.Repositories_Tests
             //Arrange
             User user = new User()
             {
-                Id = 3,
                 StaffCode = "SD0003",
                 FirstName = "Thang",
                 LastName = "Doan Viet",
@@ -57,32 +57,12 @@ namespace BackEndAPI_Tests.Repositories_Tests
 
             //Assert
             Assert.AreEqual(1, _context.Users.Count());
-
-            Assert.AreEqual("SD0003", _context.Users.Single().StaffCode);
-
-            Assert.AreEqual("Thang", _context.Users.Single().FirstName);
-
-            Assert.AreEqual("Doan Viet", _context.Users.Single().LastName);
-
-            Assert.AreEqual(new DateTime(1995, 06, 03), _context.Users.Single().DateOfBirth);
-
-            Assert.AreEqual(new DateTime(2021, 12, 05), _context.Users.Single().JoinedDate);
-
-            Assert.AreEqual(Gender.Male, _context.Users.Single().Gender);
-
-            Assert.AreEqual(UserType.Admin, _context.Users.Single().Type);
-
-            Assert.AreEqual("thangdv", _context.Users.Single().UserName);
-
-            Assert.AreEqual("thangdv@30601995", _context.Users.Single().Password);
-
-            Assert.AreEqual(UserStatus.Active, _context.Users.Single().Status);
-
-            Assert.AreEqual(Location.HaNoi, _context.Users.Single().Location);
+            Assert.AreEqual(_user, user);
 
         }
 
         [TestCase(null)]
+        [TestCase("")]
         public void CountUsername_NullUsernameInserted_ThrowExceptionMessage(string username)
         {
 
@@ -90,7 +70,7 @@ namespace BackEndAPI_Tests.Repositories_Tests
             var result = Assert.Throws<ArgumentNullException>(() => _repository.CountUsername(username));
 
             //Assert
-            Assert.AreEqual("Value cannot be null. (Parameter 'Username can not be null!')", result.Message);
+            Assert.AreEqual(Message.NullOrEmptyUsername, result.ParamName);
 
         }
 
@@ -198,7 +178,7 @@ namespace BackEndAPI_Tests.Repositories_Tests
             Assert.AreEqual("Admin", userInfo.NormalizedUserName);
         }
 
-        [OneTimeTearDown]
+        [Test]
         public async Task GetAllUsers_Default_ShouldGetAllAvailableUsers()
         {
             //Arrange

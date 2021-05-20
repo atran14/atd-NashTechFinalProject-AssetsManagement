@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useHistory } from "react-router-dom";
-import { AuthenticationService } from "../../services/AuthenticationService";
 
 export function Home() {
   let history = useHistory();
