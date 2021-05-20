@@ -25,7 +25,7 @@ export default class RoutingLogin extends React.Component<
   }
 
   componentDidMount() {
-    authenticationService.currentUser.subscribe((x: { type: Role; }) =>
+    authenticationService.currentUser.subscribe((x: { type: Role }) =>
       this.setState({
         currentUser: x,
         isAdmin: x && x.type === Role.Admin,
@@ -44,7 +44,7 @@ export default class RoutingLogin extends React.Component<
     return (
       <Router history={history}>
         <div>
-          {currentUser && (
+          {localStorage.getItem("currentUser") != null && currentUser && (
             <nav className="navbar navbar-expand navbar-dark bg-dark">
               <div className="navbar-nav">
                 <Link to="/" className="nav-item nav-link">
@@ -77,7 +77,13 @@ export default class RoutingLogin extends React.Component<
                   <PrivateRoute
                     exact
                     path="/"
-                    roles={[Role.Admin] || [Role.User]}
+                    roles={[Role.Admin]}
+                    component={HomePage}
+                  />
+                  <PrivateRoute
+                    exact
+                    path="/"
+                    roles={[Role.User]}
                     component={HomePage}
                   />
                   <PrivateRoute

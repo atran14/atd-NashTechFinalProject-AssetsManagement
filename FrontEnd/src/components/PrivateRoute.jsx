@@ -7,7 +7,7 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => (
     {...rest}
     render={(props) => {
       const currentUser = authenticationService.currentUserValue;
-      if (!currentUser) {
+      if (!currentUser.length) {
         return (
           <Redirect
             to={{ pathname: "/login", state: { from: props.location } }}
