@@ -135,19 +135,19 @@ namespace BackEndAPI.Services
             if (DateTime.Now.AddYears(-18) < model.DateOfBirth)
             {
 
-                throw new Exception("User is under 18. Please select different date");
+                throw new Exception(Message.RestrictedAge);
             }
 
             if (model.JoinedDate.DayOfWeek == DayOfWeek.Saturday
                    || model.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                throw new Exception("Join Date is Saturday or Sunday. Please select different date");
+                throw new Exception(Message.JoinedBeforeBirth);
             }
 
             if (model.JoinedDate < model.DateOfBirth)
             {
 
-                throw new Exception("Join Date is not later than Date Of Birth. Please select different date");
+                throw new Exception(Message.WeekendJoinedDate);
             }
 
             user.DateOfBirth = model.DateOfBirth;

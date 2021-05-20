@@ -30,5 +30,4 @@ export class UserService extends HttpClient {
   public updateUser = (user: EditUserModel, id: number) => this.instance.put<EditUserModel>(`/api/Users/${id}`, user);
 
   public disableUser = (id: number) => this.instance.put(`/api/Users/disable/${id}`);
-
 }

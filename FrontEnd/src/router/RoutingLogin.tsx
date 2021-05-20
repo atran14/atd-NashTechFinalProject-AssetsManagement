@@ -25,7 +25,7 @@ export default class RoutingLogin extends React.Component<
   }
 
   componentDidMount() {
-    authenticationService.currentUser.subscribe((x) =>
+    authenticationService.currentUser.subscribe((x: { type: Role; }) =>
       this.setState({
         currentUser: x,
         isAdmin: x && x.type === Role.Admin,
