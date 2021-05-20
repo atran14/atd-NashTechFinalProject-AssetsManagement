@@ -4,13 +4,15 @@ import {
   LoginOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 const { SubMenu } = Menu;
 
 const { Sider } = Layout;
 
 function SiderMenu() {
+  let location = useLocation();
+
   return (
     <Sider width={200} className="site-layout-background"
       style={{
@@ -22,22 +24,21 @@ function SiderMenu() {
       }}>
       <Menu theme="light"
         mode="inline"
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub1']}
         style={{ height: '100%', borderRight: 0 }}
+        selectedKeys={[location.pathname]}
       >
         <SubMenu key="sub1" icon={<UserOutlined />} title="Users">
-          <Menu.Item key="1">
+          <Menu.Item key="/users">
             <Link to="/users">List</Link>
           </Menu.Item>
           
-          <Menu.Item key="2">
+          <Menu.Item key="/users/create">
             <Link to="/users/create">Create</Link>
           </Menu.Item>
         
         </SubMenu>
         <SubMenu key="sub4" icon={<LoginOutlined />} title="Login">
-          <Menu.Item key="9"><Link to="/login">Login</Link></Menu.Item>
+          <Menu.Item key="/login"><Link to="/login">Login</Link></Menu.Item>
         </SubMenu>
       </Menu>
     </Sider>

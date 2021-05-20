@@ -21,7 +21,7 @@ import { Location, User, UserGender, UserType } from '../../models/User'
 import { UserService } from '../../services/UserService'
 import {
   EditOutlined,
-  InfoCircleTwoTone,
+  UserAddOutlined,
   SearchOutlined,
   UserDeleteOutlined,
   FilterFilled,
@@ -307,7 +307,7 @@ export function ListUsers(props: PassedInEditedUserProps) {
       {isAdminAuthorized && usersPagedList !== undefined && (
         <>
           <Row>
-            <Col span={5}>
+            <Col span={5} >
               <Form onFinish={onFilterButtonClicked}>
                 <Row justify="start">
                   <Col span={15}>
@@ -344,7 +344,7 @@ export function ListUsers(props: PassedInEditedUserProps) {
                 </Row>
               </Form>
             </Col>
-            <Col span={5} offset={24 - 10}>
+            <Col span={4} offset={10} >
               <Form
                 onFinish={onSearchButtonClicked}
                 initialValues={{
@@ -378,6 +378,17 @@ export function ListUsers(props: PassedInEditedUserProps) {
                   </Col>
                 </Row>
               </Form>
+            </Col>
+            <Col span={4} offset={1} >
+              <Link to="/users/create">
+                <Button
+                  style={{width:"100%"}}
+                  type="primary"
+                  icon={<UserAddOutlined />}
+                >
+                  Create new user
+                </Button>
+              </Link>
             </Col>
           </Row>
 
