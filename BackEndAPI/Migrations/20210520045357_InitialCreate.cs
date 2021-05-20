@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BackEndAPI.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -275,13 +275,8 @@ namespace BackEndAPI.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "JoinedDate", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "Password", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StaffCode", "Status", "TwoFactorEnabled", "Type", "UserName" },
                 values: new object[,]
                 {
-<<<<<<< HEAD:BackEndAPI/Migrations/20210519110038_InitialCreate.cs
-                    { 1, 0, "ccbcf5bb-9bf0-493a-a2e7-2938dbd0e7f9", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "6fd1a63b-170d-4515-b27c-5fb2eab7559f", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
-=======
-                    { 1, 0, "a85b6bad-1f9b-4e3a-bdd1-03e8a9b341c5", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "651a818a-d37c-4c2d-a243-6111b72a7328", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
->>>>>>> develop:BackEndAPI/Migrations/20210519171617_Initial.cs
+                    { 1, 0, "a01fbbe2-9fb6-467a-8229-e66b90892fc9", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
+                    { 2, 0, "96f89f99-46b2-418c-9bf6-6d9ee47183a2", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
                 });
 
             migrationBuilder.CreateIndex(
