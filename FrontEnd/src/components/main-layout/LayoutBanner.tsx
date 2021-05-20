@@ -2,20 +2,21 @@ import React from 'react';
 import { Layout, Menu } from 'antd';
 import { getUsernameAvatar } from '../UserAvatar';
 import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { AuthenticationService } from '../../services/AuthenticationSerivce';
+import { useHistory } from 'react-router-dom';
 
 const { Header } = Layout;
 const { SubMenu } = Menu;
 
 function LayoutBanner() {
-  const service = AuthenticationService.getInstance();
+  let history = useHistory();
+  
   let OnLogout = () => {
-    (async () => {
-      // await service.logout();
-    })();
+    sessionStorage.clear();
+    history.push("/");
   };
+
   return (
-    <Header className="header" style={{ position: 'fixed', width: '100%', float: 'right', zIndex: 0 }}>
+    <Header  className="header" style={{ position: 'fixed', width: '100%', float: 'right', zIndex: 1 }}>
       <div className="logo" />
       <Menu
         key="1" style={{ float: 'right' }} theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>

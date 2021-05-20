@@ -1,11 +1,13 @@
 import {
   Button,
+  Col,
   Form,
   Input,
   message,
   Pagination,
   Popconfirm,
   Popover,
+  Row,
   Select,
   Table,
 } from 'antd'
@@ -22,16 +24,34 @@ import {
   InfoCircleTwoTone,
   SearchOutlined,
   UserDeleteOutlined,
+  FilterFilled,
 } from '@ant-design/icons'
 import { Link, useHistory } from 'react-router-dom'
+import './users.css'
+import internal from 'stream'
 
 const { Option } = Select
 
-export function ListUsers() {
+interface PassedInEditedUserProps {
+  editedUser: User
+}
+
+interface SearchAction {
+  action: 'filter' | 'search'
+  query: number | string
+}
+
+export function ListUsers(props: PassedInEditedUserProps) {
   let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === 'ADMIN')
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
+  let [filterSelected, setFilterSelected] = useState(false)
+  let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>({
+    action: 'search',
+    query: '',
+  })
+  let [isPopoverVisibles, setIsPopoverVisible] = useState<boolean[]>([])
   let history = useHistory()
 
   useEffect(() => {
@@ -43,14 +63,19 @@ export function ListUsers() {
 
         setUsersPagedList(usersPagedResponse)
         setUsersList(usersPagedResponse.items)
+        setIsPopoverVisible(new Array(usersList.length).fill(false))
+        setLatestSearchAction({
+          action: 'search',
+          query: '',
+        })
         setIsFetchingData(false)
       })()
     } else {
       history.push('/401-access-denied')
     }
-  }, [history, isAdminAuthorized])
+  }, [isAdminAuthorized])
 
-  function confirmDisableUser(id: number) {
+  const confirmDisableUser = (id: number) => {
     let userServices = UserService.getInstance()
     try {
       userServices.disableUser(id)
@@ -61,27 +86,52 @@ export function ListUsers() {
     }
   }
 
-  function cancelDisableUser() {
+  const cancelDisableUser = () => {
     console.log('cancel')
   }
 
-  const onFinish = (values: any) => {
-    if (usersPagedList !== undefined) {
-      let newList: User[]
+  const onSearchButtonClicked = (values: any) => {
+    ;(async () => {
+      setIsFetchingData(true)
+      let { searchText } = values
+      let userService = UserService.getInstance()
+      let usersPagedResponse: UsersPagedListResponse
 
-      if (values['searchMode'] === 'fullName') {
-        newList = usersPagedList.items.filter((u: User) => {
-          let fullName = `${u.firstName} ${u.lastName}`
-          return fullName.startsWith(values['searchText'])
-        })
+      if (searchText.length === 0) {
+        usersPagedResponse = await userService.getUsers()
       } else {
-        newList = usersPagedList.items.filter((u: User) => {
-          return u.staffCode.startsWith(values['searchText'])
-        })
+        usersPagedResponse = await userService.searchUsers(searchText)
       }
 
-      setUsersList(newList)
-    }
+      setLatestSearchAction({
+        action: 'search',
+        query: searchText as string,
+      })
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
+
+  const onFilterButtonClicked = (values: any) => {
+    ;(async () => {
+      setIsFetchingData(true)
+
+      let { filteredUserType } = values
+      let userService = UserService.getInstance()
+      let usersPagedResponse: UsersPagedListResponse = await userService.filterByType(
+        filteredUserType as number,
+      )
+
+      setLatestSearchAction({
+        action: 'filter',
+        query: filteredUserType as number,
+      })
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+
+      setIsFetchingData(false)
+    })()
   }
 
   const generateDetailedUserContent = (record: User) => {
@@ -124,7 +174,7 @@ export function ListUsers() {
   }
 
   const onPaginationConfigChanged = (page: number, pageSize?: number) => {
-    ;(async () => {
+    (async () => {
       setIsFetchingData(true)
       let userService = UserService.getInstance()
       let parameters: PaginationParameters = {
@@ -132,7 +182,28 @@ export function ListUsers() {
         PageSize: pageSize ?? 10,
       }
 
-      let usersPagedResponse = await userService.getUsers(parameters)
+      let usersPagedResponse: UsersPagedListResponse
+      switch (latestSearchAction.action) {
+        case 'search':
+          let searchQuery = latestSearchAction.query as string
+          if (searchQuery.length === 0) {
+            usersPagedResponse = await userService.getUsers(parameters)
+          } else {
+            usersPagedResponse = await userService.searchUsers(
+              searchQuery,
+              parameters,
+            )
+          }
+          break
+        case 'filter':
+          let filterQuery = latestSearchAction.query as number
+          usersPagedResponse = await userService.filterByType(
+            filterQuery,
+            parameters,
+          )
+          break
+      }
+
       setUsersPagedList(usersPagedResponse)
       setUsersList(usersPagedResponse.items)
       setIsFetchingData(false)
@@ -189,19 +260,6 @@ export function ListUsers() {
       render: (text: any, record: User, index: number) => {
         return <div>{UserType[record.type]}</div>
       },
-      filters: [
-        {
-          text: 'ADMIN',
-          value: UserType.ADMIN,
-        },
-        {
-          text: 'USER',
-          value: UserType.USER,
-        },
-      ],
-      onFilter: (value: UserType, record: User) => {
-        return record.type === value
-      },
       sorter: (a: User, b: User) => a.type - b.type,
       sortDirections: ['ascend', 'descend'],
     },
@@ -209,31 +267,36 @@ export function ListUsers() {
       title: '',
       dataIndex: 'action',
       key: 'action',
-      render: (text: any, record: User) => {
+      render: (text: any, record: User, index: number) => {
         return (
-          <>
-            <Link to={`/users/update/${record.id}`}>
-              <Button type="primary" icon={<EditOutlined />} />
-            </Link>
-            <Popconfirm
-              title="Are you sure to disable this user?"
-              onConfirm={() => {
-                confirmDisableUser(record.id)
-              }}
-              onCancel={cancelDisableUser}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button danger type="primary" icon={<UserDeleteOutlined />} />
-            </Popconfirm>
-            <Popover
-              trigger="click"
-              title="User Detail"
-              content={generateDetailedUserContent(record)}
-            >
-              <Button icon={<InfoCircleTwoTone />} />
-            </Popover>
-          </>
+          <Row onClick={(e) => e.stopPropagation()}>
+            <Col>
+              <Link to={`/users/update/${record.id}`}>
+                <Button type="primary" icon={<EditOutlined />} />
+              </Link>
+            </Col>
+            <Col>
+              <Popconfirm
+                title="Are you sure to disable this user?"
+                onConfirm={() => {
+                  confirmDisableUser(record.id)
+                }}
+                onCancel={cancelDisableUser}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button danger type="primary" icon={<UserDeleteOutlined />} />
+              </Popconfirm>
+            </Col>
+            <Col>
+              <Popover
+                title="User details"
+                content={generateDetailedUserContent(record)}
+                visible={isPopoverVisibles[index]}
+                placement="left"
+              />
+            </Col>
+          </Row>
         )
       },
     },
@@ -243,56 +306,122 @@ export function ListUsers() {
     <>
       {isAdminAuthorized && usersPagedList !== undefined && (
         <>
-          <Form
-            onFinish={onFinish}
-            initialValues={{
-              searchMode: 'fullName',
-              searchText: '',
-            }}
-          >
-            <Input.Group compact>
-              <Form.Item name="searchMode">
-                <Select disabled={isFetchingData}>
-                  <Option value="fullName">Full name</Option>
-                  <Option value="staffCode">Staff code</Option>
-                </Select>
-              </Form.Item>
+          <Row>
+            <Col span={5}>
+              <Form onFinish={onFilterButtonClicked}>
+                <Row justify="start">
+                  <Col span={15}>
+                    <Form.Item
+                      name="filteredUserType"
+                      className="no-margin-no-padding"
+                    >
+                      <Select
+                        placeholder="Select user type"
+                        style={{ width: '100%' }}
+                        onSelect={() => setFilterSelected(true)}
+                        disabled={isFetchingData}
+                      >
+                        <Option key="admin" value={0}>
+                          Admin
+                        </Option>
+                        <Option key="user" value={1}>
+                          User
+                        </Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
 
-              <Form.Item name="searchText">
-                <Input
-                  allowClear
-                  disabled={isFetchingData}
-                  style={{ width: '75%' }}
-                  defaultValue="Nguyen Van A"
-                />
-              </Form.Item>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<FilterFilled />}
+                        htmlType="submit"
+                        disabled={!filterSelected || isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+            <Col span={5} offset={24 - 10}>
+              <Form
+                onFinish={onSearchButtonClicked}
+                initialValues={{
+                  searchText: '',
+                }}
+              >
+                <Row justify="end">
+                  <Col span={18}>
+                    <Form.Item
+                      name="searchText"
+                      className="no-margin-no-padding"
+                    >
+                      <Input
+                        allowClear
+                        disabled={isFetchingData}
+                        style={{ width: '100%' }}
+                        placeholder="e.g. Bob/SD0001"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<SearchOutlined />}
+                        type="primary"
+                        htmlType="submit"
+                        disabled={isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+          </Row>
 
-              <Form.Item>
-                <Button
-                  size="small"
-                  icon={<SearchOutlined />}
-                  type="primary"
-                  htmlType="submit"
-                  disabled={isFetchingData}
-                />
-              </Form.Item>
-            </Input.Group>
-          </Form>
           <Table
+            style={{
+              margin: '1.25em 0 1.25em 0',
+            }}
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: (event) => {
+                  if (rowIndex !== undefined) {
+                    let newPopoverVisibles = Array.from(isPopoverVisibles)
+                    newPopoverVisibles[rowIndex] = true
+                    setIsPopoverVisible(newPopoverVisibles)
+                  }
+                },
+                onMouseLeave: (event) => {
+                  if (rowIndex !== undefined) {
+                    let newPopoverVisibles = Array.from(isPopoverVisibles)
+                    newPopoverVisibles[rowIndex] = false
+                    setIsPopoverVisible(newPopoverVisibles)
+                  }
+                },
+              }
+            }}
             dataSource={usersList}
             columns={columns}
             scroll={{ y: 400 }}
             pagination={false}
             loading={isFetchingData}
           />
-          <Pagination
-            disabled={isFetchingData}
-            total={usersPagedList.totalCount}
-            showTotal={(total: number) => `Total: ${total} result(s)`}
-            pageSizeOptions={['10', '20', '50']}
-            showSizeChanger
-            onChange={onPaginationConfigChanged}
-          />
+
+          <Row justify="center">
+            <Col>
+              <Pagination
+                disabled={isFetchingData}
+                total={usersPagedList.totalCount}
+                showTotal={(total: number) => `Total: ${total} result(s)`}
+                pageSizeOptions={['10', '20', '50']}
+                showSizeChanger
+                onChange={onPaginationConfigChanged}
+              />
+            </Col>
+          </Row>
         </>
       )}
     </>
