@@ -318,7 +318,11 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
+<<<<<<< HEAD
                             ConcurrencyStamp = "6fd1a63b-170d-4515-b27c-5fb2eab7559f",
+=======
+                            ConcurrencyStamp = "651a818a-d37c-4c2d-a243-6111b72a7328",
+>>>>>>> develop
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",

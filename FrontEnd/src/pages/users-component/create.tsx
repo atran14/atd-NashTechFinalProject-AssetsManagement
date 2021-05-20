@@ -3,7 +3,7 @@ import Title from "antd/lib/typography/Title";
 import moment from "moment";
 import { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { CreateUserModel, Location, UserGender, UserType } from "../../models/User";
+import { CreateUserModel, UserGender, UserType } from "../../models/User";
 import { UserService } from "../../services/UserService";
 
 const { Option } = Select;

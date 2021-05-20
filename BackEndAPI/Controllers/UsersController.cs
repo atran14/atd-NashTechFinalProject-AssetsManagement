@@ -23,19 +23,21 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("{id}")]
         public async Task<UserInfo> Get(int id)
         {
             return await _userService.GetById(id);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
             return Ok(await _userService.Create(user));
         }
 
-        [HttpPut("id/{id}")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
             await _userService.Update(id, model);

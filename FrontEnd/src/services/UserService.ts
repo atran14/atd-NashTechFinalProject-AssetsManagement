@@ -6,7 +6,7 @@ export class UserService extends HttpClient {
 
   private static instance?: UserService;
 
-  public constructor() {
+  private constructor() {
     super("https://localhost:5001");
   }
 

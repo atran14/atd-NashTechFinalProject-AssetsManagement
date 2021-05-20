@@ -4,6 +4,7 @@ using BackEndAPI.Interfaces;
 using BackEndAPI.DBContext;
 using System.Collections.Generic;
 using System;
+using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Repositories
 {
@@ -14,10 +15,10 @@ namespace BackEndAPI.Repositories
 
         public int CountUsername(string username)
         {
-            if (username == null)
+            if (username == null || username == "")
             {
 
-                throw new ArgumentNullException("Username can not be null!");
+                throw new ArgumentNullException(Message.NullOrEmptyUsername);
 
             }
 

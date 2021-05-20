@@ -197,7 +197,7 @@ namespace BackEndAPI.Services
 
             if (model == null)
             {
-                throw new ArgumentNullException("User can not be null!");
+                throw new ArgumentNullException(Message.NullUser);
             }
 
             bool isOlderThan18 = (model.DateOfBirth.Date <= DateTime.Now.Date.AddYears(-18));
@@ -207,14 +207,14 @@ namespace BackEndAPI.Services
             if (!isOlderThan18)
             {
 
-                throw new Exception("User is under 18. Please select a different date");
+                throw new Exception(Message.RestrictedAge);
 
             }
 
             if (!isEarlierThanDob)
             {
 
-                throw new Exception("Joined date is not later than Date of Birth. Please select a different date");
+                throw new Exception(Message.JoinedBeforeBirth);
 
             }
 
@@ -222,7 +222,7 @@ namespace BackEndAPI.Services
             if (isWeekend)
             {
 
-                throw new Exception("Joined date is Saturday or Sunday. Please select a different date");
+                throw new Exception(Message.WeekendJoinedDate);
 
             }
 

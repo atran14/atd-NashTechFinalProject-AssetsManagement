@@ -26,9 +26,11 @@ namespace BackEndAPI.Interfaces
         );
 
         AuthenticateResponse Authenticate(AuthenticateRequest model);
+
         IEnumerable<User> GetAll();
 
         Task<User> Create(CreateUserModel user);
+
         Task Update(int id, EditUserModel model);
         Task Disable(int id);
         Task<UserInfo> GetById(int id);
