@@ -8,14 +8,13 @@ import {
   Radio,
   Select,
   Space,
-} from 'antd'
-import { useForm } from 'antd/lib/form/Form'
-import Title from 'antd/lib/typography/Title'
-import React, { useEffect, useState } from 'react'
-import { useHistory, useParams } from 'react-router-dom'
-import { EditUserModel, UserGender, UserType } from '../../models/User'
-import moment from 'moment'
-import { UserService } from '../../services/UserService'
+} from "antd";
+import { useForm } from "antd/lib/form/Form";
+import React, { useEffect, useState } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import { EditUserModel, UserGender, UserType } from "../../models/User";
+import moment from "moment";
+import { UserService } from "../../services/UserService";
 
 export function UpdateUser() {
   const layout = {
@@ -35,31 +34,28 @@ export function UpdateUser() {
 
   const { Option } = Select
 
-  const { userId } = useParams<any>()
-  const [dob, setDob] = useState<Date>()
+  const { userId } = useParams<any>();
+  const [dob, setDob] = useState<Date>();
 
-  const today = new Date()
+  const today = new Date();
 
   const validateDateOfBirth = async (rule: any, value: any, callback: any) => {
-    if (value && value._d.getFullYear() > today.getFullYear() - 18) {
-      throw new Error('User is under 18. Please select a different date!')
+    if (value && value._d.getFullYear() > (today.getFullYear() - 18)) {
+      throw new Error("User is under 18. Please select a different date!");
     }
-    setDob(value._d)
-  }
+    setDob(value._d);
+
+  };
 
   const validateJoinedDate = async (rule: any, value: any, callback: any) => {
     if (value && (value._d.getDay() === 0 || value._d.getDay() === 6)) {
-      throw new Error(
-        'Joined date is Saturday or Sunday. Please select a different date!',
-      )
-    } else if (value._d < moment(dob)) {
-      throw new Error(
-        'Joined date is not later than Date of Birth. Please select a different date!',
-      )
-    }
-  }
 
-  let service = UserService.getInstance()
+      throw new Error("Joined date is Saturday or Sunday. Please select a different date!");
+    }
+    else if (value._d < moment(dob)) {
+      throw new Error("Joined date is not later than Date of Birth. Please select a different date!");
+    }
+  };
 
   let history = useHistory()
 
@@ -68,17 +64,23 @@ export function UpdateUser() {
   const onFinish = (data: EditUserModel) => {
     console.log('Success:', data)
     ;(async () => {
+      let service = UserService.getInstance();
       try {
-        await service.updateUser(data, userId).then((res) => {
-          if (res.status === 200) {
-            console.log('Updated Successfully')
-          }
-        })
-        message.success('Updated Successfully')
-        history.push('/users')
-      } catch {}
-    })()
-  }
+        await service.updateUser(data, userId)
+          .then(
+            (res) => {
+              if (res.status === 200) {
+                console.log('Updated Successfully');
+              }
+            }
+          );
+        message.success('Updated Successfully');
+        history.push('/users');
+      } catch {
+
+      }
+    })();
+  };
 
   const onFinishFailed = (errorInfo: any) => {
     message.error(
@@ -91,6 +93,7 @@ export function UpdateUser() {
 
   useEffect(() => {
     ;(async () => {
+      let service = UserService.getInstance();
       let user = await service.getUser(userId)
       setDob(user.dateOfBirth)
       form.setFieldsValue({
@@ -124,15 +127,12 @@ export function UpdateUser() {
           </Form.Item>
 
           <Form.Item
+            hasFeedback
             name="dateOfBirth"
             label="Date Of Birth"
-            rules={[
-              { required: true, message: 'Please select date of birth!' },
-              { validator: validateDateOfBirth },
-            ]}
-            hasFeedback
+            rules={[{ required: true, message: "Please select date of birth!" }, { validator: validateDateOfBirth }]}
           >
-            <DatePicker format={dateFormat} style={{ width: 244 }} />
+            <DatePicker format={dateFormat} />
           </Form.Item>
 
           <Form.Item name="gender" label="Gender" hasFeedback>
@@ -143,22 +143,19 @@ export function UpdateUser() {
           </Form.Item>
 
           <Form.Item
+            hasFeedback
             name="joinedDate"
             label="Joined Date"
-            rules={[
-              { required: true, message: 'Please select join date !' },
-              { validator: validateJoinedDate },
-            ]}
-            hasFeedback
+            rules={[{ required: true, message: "Please select join date !" }, { validator: validateJoinedDate }]}
           >
-            <DatePicker format={dateFormat} style={{ width: 244 }} />
+            <DatePicker format={dateFormat} />
           </Form.Item>
 
           <Form.Item
             name="type"
             label="Type"
             hasFeedback
-            rules={[{ required: true, message: 'Please select type of user!' }]}
+            rules={[{ required: true, message: "Please select type of user!" }]}
           >
             <Select>
               <Option value={UserType.ADMIN}>Admin</Option>
@@ -166,12 +163,15 @@ export function UpdateUser() {
             </Select>
           </Form.Item>
 
-          <Form.Item {...tailLayout}>
+          <Form.Item
+            {...tailLayout}
+          >
             <Space>
-              <Button type="primary" htmlType="submit">
+              <Button type="primary" htmlType="submit"
+                style={{ backgroundColor: '#e9424d', color: 'white' }}>
                 Save
-              </Button>
-              <Button style={{ marginLeft: 20 }} type="primary" danger>
+            </Button>
+              <Button type="default" danger>
                 <a href="/users"> Cancel </a>
               </Button>
             </Space>
