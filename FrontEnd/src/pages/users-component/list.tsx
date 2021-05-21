@@ -23,9 +23,10 @@ import {
   EditOutlined,
   UserAddOutlined,
   SearchOutlined,
-  UserDeleteOutlined,
+  DeleteOutlined,
   FilterFilled,
   ExclamationCircleOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons'
 import { Link, Redirect, useHistory } from 'react-router-dom'
 import './users.css'
@@ -83,7 +84,6 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     action: 'search',
     query: '',
   })
-  let [isPopoverVisibles, setIsPopoverVisible] = useState<boolean[]>([])
   let prevList = useRef(usersList)
 
   useEffect(() => {
@@ -100,8 +100,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
           let usersPagedResponse = await userServices.getUsers()
 
           setUsersPagedList(usersPagedResponse)
-          setUsersList(usersPagedResponse.items)
-          setIsPopoverVisible(new Array(usersList.length).fill(false))
+          setUsersList(usersPagedResponse.items)          
           setLatestSearchAction({
             action: 'search',
             query: '',
@@ -330,28 +329,32 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
       key: 'action',
       render: (text: any, record: User, index: number) => {
         return (
-          <Row onClick={(e) => e.stopPropagation()}>
-            <Col>
+          <Row>
+            <Col offset={1}>
+              <Popover
+                title="User details"
+                content={generateDetailedUserContent(record)}
+                placement="right"
+                trigger="click"                
+              >
+                <Button
+                  icon={<InfoCircleOutlined />}
+                />                
+              </Popover>
+            </Col>
+            <Col offset={1}>
               <Link to={`/users/update/${record.id}`}>
                 <Button type="primary" icon={<EditOutlined />} />
               </Link>
             </Col>
-            <Col>
+            <Col offset={1}>
               <Button
                 danger
                 type="primary"
-                icon={<UserDeleteOutlined />}
+                icon={<DeleteOutlined />}
                 onClick={() => DisabledUser(record.id)}
               />
-            </Col>
-            <Col>
-              <Popover
-                title="User details"
-                content={generateDetailedUserContent(record)}
-                visible={isPopoverVisibles[index]}
-                placement="left"
-              />
-            </Col>
+            </Col>            
           </Row>
         )
       },
@@ -454,25 +457,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
           <Table
             style={{
               margin: '1.25em 0 1.25em 0',
-            }}
-            onRow={(record, rowIndex) => {
-              return {
-                onClick: (event) => {
-                  if (rowIndex !== undefined) {
-                    let newPopoverVisibles = Array.from(isPopoverVisibles)
-                    newPopoverVisibles[rowIndex] = true
-                    setIsPopoverVisible(newPopoverVisibles)
-                  }
-                },
-                onMouseLeave: (event) => {
-                  if (rowIndex !== undefined) {
-                    let newPopoverVisibles = Array.from(isPopoverVisibles)
-                    newPopoverVisibles[rowIndex] = false
-                    setIsPopoverVisible(newPopoverVisibles)
-                  }
-                },
-              }
-            }}
+            }}            
             dataSource={usersList}
             columns={columns}
             scroll={{ y: 400 }}
