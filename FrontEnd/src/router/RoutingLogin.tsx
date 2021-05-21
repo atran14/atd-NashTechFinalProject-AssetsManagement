@@ -59,33 +59,6 @@ export default class RoutingLogin extends React.Component<
     return (
       <Router history={history}>
         <div>
-          {/* {localStorage.getItem("currentUser") != null && currentUser && (
-            <nav className="navbar navbar-expand navbar-dark bg-dark">
-              <div className="navbar-nav">
-                <Link to="/" className="nav-item nav-link">
-                  Home
-                </Link>
-                {isAdmin && (
-                  <Link to="/admin" className="nav-item nav-link">
-                    Admin
-                  </Link>
-                )}
-                {isUser && (
-                  <Link to="/user" className="nav-item nav-link">
-                    User
-                  </Link>
-                )}
-                <Link
-                  to="#"
-                  onClick={this.logout}
-                  className="nav-item nav-link"
-                >
-                  Logout
-                </Link>
-              </div>
-            </nav>
-          )} */}
-
           {localStorage.getItem("currentUser") != null && currentUser && (
             <Nav
               variant="tabs"
@@ -129,7 +102,7 @@ export default class RoutingLogin extends React.Component<
               </NavDropdown>
             </Nav>
           )}
-          {/* Modal Change Password*/}
+
           <Modal
             show={this.state.showModal}
             onHide={this.handleClose}
@@ -230,7 +203,6 @@ export default class RoutingLogin extends React.Component<
               )}
             />
           </Modal>
-          {/* End Modal Change Password*/}
 
           <div className="jumbotron">
             <div className="container">

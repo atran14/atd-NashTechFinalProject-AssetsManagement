@@ -11,7 +11,6 @@ using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Controllers
 {
-    // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -36,7 +35,7 @@ namespace BackEndAPI.Controllers
         {
             return Ok(await _userService.Create(user));
         }
-
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
