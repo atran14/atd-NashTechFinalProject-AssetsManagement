@@ -3,86 +3,150 @@ import {
   Form,
   Input,
   message,
+  Modal,
   Pagination,
   Popconfirm,
   Popover,
   Select,
   Table,
-} from 'antd'
-import { useState } from 'react'
-import { useEffect } from 'react'
+} from "antd";
+import { useState } from "react";
+import { useEffect } from "react";
 import {
   PaginationParameters,
   UsersPagedListResponse,
-} from '../../models/Pagination'
-import { Location, User, UserGender, UserType } from '../../models/User'
-import { UserService } from '../../services/UserService'
+} from "../../models/Pagination";
+import { Location, User, UserGender, UserType } from "../../models/User";
+import { UserService } from "../../services/UserService";
 import {
   EditOutlined,
   InfoCircleTwoTone,
   SearchOutlined,
   UserDeleteOutlined,
-} from '@ant-design/icons'
-import { Link, useHistory } from 'react-router-dom'
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import { Link, useHistory } from "react-router-dom";
 
-const { Option } = Select
+const { Option } = Select;
+const { confirm } = Modal;
+
+let listAssignments = [
+  {
+    id: 1,
+    assetId: 1,
+    assignedByUserId: 1,
+    assignedToUserId: 2,
+    assignedDate: new Date(),
+    state: 1,
+    note: "abc",
+  },
+  {
+    id: 2,
+    assetId: 2,
+    assignedByUserId: 1,
+    assignedToUserId: 4,
+    assignedDate: new Date(),
+    state: 1,
+    note: "abc",
+  },
+  {
+    id: 3,
+    assetId: 3,
+    assignedByUserId: 2,
+    assignedToUserId: 1,
+    assignedDate: new Date(),
+    state: 2,
+    note: "abc",
+  },
+];
 
 export function ListUsers() {
-  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === 'ADMIN')
-  let [isFetchingData, setIsFetchingData] = useState(false)
-  let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
-  let [usersList, setUsersList] = useState<User[]>([])
-  let history = useHistory()
+  let [isAdminAuthorized] = useState(
+    sessionStorage.getItem("type") === "ADMIN"
+  );
+  let [isFetchingData, setIsFetchingData] = useState(false);
+  let [assignments, setAssignments]: [any, any] = useState([]);
+  let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>();
+  let [usersList, setUsersList] = useState<User[]>([]);
+  let history = useHistory();
 
   useEffect(() => {
     if (isAdminAuthorized) {
-      ;(async () => {
-        setIsFetchingData(true)
-        let userServices = UserService.getInstance()
-        let usersPagedResponse = await userServices.getUsers()
+      (async () => {
+        setIsFetchingData(true);
+        let userServices = UserService.getInstance();
+        let usersPagedResponse = await userServices.getUsers();
 
-        setUsersPagedList(usersPagedResponse)
-        setUsersList(usersPagedResponse.items)
-        setIsFetchingData(false)
-      })()
+        setUsersPagedList(usersPagedResponse);
+        setUsersList(usersPagedResponse.items);
+        setIsFetchingData(false);
+      })();
     } else {
-      history.push('/401-access-denied')
+      history.push("/401-access-denied");
     }
-  }, [])
+  }, []);
 
-  function confirmDisableUser(id: number) {
-    let userServices = UserService.getInstance()
-    try {
-      userServices.disableUser(id)
-      message.success('Disabled Successfully')
-      setUsersList((userId: any[]) => userId.filter((item) => item.id !== id))
-    } catch {
-      message.success('Something went wrong')
+  useEffect(() => {
+    setAssignments(listAssignments);
+  }, []);
+
+  function DisabledUser(id: number) {
+    var count = 0;
+    for (var i = 0; i < listAssignments.length; i++) {
+      if (
+        listAssignments[i].assignedToUserId === id &&
+        listAssignments[i].state !== 2
+      ) {
+        count++;
+      }
     }
-  }
-
-  function cancelDisableUser() {
-    console.log('cancel')
+    if (count === 0) {
+      confirm({
+        title: "Do you want to disable this user?",
+        icon: <ExclamationCircleOutlined />,
+        onOk() {
+          let userServices = UserService.getInstance();
+          try {
+            userServices.disableUser(id);
+            message.success("Disabled Successfully");
+            setUsersList((userId: any[]) =>
+              userId.filter((item) => item.id !== id)
+            );
+          } catch {
+            message.success("Something went wrong");
+          }
+        },
+        onCancel() {
+          console.log("Cancel");
+        },
+      });
+    }
+    if (count > 0) {
+      Modal.error({
+        title:
+          "There are valid assignments belonging to this user. Please close all assignments before disabling user.",
+      });
+    }
   }
 
   const onFinish = (values: any) => {
     if (usersPagedList !== undefined) {
-      let newList: User[]
+      let newList: User[];
 
-      if (values['searchMode'] === 'fullName') {
+      if (values["searchMode"] === "fullName") {
         newList = usersPagedList.items.filter((u: User) => {
-          let fullName = `${u.firstName} ${u.lastName}`
-          return fullName.startsWith(values['searchText'])
-        })
+          let fullName = `${u.firstName} ${u.lastName}`;
+          return fullName.startsWith(values["searchText"]);
+        });
       } else {
         newList = usersPagedList.items.filter((u: User) => {
-          return u.staffCode.startsWith(values['searchText'])
-        })
+          return u.staffCode.startsWith(values["searchText"]);
+        });
       }
 
-      setUsersList(newList)
+      setUsersList(newList);
     }
-  }
+  };
 
   const generateDetailedUserContent = (record: User) => {
     return (
@@ -120,112 +184,111 @@ export function ListUsers() {
           <td>{Location[record.location]}</td>
         </tr>
       </table>
-    )
-  }
+    );
+  };
 
   const onPaginationConfigChanged = (page: number, pageSize?: number) => {
-    ;(async () => {
-      setIsFetchingData(true)
-      let userService = UserService.getInstance()
+    (async () => {
+      setIsFetchingData(true);
+      let userService = UserService.getInstance();
       let parameters: PaginationParameters = {
         PageNumber: page,
         PageSize: pageSize ?? 10,
-      }
+      };
 
-      let usersPagedResponse = await userService.getUsers(parameters)
-      setUsersPagedList(usersPagedResponse)
-      setUsersList(usersPagedResponse.items)
-      setIsFetchingData(false)
-    })()
-  }
+      let usersPagedResponse = await userService.getUsers(parameters);
+      setUsersPagedList(usersPagedResponse);
+      setUsersList(usersPagedResponse.items);
+      setIsFetchingData(false);
+    })();
+  };
 
   const columns: any = [
     {
-      title: 'Staff code',
-      dataIndex: 'staffCode',
-      key: 'staffCode',
+      title: "Staff code",
+      dataIndex: "staffCode",
+      key: "staffCode",
       sorter: (a: User, b: User) => a.staffCode.localeCompare(b.staffCode),
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
-      title: 'Full name',
-      dataIndex: 'fullName',
-      key: 'fullName',
+      title: "Full name",
+      dataIndex: "fullName",
+      key: "fullName",
       sorter: (a: User, b: User) => {
-        let fullNameA = `${a.firstName} ${a.lastName}`
-        let fullNameB = `${b.firstName} ${b.lastName}`
-        return fullNameA.localeCompare(fullNameB)
+        let fullNameA = `${a.firstName} ${a.lastName}`;
+        let fullNameB = `${b.firstName} ${b.lastName}`;
+        return fullNameA.localeCompare(fullNameB);
       },
       render: (text: any, record: User, index: number) => {
-        return <div>{`${record.firstName} ${record.lastName}`}</div>
+        return <div>{`${record.firstName} ${record.lastName}`}</div>;
       },
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
-      title: 'Username',
-      dataIndex: 'userName',
-      key: 'userName',
+      title: "Username",
+      dataIndex: "userName",
+      key: "userName",
       sorter: (a: User, b: User) => a.userName.localeCompare(b.userName),
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
-      title: 'Joined date',
-      dataIndex: 'joinedDate',
-      key: 'joinedDate',
+      title: "Joined date",
+      dataIndex: "joinedDate",
+      key: "joinedDate",
       render: (text: any, record: User, index: number) => {
-        return <div>{new Date(record.joinedDate).toLocaleDateString()}</div>
+        return <div>{new Date(record.joinedDate).toLocaleDateString()}</div>;
       },
       sorter: (a: User, b: User) => {
         return (
           new Date(a.joinedDate).getTime() - new Date(b.joinedDate).getTime()
-        )
+        );
       },
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
-      title: 'Type',
-      dataIndex: 'type',
-      key: 'type',
+      title: "Type",
+      dataIndex: "type",
+      key: "type",
       render: (text: any, record: User, index: number) => {
-        return <div>{UserType[record.type]}</div>
+        return <div>{UserType[record.type]}</div>;
       },
       filters: [
         {
-          text: 'ADMIN',
+          text: "ADMIN",
           value: UserType.ADMIN,
         },
         {
-          text: 'USER',
+          text: "USER",
           value: UserType.USER,
         },
       ],
       onFilter: (value: UserType, record: User) => {
-        return record.type === value
+        return record.type === value;
       },
       sorter: (a: User, b: User) => a.type - b.type,
-      sortDirections: ['ascend', 'descend'],
+      sortDirections: ["ascend", "descend"],
     },
     {
-      title: '',
-      dataIndex: 'action',
-      key: 'action',
+      title: "",
+      dataIndex: "action",
+      key: "action",
       render: (text: any, record: User) => {
         return (
           <>
             <Link to={`/users/update/${record.id}`}>
               <Button type="primary" icon={<EditOutlined />} />
             </Link>
-            <Popconfirm
-              title="Are you sure to disable this user?"
-              onConfirm={() => {
-                confirmDisableUser(record.id)
+
+            <Button
+              danger
+              type="primary"
+              icon={<UserDeleteOutlined />}
+              onClick={() => {
+              DisabledUser(record.id);
               }}
-              onCancel={cancelDisableUser}
-              okText="Yes"
-              cancelText="No"
-            >
-              <Button danger type="primary" icon={<UserDeleteOutlined />} />
-            </Popconfirm>
+            />
+
             <Popover
               trigger="click"
               title="User Detail"
@@ -234,10 +297,10 @@ export function ListUsers() {
               <Button icon={<InfoCircleTwoTone />} />
             </Popover>
           </>
-        )
+        );
       },
     },
-  ]
+  ];
 
   return (
     <>
@@ -246,8 +309,8 @@ export function ListUsers() {
           <Form
             onFinish={onFinish}
             initialValues={{
-              searchMode: 'fullName',
-              searchText: '',
+              searchMode: "fullName",
+              searchText: "",
             }}
           >
             <Input.Group compact>
@@ -262,7 +325,7 @@ export function ListUsers() {
                 <Input
                   allowClear
                   disabled={isFetchingData}
-                  style={{ width: '75%' }}
+                  style={{ width: "75%" }}
                   defaultValue="Nguyen Van A"
                 />
               </Form.Item>
@@ -289,12 +352,12 @@ export function ListUsers() {
             disabled={isFetchingData}
             total={usersPagedList.totalCount}
             showTotal={(total: number) => `Total: ${total} result(s)`}
-            pageSizeOptions={['10', '20', '50']}
+            pageSizeOptions={["10", "20", "50"]}
             showSizeChanger
             onChange={onPaginationConfigChanged}
           />
         </>
       )}
     </>
-  )
+  );
 }

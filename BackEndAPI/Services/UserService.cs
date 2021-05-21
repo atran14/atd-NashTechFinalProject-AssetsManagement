@@ -141,13 +141,13 @@ namespace BackEndAPI.Services
             if (model.JoinedDate.DayOfWeek == DayOfWeek.Saturday
                    || model.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                throw new Exception(Message.JoinedBeforeBirth);
+                throw new Exception(Message.WeekendJoinedDate);
             }
 
             if (model.JoinedDate < model.DateOfBirth)
             {
 
-                throw new Exception(Message.WeekendJoinedDate);
+                throw new Exception(Message.JoinedBeforeBirth);
             }
 
             user.DateOfBirth = model.DateOfBirth;
