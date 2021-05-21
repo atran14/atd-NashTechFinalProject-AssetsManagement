@@ -16,6 +16,6 @@ namespace BackEndAPI.Helpers
         public const string NullUser = "User can not be null!";
         public const string RestrictedAge = "User is under 18. Please select a different date";
         public const string WeekendJoinedDate = "Joined date is Saturday or Sunday. Please select a different date";
-        public const string JoinedBeforeBirth ="Joined date is not later than Date of Birth. Please select a different date";
+        public const string JoinedBeforeBirth ="Joined date is not later than date of birth. Please select a different date";
     }
 }

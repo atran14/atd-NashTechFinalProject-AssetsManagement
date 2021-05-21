@@ -1,5 +1,6 @@
 import {
   Button,
+  Col,
   DatePicker,
   Form,
   Input,
@@ -19,7 +20,7 @@ import { UserService } from "../../services/UserService";
 export function UpdateUser() {
   const layout = {
     labelCol: {
-      span: 16,
+      span: 14,
       offset: 3,
       pull: 9,
     },
@@ -29,7 +30,10 @@ export function UpdateUser() {
     },
   };
   const tailLayout = {
-    wrapperCol: {},
+    wrapperCol: {
+      
+      
+    },
   };
 
   const { Option } = Select;
@@ -110,14 +114,17 @@ export function UpdateUser() {
 
   return (
     <>
-      <Title>Update User</Title>
+    <Col span={9}>
+      <h4 >Edit User</h4>
+      </Col>
+      <Col span={16}>
       <Form
         {...layout}
         form={form}
         onFinish={onFinish}
         onFinishFailed={onFinishFailed}
       >
-        <Form.Item name="firstName" label="Last Name">
+        <Form.Item  name="firstName" label="Last Name">
           <Input disabled />
         </Form.Item>
         <Form.Item name="lastName" label="First Name">
@@ -129,7 +136,7 @@ export function UpdateUser() {
           label="Date Of Birth"
           rules={[{ required: true, message: "Please select date of birth!" },{ validator: validateDateOfBirth }]}
         >
-          <DatePicker format={dateFormat}   />
+          <DatePicker format={dateFormat}  style={{width:244}} />
         </Form.Item>
 
         <Form.Item name="gender" label="Gender">
@@ -144,7 +151,7 @@ export function UpdateUser() {
           label="Joined Date"
           rules={[{ required: true, message: "Please select join date !" },{ validator: validateJoinedDate }]}
         >
-          <DatePicker format={dateFormat}  />
+          <DatePicker format={dateFormat} style={{width:244}} />
         </Form.Item>
 
         <Form.Item
@@ -159,17 +166,20 @@ export function UpdateUser() {
           </Select>
         </Form.Item>
 
-        <Form.Item {...tailLayout}>
+        <Form.Item 
+        {...tailLayout} 
+        >
           <Space>
             <Button type="primary" htmlType="submit">
-              Update
+              Save
             </Button>
-            <Button type="primary" danger>
+            <Button style={{marginLeft:20}} type="primary" danger>
               <a href="/users"> Cancel </a>
             </Button>
           </Space>
         </Form.Item>
       </Form>
+      </Col>
     </>
   );
 }
