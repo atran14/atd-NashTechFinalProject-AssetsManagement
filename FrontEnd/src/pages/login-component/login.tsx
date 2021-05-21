@@ -10,16 +10,15 @@ export function Login() {
     labelCol: {
       span: 16,
       offset: 3,
-      pull: 9
+      pull: 9,
     },
     wrapperCol: {
       span: 16,
-      pull: 9
+      pull: 9,
     },
   };
   const tailLayout = {
-    wrapperCol: {
-    },
+    wrapperCol: {},
   };
 
   let history = useHistory();
@@ -38,7 +37,7 @@ export function Login() {
   };
 
   const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed:', errorInfo);
+    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -56,7 +55,7 @@ export function Login() {
           rules={[
             {
               required: true,
-              message: 'Please input your username!',
+              message: "Please input your username!",
             },
           ]}
         >
@@ -69,7 +68,7 @@ export function Login() {
           rules={[
             {
               required: true,
-              message: 'Please input your password!',
+              message: "Please input your password!",
             },
           ]}
         >
@@ -79,7 +78,7 @@ export function Login() {
         <Form.Item {...tailLayout}>
           <Button type="primary" htmlType="submit">
             Login
-      </Button>
+          </Button>
         </Form.Item>
       </Form>
     </>

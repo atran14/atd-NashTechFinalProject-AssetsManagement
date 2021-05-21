@@ -8,11 +8,9 @@ export function handleResponse(response: any) {
         authenticationService.logout();
         window.location.reload(true);
       }
-
       const error = (data && data.message) || response.statusText;
       return Promise.reject(error);
     }
-
     return data;
   });
 }

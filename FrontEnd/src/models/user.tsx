@@ -1,28 +1,28 @@
-import { } from "module";
+import {} from "module";
 
 export type UserInfo = {
-  firstName: string,
-  lastName : string,
-  dateOfBirth: Date,
-  joinedDate: Date,
-  gender: number,
-  type : number
-}
+  firstName: string;
+  lastName: string;
+  dateOfBirth: Date;
+  joinedDate: Date;
+  gender: number;
+  type: number;
+};
 
-export type EditUserModel  = {
-  dateOfBirth: Date,
-  joinedDate: Date,
-  gender: number,
-  type : number
-}
+export type EditUserModel = {
+  dateOfBirth: Date;
+  joinedDate: Date;
+  gender: number;
+  type: number;
+};
 
 export type UserLogin = {
-  username: string
-  password: string
-}
+  username: string;
+  password: string;
+};
 
 export interface User {
-  id: number
+  id: number;
   firstName: string;
   lastName: string;
   dateOfBirth: Date;
@@ -36,14 +36,14 @@ export interface User {
 }
 
 export type CreateUserModel = {
-  firstName: string,
-  lastName: string,
-  datOfBirth: Date,
-  gender: number,
-  joinedDate: Date,
-  type: number,
-  location: number
-}
+  firstName: string;
+  lastName: string;
+  datOfBirth: Date;
+  gender: number;
+  joinedDate: Date;
+  type: number;
+  location: number;
+};
 
 export interface LoggedInUser extends User {
   token: string;
@@ -51,19 +51,20 @@ export interface LoggedInUser extends User {
 
 export enum UserGender {
   MALE,
-  FEMALE
+  FEMALE,
 }
 
 export enum UserType {
-  ADMIN, USER
+  ADMIN,
+  USER,
 }
 
 export enum UserStatus {
   ACTIVE,
-  DISABLED
+  DISABLED,
 }
 
 export enum Location {
   HANOI,
-  HOCHIMINH
+  HOCHIMINH,
 }
