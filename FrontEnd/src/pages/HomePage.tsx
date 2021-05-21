@@ -7,6 +7,7 @@ import { Modal, Button } from "react-bootstrap";
 import { history } from "../helpers/history";
 import { authenticationService } from "../services/authentication.service";
 import { userService } from "../services/user.service";
+import { Role } from "../helpers/role";
 
 export function HomePage() {
   const [show, setShow] = useState(false);
@@ -23,7 +24,10 @@ export function HomePage() {
   let id = authenticationService.currentUserValue.id;
 
   useEffect(() => {
-    if (authenticationService.currentUserValue.onFirstLogin == 1) {
+    if (
+      authenticationService.currentUserValue.onFirstLogin == 1 &&
+      authenticationService.currentUserValue.type != Role.Admin
+    ) {
       setShow(true);
     }
   });

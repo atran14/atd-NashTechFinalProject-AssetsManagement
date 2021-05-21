@@ -319,21 +319,6 @@ namespace BackEndAPI.Services
 
             await _repository.Update(user);
         }
-        public async Task ChangePasswordFirstTime(int id, string newPassword)
-        {
-            var user = await _repository.GetById(id);
-
-            if (user == null)
-            {
-                throw new InvalidOperationException(Message.UserNotFound);
-            }
-            
-            if (user.OnFirstLogin == OnFirstLogin.Yes){
-                user.OnFirstLogin = OnFirstLogin.No;
-            }
-            user.Password = newPassword ;
-
-            await _repository.Update(user);
-        }
+        
     }
 }
