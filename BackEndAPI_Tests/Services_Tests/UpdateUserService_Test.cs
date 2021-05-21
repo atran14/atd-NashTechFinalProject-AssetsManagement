@@ -102,11 +102,11 @@ namespace BackEndAPI_Tests.Services_Tests
            );
 
             //Assert
-            Assert.AreSame(exception.Message, "Join Date is Saturday or Sunday. Please select different date");
+            Assert.AreEqual(Message.WeekendJoinedDate, exception.Message);
         }
 
         [Test]
-        public void Update_JoinDatedIsNotLaterThanDateOfBirth_ShouldThrowToException()
+        public void Update_JoinDatedIsBeforeDateOfBirth_ShouldThrowToException()
         {
             var dontMatterUser = new User { };
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
@@ -124,7 +124,7 @@ namespace BackEndAPI_Tests.Services_Tests
             {
                 DateOfBirth = new DateTime(2001, 10, 1),
                 Gender = Gender.Male,
-                JoinedDate = new DateTime(2000, 5, 5),
+                JoinedDate = new DateTime(2000, 5, 3),
                 Type = UserType.User
             };
 
@@ -137,7 +137,10 @@ namespace BackEndAPI_Tests.Services_Tests
            );
 
             //Assert
-            Assert.AreSame(exception.Message, "Join Date is not later than Date Of Birth. Please select different date");
+            Assert.AreEqual(
+                Message.JoinedBeforeBirth,
+                exception.Message
+            );
         }
 
 
@@ -173,7 +176,7 @@ namespace BackEndAPI_Tests.Services_Tests
            );
 
             //Assert
-            Assert.AreSame(exception.Message, "User is under 18. Please select different date");
+            Assert.AreEqual(exception.Message, "User is under 18. Please select a different date");
         }
 
         [TearDown]

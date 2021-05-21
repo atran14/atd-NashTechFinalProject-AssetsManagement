@@ -1,17 +1,18 @@
 import {
   Button,
+  Col,
   Form,
   Input,
   message,
   Modal,
   Pagination,
-  Popconfirm,
   Popover,
+  Row,
   Select,
   Table,
-} from "antd";
-import { useState } from "react";
-import { useEffect } from "react";
+} from 'antd'
+import { useRef, useState } from 'react'
+import { useEffect } from 'react'
 import {
   PaginationParameters,
   UsersPagedListResponse,
@@ -20,17 +21,19 @@ import { Location, User, UserGender, UserType } from "../../models/User";
 import { UserService } from "../../services/UserService";
 import {
   EditOutlined,
-  InfoCircleTwoTone,
+  UserAddOutlined,
   SearchOutlined,
   UserDeleteOutlined,
+  FilterFilled,
   ExclamationCircleOutlined,
-} from "@ant-design/icons";
-import { Link, useHistory } from "react-router-dom";
+} from '@ant-design/icons'
+import { Link, Redirect, useHistory } from 'react-router-dom'
+import './users.css'
 
 const { Option } = Select;
-const { confirm } = Modal;
+const { confirm } = Modal
 
-let listAssignments = [
+const listAssignments = [
   {
     id: 1,
     assetId: 1,
@@ -38,7 +41,7 @@ let listAssignments = [
     assignedToUserId: 2,
     assignedDate: new Date(),
     state: 1,
-    note: "abc",
+    note: 'abc',
   },
   {
     id: 2,
@@ -47,7 +50,7 @@ let listAssignments = [
     assignedToUserId: 4,
     assignedDate: new Date(),
     state: 1,
-    note: "abc",
+    note: 'abc',
   },
   {
     id: 3,
@@ -56,97 +59,140 @@ let listAssignments = [
     assignedToUserId: 1,
     assignedDate: new Date(),
     state: 2,
-    note: "abc",
+    note: 'abc',
   },
-];
+]
 
-export function ListUsers() {
-  let [isAdminAuthorized] = useState(
-    sessionStorage.getItem("type") === "ADMIN"
-  );
-  let [isFetchingData, setIsFetchingData] = useState(false);
-  let [assignments, setAssignments]: [any, any] = useState([]);
-  let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>();
-  let [usersList, setUsersList] = useState<User[]>([]);
-  let history = useHistory();
+interface PassedInEditedUserProps {
+  editedUser: User
+}
+
+interface SearchAction {
+  action: 'filter' | 'search'
+  query: number | string
+}
+
+export function ListUsers({ editedUser }: PassedInEditedUserProps) {
+  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === 'ADMIN')
+  let [isFetchingData, setIsFetchingData] = useState(false)
+  let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
+  let [usersList, setUsersList] = useState<User[]>([])
+  let [filterSelected, setFilterSelected] = useState(false)
+  let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>({
+    action: 'search',
+    query: '',
+  })
+  let [isPopoverVisibles, setIsPopoverVisible] = useState<boolean[]>([])
+  let prevList = useRef(usersList)
 
   useEffect(() => {
     if (isAdminAuthorized) {
-      (async () => {
-        setIsFetchingData(true);
-        let userServices = UserService.getInstance();
-        let usersPagedResponse = await userServices.getUsers();
+      if (editedUser) {
+        console.log('Edited props detected!')
+        console.log(editedUser)
+      } else {
+        console.log('No edited props detected! Fetching data from server...')
+        console.log({ prevList })
+        ;(async () => {
+          setIsFetchingData(true)
+          let userServices = UserService.getInstance()
+          let usersPagedResponse = await userServices.getUsers()
 
-        setUsersPagedList(usersPagedResponse);
-        setUsersList(usersPagedResponse.items);
-        setIsFetchingData(false);
-      })();
-    } else {
-      history.push("/401-access-denied");
+          setUsersPagedList(usersPagedResponse)
+          setUsersList(usersPagedResponse.items)
+          setIsPopoverVisible(new Array(usersList.length).fill(false))
+          setLatestSearchAction({
+            action: 'search',
+            query: '',
+          })
+          setIsFetchingData(false)
+        })()
+      }
     }
-  }, []);
-
-  useEffect(() => {
-    setAssignments(listAssignments);
-  }, []);
+  }, [editedUser])
 
   function DisabledUser(id: number) {
-    var count = 0;
+    var count = 0
     for (var i = 0; i < listAssignments.length; i++) {
       if (
         listAssignments[i].assignedToUserId === id &&
         listAssignments[i].state !== 2
       ) {
-        count++;
+        count++
       }
     }
     if (count === 0) {
       confirm({
-        title: "Do you want to disable this user?",
+        title: 'Do you want to disable this user?',
         icon: <ExclamationCircleOutlined />,
         onOk() {
-          let userServices = UserService.getInstance();
+          let userServices = UserService.getInstance()
           try {
-            userServices.disableUser(id);
-            message.success("Disabled Successfully");
+            userServices.disableUser(id)
+            message.success('Disabled Successfully')
             setUsersList((userId: any[]) =>
-              userId.filter((item) => item.id !== id)
-            );
+              userId.filter((item) => item.id !== id),
+            )
           } catch {
-            message.success("Something went wrong");
+            message.success('Something went wrong')
           }
         },
         onCancel() {
-          console.log("Cancel");
+          console.log('Cancel')
         },
-      });
+      })
     }
     if (count > 0) {
       Modal.error({
         title:
-          "There are valid assignments belonging to this user. Please close all assignments before disabling user.",
-      });
+          'There are valid assignments belonging to this user. Please close all assignments before disabling user.',
+      })
     }
   }
 
-  const onFinish = (values: any) => {
-    if (usersPagedList !== undefined) {
-      let newList: User[];
+  const onSearchButtonClicked = (values: any) => {
+    ;(async () => {
+      setIsFetchingData(true)
+      let { searchText } = values
+      let userService = UserService.getInstance()
+      let usersPagedResponse: UsersPagedListResponse
 
-      if (values["searchMode"] === "fullName") {
-        newList = usersPagedList.items.filter((u: User) => {
-          let fullName = `${u.firstName} ${u.lastName}`;
-          return fullName.startsWith(values["searchText"]);
-        });
+      if (searchText.length === 0) {
+        usersPagedResponse = await userService.getUsers()
       } else {
-        newList = usersPagedList.items.filter((u: User) => {
-          return u.staffCode.startsWith(values["searchText"]);
-        });
+        usersPagedResponse = await userService.searchUsers(searchText)
       }
 
-      setUsersList(newList);
-    }
-  };
+      setLatestSearchAction({
+        action: 'search',
+        query: searchText as string,
+      })
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
+
+  const onFilterButtonClicked = (values: any) => {
+    ;(async () => {
+      setIsFetchingData(true)
+
+      let { filteredUserType } = values
+      let userService = UserService.getInstance()
+      let usersPagedResponse: UsersPagedListResponse = await userService.filterByType(
+        filteredUserType as number,
+      )
+
+      setLatestSearchAction({
+        action: 'filter',
+        query: filteredUserType as number,
+      })
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+
+      setIsFetchingData(false)
+    })()
+  }
 
   const generateDetailedUserContent = (record: User) => {
     return (
@@ -196,12 +242,33 @@ export function ListUsers() {
         PageSize: pageSize ?? 10,
       };
 
-      let usersPagedResponse = await userService.getUsers(parameters);
-      setUsersPagedList(usersPagedResponse);
-      setUsersList(usersPagedResponse.items);
-      setIsFetchingData(false);
-    })();
-  };
+      let usersPagedResponse: UsersPagedListResponse
+      switch (latestSearchAction.action) {
+        case 'search':
+          let searchQuery = latestSearchAction.query as string
+          if (searchQuery.length === 0) {
+            usersPagedResponse = await userService.getUsers(parameters)
+          } else {
+            usersPagedResponse = await userService.searchUsers(
+              searchQuery,
+              parameters,
+            )
+          }
+          break
+        case 'filter':
+          let filterQuery = latestSearchAction.query as number
+          usersPagedResponse = await userService.filterByType(
+            filterQuery,
+            parameters,
+          )
+          break
+      }
+
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
 
   const columns: any = [
     {
@@ -253,109 +320,177 @@ export function ListUsers() {
       render: (text: any, record: User, index: number) => {
         return <div>{UserType[record.type]}</div>;
       },
-      filters: [
-        {
-          text: "ADMIN",
-          value: UserType.ADMIN,
-        },
-        {
-          text: "USER",
-          value: UserType.USER,
-        },
-      ],
-      onFilter: (value: UserType, record: User) => {
-        return record.type === value;
-      },
       sorter: (a: User, b: User) => a.type - b.type,
       sortDirections: ["ascend", "descend"],
     },
     {
-      title: "",
-      dataIndex: "action",
-      key: "action",
-      render: (text: any, record: User) => {
+      title: '',
+      dataIndex: 'action',
+      key: 'action',
+      render: (text: any, record: User, index: number) => {
         return (
-          <>
-            <Link to={`/users/update/${record.id}`}>
-              <Button type="primary" icon={<EditOutlined />} />
-            </Link>
-
-            <Button
-              danger
-              type="primary"
-              icon={<UserDeleteOutlined />}
-              onClick={() => {
-              DisabledUser(record.id);
-              }}
-            />
-
-            <Popover
-              trigger="click"
-              title="User Detail"
-              content={generateDetailedUserContent(record)}
-            >
-              <Button icon={<InfoCircleTwoTone />} />
-            </Popover>
-          </>
-        );
+          <Row onClick={(e) => e.stopPropagation()}>
+            <Col>
+              <Link to={`/users/update/${record.id}`}>
+                <Button type="primary" icon={<EditOutlined />} />
+              </Link>
+            </Col>
+            <Col>
+              <Button
+                danger
+                type="primary"
+                icon={<UserDeleteOutlined />}
+                onClick={() => DisabledUser(record.id)}
+              />
+            </Col>
+            <Col>
+              <Popover
+                title="User details"
+                content={generateDetailedUserContent(record)}
+                visible={isPopoverVisibles[index]}
+                placement="left"
+              />
+            </Col>
+          </Row>
+        )
       },
     },
   ];
 
   return (
     <>
+      {!isAdminAuthorized && (
+        <Redirect to="/401-access-denied" />
+      )}
       {isAdminAuthorized && usersPagedList !== undefined && (
         <>
-          <Form
-            onFinish={onFinish}
-            initialValues={{
-              searchMode: "fullName",
-              searchText: "",
-            }}
-          >
-            <Input.Group compact>
-              <Form.Item name="searchMode">
-                <Select disabled={isFetchingData}>
-                  <Option value="fullName">Full name</Option>
-                  <Option value="staffCode">Staff code</Option>
-                </Select>
-              </Form.Item>
+          <Row>
+            <Col span={5}>
+              <Form onFinish={onFilterButtonClicked}>
+                <Row justify="start">
+                  <Col span={15}>
+                    <Form.Item
+                      name="filteredUserType"
+                      className="no-margin-no-padding"
+                    >
+                      <Select
+                        placeholder="Select user type"
+                        style={{ width: '100%' }}
+                        onSelect={() => setFilterSelected(true)}
+                        disabled={isFetchingData}
+                      >
+                        <Option key="admin" value={0}>
+                          Admin
+                        </Option>
+                        <Option key="user" value={1}>
+                          User
+                        </Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
 
-              <Form.Item name="searchText">
-                <Input
-                  allowClear
-                  disabled={isFetchingData}
-                  style={{ width: "75%" }}
-                  defaultValue="Nguyen Van A"
-                />
-              </Form.Item>
-
-              <Form.Item>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<FilterFilled />}
+                        htmlType="submit"
+                        disabled={!filterSelected || isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+            <Col span={4} offset={10}>
+              <Form
+                onFinish={onSearchButtonClicked}
+                initialValues={{
+                  searchText: '',
+                }}
+              >
+                <Row justify="end">
+                  <Col span={18}>
+                    <Form.Item
+                      name="searchText"
+                      className="no-margin-no-padding"
+                    >
+                      <Input
+                        allowClear
+                        disabled={isFetchingData}
+                        style={{ width: '100%' }}
+                        placeholder="e.g. Bob/SD0001"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<SearchOutlined />}
+                        type="primary"
+                        htmlType="submit"
+                        disabled={isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+            <Col span={4} offset={1}>
+              <Link to="/users/create">
                 <Button
-                  size="small"
-                  icon={<SearchOutlined />}
+                  style={{ width: '100%' }}
                   type="primary"
-                  htmlType="submit"
-                  disabled={isFetchingData}
-                />
-              </Form.Item>
-            </Input.Group>
-          </Form>
+                  icon={<UserAddOutlined />}
+                >
+                  Create new user
+                </Button>
+              </Link>
+            </Col>
+          </Row>
+
           <Table
+            style={{
+              margin: '1.25em 0 1.25em 0',
+            }}
+            onRow={(record, rowIndex) => {
+              return {
+                onClick: (event) => {
+                  if (rowIndex !== undefined) {
+                    let newPopoverVisibles = Array.from(isPopoverVisibles)
+                    newPopoverVisibles[rowIndex] = true
+                    setIsPopoverVisible(newPopoverVisibles)
+                  }
+                },
+                onMouseLeave: (event) => {
+                  if (rowIndex !== undefined) {
+                    let newPopoverVisibles = Array.from(isPopoverVisibles)
+                    newPopoverVisibles[rowIndex] = false
+                    setIsPopoverVisible(newPopoverVisibles)
+                  }
+                },
+              }
+            }}
             dataSource={usersList}
             columns={columns}
             scroll={{ y: 400 }}
             pagination={false}
             loading={isFetchingData}
           />
-          <Pagination
-            disabled={isFetchingData}
-            total={usersPagedList.totalCount}
-            showTotal={(total: number) => `Total: ${total} result(s)`}
-            pageSizeOptions={["10", "20", "50"]}
-            showSizeChanger
-            onChange={onPaginationConfigChanged}
-          />
+
+          <Row justify="center">
+            <Col>
+              <Pagination
+                disabled={isFetchingData}
+                total={usersPagedList.totalCount}
+                showTotal={(total: number) => `Total: ${total} result(s)`}
+                pageSizeOptions={['10', '20', '50']}
+                showSizeChanger
+                onChange={onPaginationConfigChanged}
+              />
+            </Col>
+          </Row>
         </>
       )}
     </>
