@@ -1,13 +1,30 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BackEndAPI.Entities;
+using BackEndAPI.Enums;
 using BackEndAPI.Models;
 
 namespace BackEndAPI.Interfaces
 {
     public interface IUserService
     {
-        Task<GetUsersListPagedResponseDTO> GetUsers(PaginationParameters paginationParameters, int adminId);        
+        Task<GetUsersListPagedResponseDTO> GetUsers(
+            PaginationParameters paginationParameters,
+            int adminId
+        );
+
+        Task<GetUsersListPagedResponseDTO> GetUsersByType(
+            PaginationParameters paginationParameters,
+            int adminId,
+            UserType type
+        );
+
+        Task<GetUsersListPagedResponseDTO> SearchUsers(
+            PaginationParameters paginationParameters,
+            int adminId,
+            string searchText
+        );
+
         AuthenticateResponse Authenticate(AuthenticateRequest model);
 
         IEnumerable<User> GetAll();

@@ -6,6 +6,7 @@ using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using BackEndAPI.Enums;
 using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Controllers
@@ -36,7 +37,6 @@ namespace BackEndAPI.Controllers
             return Ok(await _userService.Create(user));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
@@ -44,7 +44,6 @@ namespace BackEndAPI.Controllers
             return Ok();
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("disable/{id}")]
         public async Task<IActionResult> Disabled(int id)
         {
@@ -63,7 +62,38 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
-        //Change Password
+        [HttpGet("type/{type}")]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersByType(
+            UserType type,
+            [FromQuery] PaginationParameters paginationParameters
+        )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.GetUsersByType(
+                paginationParameters, 
+                Int32.Parse(adminClaim.Value),
+                type
+            );
+
+            return Ok(users);
+        }
+
+        [HttpGet("search")]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUsers(
+            [FromQuery] string query,
+            [FromQuery] PaginationParameters paginationParameters
+        )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.SearchUsers(
+                paginationParameters, 
+                Int32.Parse(adminClaim.Value),
+                query
+            );
+
+            return Ok(users);
+        }
+        
         [HttpPut("change-password/{id}")]
         public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
         {

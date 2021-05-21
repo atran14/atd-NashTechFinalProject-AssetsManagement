@@ -78,6 +78,41 @@ namespace BackEndAPI.Services
             };
         }
 
+        public async Task<GetUsersListPagedResponseDTO> GetUsersByType(
+            PaginationParameters paginationParameters,
+            int adminId,
+            UserType type
+        )
+        {
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
+            var users = PagedList<User>.ToPagedList(
+                _repository.GetAll()
+                    .Where(u =>
+                    u.Status == UserStatus.Active
+                    && u.Location == adminUser.Location
+                    && u.Type == type
+                ),
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = users.CurrentPage,
+                PageSize = users.PageSize,
+                TotalCount = users.TotalCount,
+                TotalPages = users.TotalPages,
+                HasNext = users.HasNext,
+                HasPrevious = users.HasPrevious,
+                Items = users.Select(u => _mapper.Map<UserDTO>(u))
+            };
+        }
+
         public IEnumerable<User> GetAll()
         {
             return _repository.GetAll().WithoutPasswords();
@@ -141,13 +176,13 @@ namespace BackEndAPI.Services
             if (model.JoinedDate.DayOfWeek == DayOfWeek.Saturday
                    || model.JoinedDate.DayOfWeek == DayOfWeek.Sunday)
             {
-                throw new Exception(Message.JoinedBeforeBirth);
+                throw new Exception(Message.WeekendJoinedDate);
             }
 
             if (model.JoinedDate < model.DateOfBirth)
             {
 
-                throw new Exception(Message.WeekendJoinedDate);
+                throw new Exception(Message.JoinedBeforeBirth);
             }
 
             user.DateOfBirth = model.DateOfBirth;
@@ -221,6 +256,50 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
+        public async Task<GetUsersListPagedResponseDTO> SearchUsers(
+            PaginationParameters paginationParameters,
+            int adminId,
+            string searchText
+        )
+        {
+            if (searchText == null)
+            {
+                throw new Exception("Null search query");
+            }
+
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
+            var users = PagedList<User>.ToPagedList(
+                _repository.GetAll()
+                    .Where(u =>
+                    u.Status == UserStatus.Active
+                    && u.Location == adminUser.Location
+                    &&
+                    (
+                        (u.FirstName + " " + u.LastName).StartsWith(searchText)
+                        || u.StaffCode.StartsWith(searchText)
+                    )
+                    ),
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = users.CurrentPage,
+                PageSize = users.PageSize,
+                TotalCount = users.TotalCount,
+                TotalPages = users.TotalPages,
+                HasNext = users.HasNext,
+                HasPrevious = users.HasPrevious,
+                Items = users.Select(u => _mapper.Map<UserDTO>(u))
+            };
+        }
+        
         public async Task ChangePassword(int id, string oldPassword, string newPassword)
         {
             var user = await _repository.GetById(id);
