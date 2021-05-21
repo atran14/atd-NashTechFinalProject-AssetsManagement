@@ -18,6 +18,6 @@ namespace BackEndAPI.Interfaces
         Task Disable(int id);
         Task<UserInfo> GetById(int id);
         Task ChangePassword(int id, string oldPassword, string newPassword);
-         
+        Task ChangePasswordFirstTime(int id, string newPassword);
     }
 }

@@ -10,7 +10,7 @@ using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+    // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -64,6 +64,7 @@ namespace BackEndAPI.Controllers
         }
 
         //Change Password
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("change-password/{id}")]
         public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
         {

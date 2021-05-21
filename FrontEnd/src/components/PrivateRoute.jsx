@@ -7,12 +7,8 @@ export const PrivateRoute = ({ component: Component, roles, ...rest }) => (
     {...rest}
     render={(props) => {
       const currentUser = authenticationService.currentUserValue;
-      if (!currentUser.length) {
-        return (
-          <Redirect
-            to={{ pathname: "/login", state: { from: props.location } }}
-          />
-        );
+      if (!currentUser || localStorage.getItem("currentUser") == null) {
+        return <Redirect to={{ pathname: "/login" }} />;
       }
 
       // check if route is restricted by role

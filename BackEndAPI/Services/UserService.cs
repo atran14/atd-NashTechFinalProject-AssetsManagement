@@ -229,10 +229,26 @@ namespace BackEndAPI.Services
             {
                 throw new InvalidOperationException(Message.UserNotFound);
             }
-            if (user.Password != oldPassword)
+            
+            if (user.OnFirstLogin == OnFirstLogin.Yes){
+                user.OnFirstLogin = OnFirstLogin.No;
+            }else if (user.Password != oldPassword)
             {
                 throw new InvalidOperationException(Message.OldPasswordIncorrect);
             }
+            user.Password = newPassword ;
+
+            await _repository.Update(user);
+        }
+        public async Task ChangePasswordFirstTime(int id, string newPassword)
+        {
+            var user = await _repository.GetById(id);
+
+            if (user == null)
+            {
+                throw new InvalidOperationException(Message.UserNotFound);
+            }
+            
             if (user.OnFirstLogin == OnFirstLogin.Yes){
                 user.OnFirstLogin = OnFirstLogin.No;
             }

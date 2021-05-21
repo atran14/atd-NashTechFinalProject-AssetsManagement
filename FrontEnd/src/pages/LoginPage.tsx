@@ -40,7 +40,6 @@ class LoginPage extends React.Component<{ history: any; location: any }> {
               },
               (error) => {
                 setSubmitting(false);
-                // setStatus(error.toString());
                 setStatus(error);
               }
             );
