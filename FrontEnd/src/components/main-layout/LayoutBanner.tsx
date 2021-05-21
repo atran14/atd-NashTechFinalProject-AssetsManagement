@@ -1,32 +1,29 @@
-import React from 'react';
-import { Layout, Menu } from 'antd';
-import { getUsernameAvatar } from '../UserAvatar';
-import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
-import { useHistory } from 'react-router-dom';
+import { Menu } from 'antd';
+import { LogoutOutlined } from '@ant-design/icons';
 
-const { Header } = Layout;
 const { SubMenu } = Menu;
 
 function LayoutBanner() {
-  let history = useHistory();
-  
+
   let OnLogout = () => {
     sessionStorage.clear();
-    window.location.href = '/';
+    window.location.href = '/login';
   };
 
   return (
-    <Header  className="header" style={{ position: 'fixed', width: '100%', float: 'right', zIndex: 1 }}>
-      <div className="logo" />
-      <Menu
-        key="1" style={{ float: 'right' }} theme="dark" mode="horizontal" defaultSelectedKeys={['2']}>
-        <SubMenu title={getUsernameAvatar('Cemal')}>
-          <Menu.Item key="setting:1">
-            <span>
-              <UserOutlined />
-              Profile
-            </span>
-          </Menu.Item>
+    <>
+      {sessionStorage.getItem("username") && <Menu
+        key="1"
+        style={{ backgroundColor: '#cf2338', width: '100%', zIndex: 1, position: 'fixed' }}
+        theme="light"
+        mode="horizontal"
+        defaultSelectedKeys={['2']}
+      >
+        <SubMenu title='Asset Management Portal' style={{ fontFamily: 'Roboto', color: 'white', fontSize: 20 }}>
+        </SubMenu>
+        <SubMenu
+          title={sessionStorage.getItem("username")}
+          style={{ float: 'right', fontFamily: 'Roboto', color: 'white', fontSize: 20 }}>
           <Menu.Item key="setting:2">
             <span onClick={OnLogout}>
               <LogoutOutlined />
@@ -35,7 +32,20 @@ function LayoutBanner() {
           </Menu.Item>
         </SubMenu>
       </Menu>
-    </Header>
+      }
+      {!sessionStorage.getItem("username") && 
+      <Menu
+        key="1"
+        style={{ backgroundColor: '#cf2338', width: '100%', zIndex: 1, position: 'fixed' }}
+        theme="light"
+        mode="horizontal"
+        defaultSelectedKeys={['2']}
+      >
+        <SubMenu title='Asset Management Portal' style={{ fontFamily: 'Roboto', color: 'white', fontSize: 20 }}>
+        </SubMenu>
+      </Menu>
+      }
+    </>
   );
 }
 

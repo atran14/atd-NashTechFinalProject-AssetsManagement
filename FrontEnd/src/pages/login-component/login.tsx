@@ -77,7 +77,7 @@ export function Login() {
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button style={{backgroundColor:'#e9424d', color:'white'}} htmlType="submit">
             Login
       </Button>
         </Form.Item>
