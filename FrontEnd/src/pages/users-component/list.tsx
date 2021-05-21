@@ -4,14 +4,14 @@ import {
   Form,
   Input,
   message,
+  Modal,
   Pagination,
-  Popconfirm,
   Popover,
   Row,
   Select,
   Table,
 } from 'antd'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useEffect } from 'react'
 import {
   PaginationParameters,
@@ -25,12 +25,44 @@ import {
   SearchOutlined,
   UserDeleteOutlined,
   FilterFilled,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, Redirect, useHistory } from 'react-router-dom'
 import './users.css'
-import internal from 'stream'
 
 const { Option } = Select
+
+const { confirm } = Modal
+
+const listAssignments = [
+  {
+    id: 1,
+    assetId: 1,
+    assignedByUserId: 1,
+    assignedToUserId: 2,
+    assignedDate: new Date(),
+    state: 1,
+    note: 'abc',
+  },
+  {
+    id: 2,
+    assetId: 2,
+    assignedByUserId: 1,
+    assignedToUserId: 4,
+    assignedDate: new Date(),
+    state: 1,
+    note: 'abc',
+  },
+  {
+    id: 3,
+    assetId: 3,
+    assignedByUserId: 2,
+    assignedToUserId: 1,
+    assignedDate: new Date(),
+    state: 2,
+    note: 'abc',
+  },
+]
 
 interface PassedInEditedUserProps {
   editedUser: User
@@ -41,7 +73,7 @@ interface SearchAction {
   query: number | string
 }
 
-export function ListUsers(props: PassedInEditedUserProps) {
+export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === 'ADMIN')
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
@@ -52,42 +84,71 @@ export function ListUsers(props: PassedInEditedUserProps) {
     query: '',
   })
   let [isPopoverVisibles, setIsPopoverVisible] = useState<boolean[]>([])
-  let history = useHistory()
+  let prevList = useRef(usersList)
 
   useEffect(() => {
     if (isAdminAuthorized) {
-      ;(async () => {
-        setIsFetchingData(true)
-        let userServices = UserService.getInstance()
-        let usersPagedResponse = await userServices.getUsers()
+      if (editedUser) {
+        console.log('Edited props detected!')
+        console.log(editedUser)
+      } else {
+        console.log('No edited props detected! Fetching data from server...')
+        console.log({ prevList })
+        ;(async () => {
+          setIsFetchingData(true)
+          let userServices = UserService.getInstance()
+          let usersPagedResponse = await userServices.getUsers()
 
-        setUsersPagedList(usersPagedResponse)
-        setUsersList(usersPagedResponse.items)
-        setIsPopoverVisible(new Array(usersList.length).fill(false))
-        setLatestSearchAction({
-          action: 'search',
-          query: '',
-        })
-        setIsFetchingData(false)
-      })()
-    } else {
-      history.push('/401-access-denied')
+          setUsersPagedList(usersPagedResponse)
+          setUsersList(usersPagedResponse.items)
+          setIsPopoverVisible(new Array(usersList.length).fill(false))
+          setLatestSearchAction({
+            action: 'search',
+            query: '',
+          })
+          setIsFetchingData(false)
+        })()
+      }
     }
-  }, [isAdminAuthorized])
+  }, [editedUser])
 
-  const confirmDisableUser = (id: number) => {
-    let userServices = UserService.getInstance()
-    try {
-      userServices.disableUser(id)
-      message.success('Disabled Successfully')
-      setUsersList((userId: any[]) => userId.filter((item) => item.id !== id))
-    } catch {
-      message.success('Something went wrong')
+  function DisabledUser(id: number) {
+    var count = 0
+    for (var i = 0; i < listAssignments.length; i++) {
+      if (
+        listAssignments[i].assignedToUserId === id &&
+        listAssignments[i].state !== 2
+      ) {
+        count++
+      }
     }
-  }
-
-  const cancelDisableUser = () => {
-    console.log('cancel')
+    if (count === 0) {
+      confirm({
+        title: 'Do you want to disable this user?',
+        icon: <ExclamationCircleOutlined />,
+        onOk() {
+          let userServices = UserService.getInstance()
+          try {
+            userServices.disableUser(id)
+            message.success('Disabled Successfully')
+            setUsersList((userId: any[]) =>
+              userId.filter((item) => item.id !== id),
+            )
+          } catch {
+            message.success('Something went wrong')
+          }
+        },
+        onCancel() {
+          console.log('Cancel')
+        },
+      })
+    }
+    if (count > 0) {
+      Modal.error({
+        title:
+          'There are valid assignments belonging to this user. Please close all assignments before disabling user.',
+      })
+    }
   }
 
   const onSearchButtonClicked = (values: any) => {
@@ -174,7 +235,7 @@ export function ListUsers(props: PassedInEditedUserProps) {
   }
 
   const onPaginationConfigChanged = (page: number, pageSize?: number) => {
-    (async () => {
+    ;(async () => {
       setIsFetchingData(true)
       let userService = UserService.getInstance()
       let parameters: PaginationParameters = {
@@ -276,17 +337,12 @@ export function ListUsers(props: PassedInEditedUserProps) {
               </Link>
             </Col>
             <Col>
-              <Popconfirm
-                title="Are you sure to disable this user?"
-                onConfirm={() => {
-                  confirmDisableUser(record.id)
-                }}
-                onCancel={cancelDisableUser}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button danger type="primary" icon={<UserDeleteOutlined />} />
-              </Popconfirm>
+              <Button
+                danger
+                type="primary"
+                icon={<UserDeleteOutlined />}
+                onClick={() => DisabledUser(record.id)}
+              />
             </Col>
             <Col>
               <Popover
@@ -304,10 +360,13 @@ export function ListUsers(props: PassedInEditedUserProps) {
 
   return (
     <>
+      {!isAdminAuthorized && (
+        <Redirect to="/401-access-denied" />
+      )}
       {isAdminAuthorized && usersPagedList !== undefined && (
         <>
           <Row>
-            <Col span={5} >
+            <Col span={5}>
               <Form onFinish={onFilterButtonClicked}>
                 <Row justify="start">
                   <Col span={15}>
@@ -344,7 +403,7 @@ export function ListUsers(props: PassedInEditedUserProps) {
                 </Row>
               </Form>
             </Col>
-            <Col span={4} offset={10} >
+            <Col span={4} offset={10}>
               <Form
                 onFinish={onSearchButtonClicked}
                 initialValues={{
@@ -379,10 +438,10 @@ export function ListUsers(props: PassedInEditedUserProps) {
                 </Row>
               </Form>
             </Col>
-            <Col span={4} offset={1} >
+            <Col span={4} offset={1}>
               <Link to="/users/create">
                 <Button
-                  style={{width:"100%"}}
+                  style={{ width: '100%' }}
                   type="primary"
                   icon={<UserAddOutlined />}
                 >

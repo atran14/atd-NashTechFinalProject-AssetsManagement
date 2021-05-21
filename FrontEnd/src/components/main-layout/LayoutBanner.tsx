@@ -12,7 +12,7 @@ function LayoutBanner() {
   
   let OnLogout = () => {
     sessionStorage.clear();
-    history.push("/");
+    window.location.href = '/';
   };
 
   return (
@@ -28,7 +28,7 @@ function LayoutBanner() {
             </span>
           </Menu.Item>
           <Menu.Item key="setting:2">
-            <span onClick={() => OnLogout}>
+            <span onClick={OnLogout}>
               <LogoutOutlined />
               Logout
             </span>
