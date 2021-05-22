@@ -11,7 +11,6 @@ using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Controllers
 {
-    [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -36,7 +35,7 @@ namespace BackEndAPI.Controllers
         {
             return Ok(await _userService.Create(user));
         }
-
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
@@ -62,6 +61,7 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
+        //Change Password
         [HttpGet("type/{type}")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersByType(
             UserType type,
@@ -94,6 +94,7 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
         
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin,User")]
         [HttpPut("change-password/{id}")]
         public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
         {

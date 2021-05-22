@@ -35,13 +35,8 @@ namespace BackEndAPI.Services
         public AuthenticateResponse Authenticate(AuthenticateRequest model)
         {
             var user = _repository.GetAll().SingleOrDefault(x => x.UserName == model.UserName && x.Password == model.Password);
-
-            // return null if user not found
             if (user == null) return null;
-
-            // authentication successful so generate jwt token
             var token = generateJwtToken(user);
-
             return new AuthenticateResponse(user, token);
         }
 
@@ -121,7 +116,6 @@ namespace BackEndAPI.Services
         //Generate JwtToken
         private string generateJwtToken(User user)
         {
-            // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -308,16 +302,19 @@ namespace BackEndAPI.Services
             {
                 throw new InvalidOperationException(Message.UserNotFound);
             }
-            if (user.Password != oldPassword)
+            
+            if (user.OnFirstLogin == OnFirstLogin.Yes)
+            {
+                user.OnFirstLogin = OnFirstLogin.No;
+            } 
+            else if (user.Password != oldPassword)
             {
                 throw new InvalidOperationException(Message.OldPasswordIncorrect);
-            }
-            if (user.OnFirstLogin == OnFirstLogin.Yes){
-                user.OnFirstLogin = OnFirstLogin.No;
             }
             user.Password = newPassword ;
 
             await _repository.Update(user);
         }
+        
     }
 }
