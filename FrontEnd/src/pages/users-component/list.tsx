@@ -32,9 +32,9 @@ import {
   UserDeleteOutlined,
   FilterFilled,
   ExclamationCircleOutlined,
-} from "@ant-design/icons";
-import { Link, Redirect, useHistory } from "react-router-dom";
-import "./users.css";
+} from '@ant-design/icons'
+import { Link, Redirect } from 'react-router-dom'
+import './users.css'
 
 const { Option } = Select;
 const { confirm } = Modal;
@@ -479,7 +479,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
             <Col span={4} offset={1}>
               <Link to="/users/create">
                 <Button
-                  style={{ width: "100%" }}
+                  style={{ width: '100%', backgroundColor:'#e9424d', border:'#e9424d' }}
                   type="primary"
                   icon={<UserAddOutlined />}
                 >

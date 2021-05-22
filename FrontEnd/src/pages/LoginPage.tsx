@@ -8,7 +8,10 @@ class LoginPage extends React.Component<{ history: any; location: any }> {
   constructor(props: any) {
     super(props);
 
-    if (authenticationService.currentUserValue) {
+    if (
+      authenticationService.currentUserValue &&
+      localStorage.getItem("currentUser") != null
+    ) {
       this.props.history.push("/");
     }
   }
