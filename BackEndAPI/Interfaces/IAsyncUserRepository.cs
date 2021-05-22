@@ -6,6 +6,8 @@ namespace BackEndAPI.Interfaces
     {
 
         int CountUsername(string username);
+        
+        int CountAdminRemain();
 
     }
 }

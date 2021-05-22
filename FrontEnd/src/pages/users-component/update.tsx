@@ -135,11 +135,12 @@ export function UpdateUser() {
           name="dateOfBirth"
           label="Date Of Birth"
           rules={[{ required: true, message: "Please select date of birth!" },{ validator: validateDateOfBirth }]}
+          hasFeedback
         >
           <DatePicker format={dateFormat}  style={{width:244}} />
         </Form.Item>
 
-        <Form.Item name="gender" label="Gender">
+        <Form.Item name="gender" label="Gender" hasFeedback>
           <Radio.Group>
             <Radio value={UserGender.MALE}>Male</Radio>
             <Radio value={UserGender.FEMALE}>Female</Radio>
@@ -150,6 +151,7 @@ export function UpdateUser() {
           name="joinedDate"
           label="Joined Date"
           rules={[{ required: true, message: "Please select join date !" },{ validator: validateJoinedDate }]}
+          hasFeedback
         >
           <DatePicker format={dateFormat} style={{width:244}} />
         </Form.Item>

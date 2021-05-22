@@ -44,10 +44,10 @@ namespace BackEndAPI.Controllers
             return Ok();
         }
 
-        [HttpPut("disable/{id}")]
-        public async Task<IActionResult> Disabled(int id)
+        [HttpPut("{userId}/disable/{id}")]
+        public async Task<IActionResult> Disabled(int userId, int id)
         {
-            await _userService.Disable(id);
+            await _userService.Disable(userId,id);
             return Ok();
         }
 
