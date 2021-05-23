@@ -11,6 +11,7 @@ using BackEndAPI.Helpers;
 
 namespace BackEndAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -22,20 +23,18 @@ namespace BackEndAPI.Controllers
             _userService = userService;
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("{id}")]
         public async Task<UserInfo> Get(int id)
         {
             return await _userService.GetById(id);
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] CreateUserModel user)
         {
             return Ok(await _userService.Create(user));
         }
-        
+
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
@@ -61,7 +60,6 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
-        //Change Password
         [HttpGet("type/{type}")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersByType(
             UserType type,
@@ -70,7 +68,7 @@ namespace BackEndAPI.Controllers
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.GetUsersByType(
-                paginationParameters, 
+                paginationParameters,
                 Int32.Parse(adminClaim.Value),
                 type
             );
@@ -86,20 +84,20 @@ namespace BackEndAPI.Controllers
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.SearchUsers(
-                paginationParameters, 
+                paginationParameters,
                 Int32.Parse(adminClaim.Value),
                 query
             );
 
             return Ok(users);
         }
-        
+
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin,User")]
         [HttpPut("change-password/{id}")]
         public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
         {
             await _userService.ChangePassword(id, oldPassword, newPassword);
-            return Ok(new {message = Message.ChangePasswordSucceed});
+            return Ok(new { message = Message.ChangePasswordSucceed });
         }
     }
 }
