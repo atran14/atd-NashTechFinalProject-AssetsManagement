@@ -10,34 +10,34 @@ import {
   Row,
   Select,
   Table,
-} from "antd";
-import { useRef, useState } from "react";
-import { useEffect } from "react";
+} from 'antd'
+import { useState, useEffect } from 'react'
 import {
   PaginationParameters,
   UsersPagedListResponse,
-} from "../../models/Pagination";
+} from '../../models/Pagination'
 import {
   Location,
   User,
   UserGender,
   UserStatus,
   UserType,
-} from "../../models/User";
-import { UserService } from "../../services/UserService";
+} from '../../models/User'
+import { UserService } from '../../services/UserService'
 import {
   EditOutlined,
   UserAddOutlined,
   SearchOutlined,
-  UserDeleteOutlined,
+  DeleteOutlined,
   FilterFilled,
   ExclamationCircleOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons'
 import { Link, Redirect } from 'react-router-dom'
 import './users.css'
 
-const { Option } = Select;
-const { confirm } = Modal;
+const { Option } = Select
+const { confirm } = Modal
 
 const listAssignments = [
   {
@@ -47,7 +47,7 @@ const listAssignments = [
     assignedToUserId: 2,
     assignedDate: new Date(),
     state: 1,
-    note: "abc",
+    note: 'abc',
   },
   {
     id: 2,
@@ -56,7 +56,7 @@ const listAssignments = [
     assignedToUserId: 4,
     assignedDate: new Date(),
     state: 2,
-    note: "abc",
+    note: 'abc',
   },
   {
     id: 3,
@@ -65,175 +65,167 @@ const listAssignments = [
     assignedToUserId: 1,
     assignedDate: new Date(),
     state: 2,
-    note: "abc",
+    note: 'abc',
   },
-];
+]
 
 interface PassedInEditedUserProps {
-  editedUser: User;
+  editedUser: User
 }
 
 interface SearchAction {
-  action: "filter" | "search";
-  query: number | string;
+  action: 'filter' | 'search'
+  query: number | string
 }
 
+const ADMIN = "ADMIN";
+
 export function ListUsers({ editedUser }: PassedInEditedUserProps) {
-  let [isAdminAuthorized] = useState(
-    sessionStorage.getItem("type") === "ADMIN"
-  );
-  let [isFetchingData, setIsFetchingData] = useState(false);
-  let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>();
-  let [usersList, setUsersList] = useState<User[]>([]);
-  let [filterSelected, setFilterSelected] = useState(false);
+  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === ADMIN)
+  let [isFetchingData, setIsFetchingData] = useState(false)
+  let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
+  let [usersList, setUsersList] = useState<User[]>([])
+  let [filterSelected, setFilterSelected] = useState(false)
   let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>({
-    action: "search",
-    query: "",
-  });
-  let [isPopoverVisibles, setIsPopoverVisible] = useState<boolean[]>([]);
-  let prevList = useRef(usersList);
-  let userServices = UserService.getInstance();
+    action: 'search',
+    query: '',
+  })
 
   useEffect(() => {
     if (isAdminAuthorized) {
-      if (editedUser) {
-        console.log("Edited props detected!");
-        console.log(editedUser);
-      } else {
-        console.log("No edited props detected! Fetching data from server...");
-        console.log({ prevList });
-        (async () => {
-          setIsFetchingData(true);
-          let userServices = UserService.getInstance();
-          let usersPagedResponse = await userServices.getUsers();
+      ;(async () => {
+        setIsFetchingData(true)
+        let userServices = UserService.getInstance()
+        let usersPagedResponse = await userServices.getUsers()
 
-          setUsersPagedList(usersPagedResponse);
-          setUsersList(usersPagedResponse.items);
-          setIsPopoverVisible(new Array(usersList.length).fill(false));
-          setLatestSearchAction({
-            action: "search",
-            query: "",
-          });
-          setIsFetchingData(false);
-        })();
-      }
+        setUsersPagedList(usersPagedResponse)
+        setUsersList(usersPagedResponse.items)
+        setLatestSearchAction({
+          action: 'search',
+          query: '',
+        })
+        setIsFetchingData(false)
+      })()
     }
-  }, [editedUser]);
+  }, [editedUser])
 
   function notDisabledYourself(id: number) {
-    if (id === JSON.parse(sessionStorage.getItem("id")!)) {
-      return false;
+    if (id === JSON.parse(sessionStorage.getItem('id')!)) {
+      return false
     }
 
-    return true;
+    return true
   }
 
   let notOnlyOneAdminRemain = async (id: number) => {
-    var count = 0;
-    var user = await userServices.getUser(id);
+    let userService = UserService.getInstance()
+    var count = 0
+    var user = await userService.getUser(id)
     usersList.map((u: any) => {
       if (u.type === UserType.ADMIN && u.status === UserStatus.ACTIVE) {
-        count++;
+        count++
       }
-    });
+    })
 
     if (count < 2 && user.type === UserType.ADMIN) {
-      return false;
+      return false
     }
 
-    return true;
-  };
+    return true
+  }
 
   function disabledUser(id: number) {
-    var count = 0;
+    var count = 0
     listAssignments.map((a: any) => {
       if (a.assignedToUserId === id && a.state !== 2) {
-        count++;
+        count++
       }
-    });
+    })
 
     if (!notDisabledYourself(id)) {
       Modal.error({
-        title: "You can not disable yourself",
-      });
+        title: 'You can not disable yourself',
+      })
     }
 
     if (!notOnlyOneAdminRemain(id)) {
       Modal.error({
-        title: "System has only one admin remain",
-      });
+        title: 'System has only one admin remain',
+      })
     }
 
     if (count === 0 && notDisabledYourself(id) && notOnlyOneAdminRemain(id)) {
       confirm({
-        title: "Do you want to disable this user?",
+        title: 'Do you want to disable this user?',
         icon: <ExclamationCircleOutlined />,
         onOk() {
+          let userService = UserService.getInstance()
           try {
-            userServices.disableUser(id);
-            message.success("Disabled Successfully");
+            userService.disableUser(id)
+            message.success('Disabled Successfully')
             setUsersList((userId: any[]) =>
-              userId.filter((item) => item.id !== id)
-            );
+              userId.filter((item) => item.id !== id),
+            )
           } catch {
-            message.success("Something went wrong");
+            message.success('Something went wrong')
           }
         },
         onCancel() {
-          console.log("Cancel");
+          console.log('Cancel')
         },
-      });
+      })
     }
     if (count > 0) {
       Modal.error({
         title:
-          "There are valid assignments belonging to this user. Please close all assignments before disabling user.",
-      });
+          'There are valid assignments belonging to this user. Please close all assignments before disabling user.',
+      })
     }
   }
 
   const onSearchButtonClicked = (values: any) => {
-    (async () => {
-      setIsFetchingData(true);
-      let { searchText } = values;
-      let userService = UserService.getInstance();
-      let usersPagedResponse: UsersPagedListResponse;
+    ;(async () => {
+      setIsFetchingData(true)
+      let { searchText } = values
+      let userService = UserService.getInstance()
+      let usersPagedResponse: UsersPagedListResponse
 
       if (searchText.length === 0) {
-        usersPagedResponse = await userService.getUsers();
+        usersPagedResponse = await userService.getUsers()
       } else {
-        usersPagedResponse = await userService.searchUsers(searchText);
+        usersPagedResponse = await userService.searchUsers(searchText)
       }
 
       setLatestSearchAction({
-        action: "search",
+        action: 'search',
         query: searchText as string,
-      });
-      setUsersPagedList(usersPagedResponse);
-      setUsersList(usersPagedResponse.items);
-      setIsFetchingData(false);
-    })();
-  };
+      })
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
 
   const onFilterButtonClicked = (values: any) => {
-    (async () => {
-      setIsFetchingData(true);
+    ;(async () => {
+      setIsFetchingData(true)
 
-      let { filteredUserType } = values;
-      let userService = UserService.getInstance();
-      let usersPagedResponse: UsersPagedListResponse =
-        await userService.filterByType(filteredUserType as number);
+      let { filteredUserType } = values
+      let userService = UserService.getInstance()
+      let usersPagedResponse: UsersPagedListResponse = await userService.filterByType(
+        filteredUserType as number,
+      )
 
       setLatestSearchAction({
-        action: "filter",
+        action: 'filter',
         query: filteredUserType as number,
-      });
-      setUsersPagedList(usersPagedResponse);
-      setUsersList(usersPagedResponse.items);
+      })
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
 
-      setIsFetchingData(false);
-    })();
-  };
+      setIsFetchingData(false)
+    })()
+  }
 
   const generateDetailedUserContent = (record: User) => {
     return (
@@ -271,132 +263,134 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
           <td>{Location[record.location]}</td>
         </tr>
       </table>
-    );
-  };
+    )
+  }
 
   const onPaginationConfigChanged = (page: number, pageSize?: number) => {
-    (async () => {
-      setIsFetchingData(true);
-      let userService = UserService.getInstance();
+    ;(async () => {
+      setIsFetchingData(true)
+      let userService = UserService.getInstance()
       let parameters: PaginationParameters = {
         PageNumber: page,
         PageSize: pageSize ?? 10,
-      };
+      }
 
-      let usersPagedResponse: UsersPagedListResponse;
+      let usersPagedResponse: UsersPagedListResponse
       switch (latestSearchAction.action) {
-        case "search":
-          let searchQuery = latestSearchAction.query as string;
+        case 'search':
+          let searchQuery = latestSearchAction.query as string
           if (searchQuery.length === 0) {
-            usersPagedResponse = await userService.getUsers(parameters);
+            usersPagedResponse = await userService.getUsers(parameters)
           } else {
             usersPagedResponse = await userService.searchUsers(
               searchQuery,
-              parameters
-            );
+              parameters,
+            )
           }
-          break;
-        case "filter":
-          let filterQuery = latestSearchAction.query as number;
+          break
+        case 'filter':
+          let filterQuery = latestSearchAction.query as number
           usersPagedResponse = await userService.filterByType(
             filterQuery,
-            parameters
-          );
-          break;
+            parameters,
+          )
+          break
       }
 
-      setUsersPagedList(usersPagedResponse);
-      setUsersList(usersPagedResponse.items);
-      setIsFetchingData(false);
-    })();
-  };
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
 
   const columns: any = [
     {
-      title: "Staff code",
-      dataIndex: "staffCode",
-      key: "staffCode",
+      title: 'Staff code',
+      dataIndex: 'staffCode',
+      key: 'staffCode',
       sorter: (a: User, b: User) => a.staffCode.localeCompare(b.staffCode),
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Full name",
-      dataIndex: "fullName",
-      key: "fullName",
+      title: 'Full name',
+      dataIndex: 'fullName',
+      key: 'fullName',
       sorter: (a: User, b: User) => {
-        let fullNameA = `${a.firstName} ${a.lastName}`;
-        let fullNameB = `${b.firstName} ${b.lastName}`;
-        return fullNameA.localeCompare(fullNameB);
+        let fullNameA = `${a.firstName} ${a.lastName}`
+        let fullNameB = `${b.firstName} ${b.lastName}`
+        return fullNameA.localeCompare(fullNameB)
       },
       render: (text: any, record: User, index: number) => {
-        return <div>{`${record.firstName} ${record.lastName}`}</div>;
+        return <div>{`${record.firstName} ${record.lastName}`}</div>
       },
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Username",
-      dataIndex: "userName",
-      key: "userName",
+      title: 'Username',
+      dataIndex: 'userName',
+      key: 'userName',
       sorter: (a: User, b: User) => a.userName.localeCompare(b.userName),
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Joined date",
-      dataIndex: "joinedDate",
-      key: "joinedDate",
+      title: 'Joined date',
+      dataIndex: 'joinedDate',
+      key: 'joinedDate',
       render: (text: any, record: User, index: number) => {
-        return <div>{new Date(record.joinedDate).toLocaleDateString()}</div>;
+        return <div>{new Date(record.joinedDate).toLocaleDateString()}</div>
       },
       sorter: (a: User, b: User) => {
         return (
           new Date(a.joinedDate).getTime() - new Date(b.joinedDate).getTime()
-        );
+        )
       },
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
+      title: 'Type',
+      dataIndex: 'type',
+      key: 'type',
       render: (text: any, record: User, index: number) => {
-        return <div>{UserType[record.type]}</div>;
+        return <div>{UserType[record.type]}</div>
       },
       sorter: (a: User, b: User) => a.type - b.type,
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "",
-      dataIndex: "action",
-      key: "action",
+      title: '',
+      dataIndex: 'action',
+      key: 'action',
       render: (text: any, record: User, index: number) => {
         return (
-          <Row onClick={(e) => e.stopPropagation()}>
-            <Col>
+          <Row>
+            <Col offset={1}>
+              <Popover
+                title="User details"
+                content={generateDetailedUserContent(record)}
+                placement="right"
+                trigger="click"
+              >
+                <Button icon={<InfoCircleOutlined />} />
+              </Popover>
+            </Col>
+            <Col offset={1}>
               <Link to={`/users/update/${record.id}`}>
                 <Button type="primary" icon={<EditOutlined />} />
               </Link>
             </Col>
-            <Col>
+            <Col offset={1}>
               <Button
                 danger
                 type="primary"
-                icon={<UserDeleteOutlined />}
+                icon={<DeleteOutlined />}
                 onClick={() => disabledUser(record.id)}
               />
             </Col>
-            <Col>
-              <Popover
-                title="User details"
-                content={generateDetailedUserContent(record)}
-                visible={isPopoverVisibles[index]}
-                placement="left"
-              />
-            </Col>
           </Row>
-        );
+        )
       },
     },
-  ];
+  ]
 
   return (
     <>
@@ -414,7 +408,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
                     >
                       <Select
                         placeholder="Select user type"
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         onSelect={() => setFilterSelected(true)}
                         disabled={isFetchingData}
                       >
@@ -445,7 +439,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
               <Form
                 onFinish={onSearchButtonClicked}
                 initialValues={{
-                  searchText: "",
+                  searchText: '',
                 }}
               >
                 <Row justify="end">
@@ -457,7 +451,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
                       <Input
                         allowClear
                         disabled={isFetchingData}
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         placeholder="e.g. Bob/SD0001"
                       />
                     </Form.Item>
@@ -479,7 +473,11 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
             <Col span={4} offset={1}>
               <Link to="/users/create">
                 <Button
-                  style={{ width: '100%', backgroundColor:'#e9424d', border:'#e9424d' }}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#e9424d',
+                    border: '#e9424d',
+                  }}
                   type="primary"
                   icon={<UserAddOutlined />}
                 >
@@ -491,25 +489,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
 
           <Table
             style={{
-              margin: "1.25em 0 1.25em 0",
-            }}
-            onRow={(record, rowIndex) => {
-              return {
-                onClick: (event) => {
-                  if (rowIndex !== undefined) {
-                    let newPopoverVisibles = Array.from(isPopoverVisibles);
-                    newPopoverVisibles[rowIndex] = true;
-                    setIsPopoverVisible(newPopoverVisibles);
-                  }
-                },
-                onMouseLeave: (event) => {
-                  if (rowIndex !== undefined) {
-                    let newPopoverVisibles = Array.from(isPopoverVisibles);
-                    newPopoverVisibles[rowIndex] = false;
-                    setIsPopoverVisible(newPopoverVisibles);
-                  }
-                },
-              };
+              margin: '1.25em 0 1.25em 0',
             }}
             dataSource={usersList}
             columns={columns}
@@ -524,7 +504,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
                 disabled={isFetchingData}
                 total={usersPagedList.totalCount}
                 showTotal={(total: number) => `Total: ${total} result(s)`}
-                pageSizeOptions={["10", "20", "50"]}
+                pageSizeOptions={['10', '20', '50']}
                 showSizeChanger
                 onChange={onPaginationConfigChanged}
               />
@@ -533,5 +513,5 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
         </>
       )}
     </>
-  );
+  )
 }

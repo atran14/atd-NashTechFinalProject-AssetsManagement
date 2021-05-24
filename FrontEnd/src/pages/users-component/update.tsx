@@ -27,15 +27,12 @@ export function UpdateUser() {
       span: 16,
       pull: 9,
     },
-  };
+  }
   const tailLayout = {
-    wrapperCol: {
+    wrapperCol: {},
+  }
 
-
-    },
-  };
-
-  const { Option } = Select;
+  const { Option } = Select
 
   const { userId } = useParams<any>();
   const [dob, setDob] = useState<Date>();
@@ -60,15 +57,14 @@ export function UpdateUser() {
     }
   };
 
-  let service = UserService.getInstance();
+  let history = useHistory()
 
-  let history = useHistory();
-
-  const dateFormat = "YYYY-MM-DD";
+  const dateFormat = 'YYYY-MM-DD'
 
   const onFinish = (data: EditUserModel) => {
-    console.log("Success:", data);
-    (async () => {
+    console.log('Success:', data)
+    ;(async () => {
+      let service = UserService.getInstance();
       try {
         await service.updateUser(data, userId)
           .then(
@@ -88,18 +84,18 @@ export function UpdateUser() {
 
   const onFinishFailed = (errorInfo: any) => {
     message.error(
-      "Update Fail ! Please check date of birth or joined date again"
-    );
-    console.log('Failed:', errorInfo);
-  };
+      'Update Fail ! Please check date of birth or joined date again',
+    )
+    console.log('Failed:', errorInfo)
+  }
 
-
-  const [form] = useForm();
+  const [form] = useForm()
 
   useEffect(() => {
-    (async () => {
-      let user = await service.getUser(userId);
-      setDob(user.dateOfBirth);
+    ;(async () => {
+      let service = UserService.getInstance();
+      let user = await service.getUser(userId)
+      setDob(user.dateOfBirth)
       form.setFieldsValue({
         firstName: user.firstName,
         lastName: user.lastName,
@@ -107,14 +103,14 @@ export function UpdateUser() {
         gender: user.gender,
         joinedDate: moment(user.joinedDate),
         type: user.type,
-      });
-    })();
-  }, []);
+      })
+    })()
+  }, [])
 
   return (
     <>
       <Col span={9}>
-        <h4 >Edit User</h4>
+        <h4>Edit User</h4>
       </Col>
       <Col span={16}>
         <Form
@@ -183,5 +179,5 @@ export function UpdateUser() {
         </Form>
       </Col>
     </>
-  );
+  )
 }

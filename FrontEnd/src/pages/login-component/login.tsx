@@ -3,7 +3,7 @@ import Title from "antd/lib/typography/Title";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { UserLogin, UserType } from "../../models/User";
-import { AuthenticationService } from "../../services/AuthenticationSerivce";
+import { AuthenticationService } from "../../services/AuthenticationService";
 
 export function Login() {
   const layout = {
