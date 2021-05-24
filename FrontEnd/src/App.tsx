@@ -10,14 +10,14 @@ function App() {
   return (
     <div className="App">
       {/* Only comment this to test my Part, because I haven't combined with other pages yet */}
-      {/* <Router history={history}>
+       <Router history={history}>
           <div>
             <Switch>
               <MainLayout />
             </Switch>
           </div>
-        </Router> */}
-      <RoutingLogin />
+        </Router> 
+      {/* <RoutingLogin /> */}
     </div>
   );
 }

@@ -35,7 +35,7 @@ namespace BackEndAPI.Controllers
         {
             return Ok(await _userService.Create(user));
         }
-
+        
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
@@ -43,12 +43,12 @@ namespace BackEndAPI.Controllers
             await _userService.Update(id, model);
             return Ok();
         }
-
+        
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
-        [HttpPut("disable/{id}")]
-        public async Task<IActionResult> Disabled(int id)
+        [HttpPut("{userId}/disable/{id}")]
+        public async Task<IActionResult> Disabled(int userId, int id)
         {
-            await _userService.Disable(id);
+            await _userService.Disable(userId,id);
             return Ok();
         }
 
