@@ -36,20 +36,23 @@ namespace BackEndAPI.Controllers
             return Ok(await _userService.Create(user));
         }
         
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
             await _userService.Update(id, model);
             return Ok();
         }
-
-        [HttpPut("disable/{id}")]
-        public async Task<IActionResult> Disabled(int id)
+        
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpPut("{userId}/disable/{id}")]
+        public async Task<IActionResult> Disabled(int userId, int id)
         {
-            await _userService.Disable(id);
+            await _userService.Disable(userId,id);
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
             [FromQuery] PaginationParameters paginationParameters
