@@ -23,6 +23,7 @@ namespace BackEndAPI.Services
         private readonly IAsyncUserRepository _repository;
         private readonly IAsyncAssignmentRepository _assignmentRepository;
         private readonly AppSettings _appSettings;
+        private const int minimumAdmin = 2;
 
         public UserService(IAsyncUserRepository repository, IAsyncAssignmentRepository assignmentRepository, IMapper mapper, IOptions<AppSettings> appSettings)
         {
@@ -137,7 +138,7 @@ namespace BackEndAPI.Services
             int userValid = _assignmentRepository.GetCountUser(id);
             var user = await _repository.GetById(id);
 
-            if (countAdmin < 2 && user.Type == UserType.Admin)
+            if (countAdmin < minimumAdmin && user.Type == UserType.Admin)
             {
                 throw new Exception("System has only one admin remain");
             }
