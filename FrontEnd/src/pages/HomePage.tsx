@@ -53,12 +53,7 @@ export function HomePage() {
           })}
           onSubmit={({ newpassword }, { setStatus, setSubmitting }) => {
             setStatus();
-            userService
-              .changePassword(id, " ", newpassword)
-              .then((response) => {
-                setError(response);
-                alert(response);
-              });
+            userService.changePassword(id, " ", newpassword);
           }}
           render={({ errors, status, touched, isSubmitting }) => (
             <Form>
