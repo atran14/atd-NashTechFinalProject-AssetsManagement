@@ -135,6 +135,9 @@ namespace BackEndAPI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("AcceptedByUserId")
+                        .HasColumnType("int");
+
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
@@ -148,6 +151,8 @@ namespace BackEndAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AcceptedByUserId");
 
                     b.HasIndex("AssignmentId")
                         .IsUnique();
@@ -296,7 +301,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d880cfe5-de0b-4ce2-a0e5-3e16d6805818",
+                            ConcurrencyStamp = "507b0e6e-7f00-4416-bcc8-8d8a6e92bf3d",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -318,7 +323,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9508e616-f3df-486a-acd5-d19816473042",
+                            ConcurrencyStamp = "a5ec7185-6f67-4ab0-bf7f-751d3a1c4ad0",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -469,6 +474,10 @@ namespace BackEndAPI.Migrations
 
             modelBuilder.Entity("BackEndAPI.Entities.ReturnRequest", b =>
                 {
+                    b.HasOne("BackEndAPI.Entities.User", "AcceptedByUser")
+                        .WithMany()
+                        .HasForeignKey("AcceptedByUserId");
+
                     b.HasOne("BackEndAPI.Entities.Assignment", "Assignment")
                         .WithOne("Request")
                         .HasForeignKey("BackEndAPI.Entities.ReturnRequest", "AssignmentId")
@@ -480,6 +489,8 @@ namespace BackEndAPI.Migrations
                         .HasForeignKey("RequestedByUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("AcceptedByUser");
 
                     b.Navigation("Assignment");
 

@@ -10,6 +10,20 @@ namespace BackEndAPI.Helpers
         {
             CreateMap<CreateUserModel, User>();
             CreateMap<User, UserDTO>();
+
+            CreateMap<ReturnRequest, ReturnRequestDTO>()
+                .ForMember(dto => dto.AssetCode, b => b.MapFrom(rr => rr.Assignment.Asset.AssetCode))
+                .ForMember(dto => dto.AssetName, b => b.MapFrom(rr => rr.Assignment.Asset.AssetName))
+                .ForMember(dto => dto.AssignedDate, b => b.MapFrom(rr => rr.Assignment.AssignedDate))
+                .ForMember(dto => dto.RequestedByUser, b => b.MapFrom(rr => rr.RequestedByUser.UserName))
+                .ForMember(dto => dto.AcceptedByUser, b => b.MapFrom(
+                                                                rr => string.IsNullOrEmpty(rr.AcceptedByUser.UserName)
+                                                                    ? ""
+                                                                    : rr.AcceptedByUser.UserName
+                                                                ));
+                
+                
+                
         }
     }
 }

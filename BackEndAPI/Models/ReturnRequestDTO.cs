@@ -9,11 +9,12 @@ namespace BackEndAPI.Models
         public string AssetCode { get; set; }
 
         public string AssetName { get; set; }
-        public string RequestedByUser { get; set; }
 
         public DateTime AssignedDate { get; set; }
 
-        public string AcceptedByUser { get; set; } = "";
+        public string RequestedByUser { get; set; }
+
+        public string AcceptedByUser { get; set; }
 
         public DateTime? ReturnedDate { get; set; }
 
