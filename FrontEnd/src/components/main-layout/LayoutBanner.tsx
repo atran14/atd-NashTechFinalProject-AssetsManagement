@@ -17,11 +17,6 @@ function LayoutBanner() {
   const [show, setShow] = useState(false);
   const [showModal, setshowModal] = useState(false);
   const [passwordChanged, setpasswordChanged] = useState(false);
-  const handleClose = () => {
-    setShow(false);
-    authenticationService.logout();
-    history.push("/login");
-  };
   const handleShowModal = () => setshowModal(true);
   const handlePasswordChange = () => {
     setpasswordChanged(true);
@@ -38,7 +33,6 @@ function LayoutBanner() {
 
   let OnLogout = () => {
     sessionStorage.clear();
-
     authenticationService.logout();
     history.push("/login");
     window.location.href = "/login";
@@ -105,12 +99,7 @@ function LayoutBanner() {
       )}
       {/* Modal */}
       {authenticationService.currentUserValue.id && (
-        <Modal
-          show={show}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-        >
+        <Modal show={show} onHide={OnLogout} backdrop="static" keyboard={false}>
           <Modal.Header>
             <Modal.Title>Change Password</Modal.Title>
           </Modal.Header>
@@ -184,7 +173,7 @@ function LayoutBanner() {
                     {status && (
                       <div className={"alert alert-danger"}>{status}</div>
                     )}
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={OnLogout}>
                       Close and Logout
                     </Button>
                   </Modal.Footer>
@@ -198,8 +187,8 @@ function LayoutBanner() {
                 <p>Your Password has been changed successfully!</p>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
-                  Close
+                <Button variant="secondary" onClick={OnLogout}>
+                  Close and Logout
                 </Button>
               </Modal.Footer>
             </div>
@@ -209,7 +198,7 @@ function LayoutBanner() {
       {authenticationService.currentUserValue.id && (
         <Modal
           show={showModal}
-          onHide={handleClose}
+          onHide={OnLogout}
           backdrop="static"
           keyboard={false}
         >
@@ -301,7 +290,7 @@ function LayoutBanner() {
                         <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                       )}
                     </div>
-                    <Button variant="secondary" onClick={handleClose}>
+                    <Button variant="secondary" onClick={OnLogout}>
                       Cancel
                     </Button>
                   </Modal.Footer>
@@ -315,7 +304,7 @@ function LayoutBanner() {
                 <p>Your Password has been changed successfully!</p>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={handleClose}>
+                <Button variant="secondary" onClick={OnLogout}>
                   Close
                 </Button>
               </Modal.Footer>
