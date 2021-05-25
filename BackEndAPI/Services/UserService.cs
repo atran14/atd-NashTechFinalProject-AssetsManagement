@@ -23,6 +23,7 @@ namespace BackEndAPI.Services
         private readonly IAsyncUserRepository _repository;
         private readonly IAsyncAssignmentRepository _assignmentRepository;
         private readonly AppSettings _appSettings;
+        private const int minimumAdmin = 2;
 
         public UserService(IAsyncUserRepository repository, IAsyncAssignmentRepository assignmentRepository, IMapper mapper, IOptions<AppSettings> appSettings)
         {
@@ -131,10 +132,22 @@ namespace BackEndAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public async Task Disable(int id)
+        public async Task Disable(int userId, int id)
         {
+            int countAdmin =  _repository.CountAdminRemain();
             int userValid = _assignmentRepository.GetCountUser(id);
             var user = await _repository.GetById(id);
+
+            if (countAdmin < minimumAdmin && user.Type == UserType.Admin)
+            {
+                throw new Exception("System has only one admin remain");
+            }
+            
+            if (userId == id)
+            {
+                throw new Exception("Can not disable yourself");
+            }
+
             if (user == null)
             {
                 throw new InvalidOperationException("Can not find user");
@@ -144,12 +157,9 @@ namespace BackEndAPI.Services
             {
                 throw new ArgumentException("User is still valid assignment");
             }
-            else
-            {
-                user.Status = UserStatus.Disabled;
-                await _repository.Update(user);
-            }
 
+            user.Status = UserStatus.Disabled;
+            await _repository.Update(user);
         }
 
         public async Task Update(int id, EditUserModel model)

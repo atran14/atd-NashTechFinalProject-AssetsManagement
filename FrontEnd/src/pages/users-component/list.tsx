@@ -11,27 +11,32 @@ import {
   Select,
   Table,
 } from 'antd'
-import { useRef, useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   PaginationParameters,
   UsersPagedListResponse,
 } from '../../models/Pagination'
-import { Location, User, UserGender, UserType } from '../../models/User'
+import {
+  Location,
+  User,
+  UserGender,
+  UserStatus,
+  UserType,
+} from '../../models/User'
 import { UserService } from '../../services/UserService'
 import {
   EditOutlined,
   UserAddOutlined,
   SearchOutlined,
-  UserDeleteOutlined,
+  DeleteOutlined,
   FilterFilled,
   ExclamationCircleOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons'
-import { Link, Redirect, useHistory } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import './users.css'
 
 const { Option } = Select
-
 const { confirm } = Modal
 
 const listAssignments = [
@@ -50,7 +55,7 @@ const listAssignments = [
     assignedByUserId: 1,
     assignedToUserId: 4,
     assignedDate: new Date(),
-    state: 1,
+    state: 2,
     note: 'abc',
   },
   {
@@ -73,8 +78,10 @@ interface SearchAction {
   query: number | string
 }
 
+const ADMIN = "ADMIN";
+
 export function ListUsers({ editedUser }: PassedInEditedUserProps) {
-  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === 'ADMIN')
+  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === ADMIN)
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
@@ -83,53 +90,78 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     action: 'search',
     query: '',
   })
-  let [isPopoverVisibles, setIsPopoverVisible] = useState<boolean[]>([])
-  let prevList = useRef(usersList)
 
   useEffect(() => {
     if (isAdminAuthorized) {
-      if (editedUser) {
-        console.log('Edited props detected!')
-        console.log(editedUser)
-      } else {
-        console.log('No edited props detected! Fetching data from server...')
-        console.log({ prevList })
-        ;(async () => {
-          setIsFetchingData(true)
-          let userServices = UserService.getInstance()
-          let usersPagedResponse = await userServices.getUsers()
+      ;(async () => {
+        setIsFetchingData(true)
+        let userServices = UserService.getInstance()
+        let usersPagedResponse = await userServices.getUsers()
 
-          setUsersPagedList(usersPagedResponse)
-          setUsersList(usersPagedResponse.items)
-          setIsPopoverVisible(new Array(usersList.length).fill(false))
-          setLatestSearchAction({
-            action: 'search',
-            query: '',
-          })
-          setIsFetchingData(false)
-        })()
-      }
+        setUsersPagedList(usersPagedResponse)
+        setUsersList(usersPagedResponse.items)
+        setLatestSearchAction({
+          action: 'search',
+          query: '',
+        })
+        setIsFetchingData(false)
+      })()
     }
   }, [editedUser])
 
-  function DisabledUser(id: number) {
+  function notDisabledYourself(id: number) {
+    if (id === JSON.parse(sessionStorage.getItem('id')!)) {
+      return false
+    }
+
+    return true
+  }
+
+  let notOnlyOneAdminRemain = async (id: number) => {
+    let userService = UserService.getInstance()
     var count = 0
-    for (var i = 0; i < listAssignments.length; i++) {
-      if (
-        listAssignments[i].assignedToUserId === id &&
-        listAssignments[i].state !== 2
-      ) {
+    var user = await userService.getUser(id)
+    usersList.map((u: any) => {
+      if (u.type === UserType.ADMIN && u.status === UserStatus.ACTIVE) {
         count++
       }
+    })
+
+    if (count < 2 && user.type === UserType.ADMIN) {
+      return false
     }
-    if (count === 0) {
+
+    return true
+  }
+
+  function disabledUser(id: number) {
+    var count = 0
+    listAssignments.map((a: any) => {
+      if (a.assignedToUserId === id && a.state !== 2) {
+        count++
+      }
+    })
+
+    if (!notDisabledYourself(id)) {
+      Modal.error({
+        title: 'You can not disable yourself',
+      })
+    }
+
+    if (!notOnlyOneAdminRemain(id)) {
+      Modal.error({
+        title: 'System has only one admin remain',
+      })
+    }
+
+    if (count === 0 && notDisabledYourself(id) && notOnlyOneAdminRemain(id)) {
       confirm({
         title: 'Do you want to disable this user?',
         icon: <ExclamationCircleOutlined />,
         onOk() {
-          let userServices = UserService.getInstance()
+          let userService = UserService.getInstance()
           try {
-            userServices.disableUser(id)
+            userService.disableUser(id)
             message.success('Disabled Successfully')
             setUsersList((userId: any[]) =>
               userId.filter((item) => item.id !== id),
@@ -330,26 +362,28 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
       key: 'action',
       render: (text: any, record: User, index: number) => {
         return (
-          <Row onClick={(e) => e.stopPropagation()}>
-            <Col>
+          <Row>
+            <Col offset={1}>
+              <Popover
+                title="User details"
+                content={generateDetailedUserContent(record)}
+                placement="right"
+                trigger="click"
+              >
+                <Button icon={<InfoCircleOutlined />} />
+              </Popover>
+            </Col>
+            <Col offset={1}>
               <Link to={`/users/update/${record.id}`}>
                 <Button type="primary" icon={<EditOutlined />} />
               </Link>
             </Col>
-            <Col>
+            <Col offset={1}>
               <Button
                 danger
                 type="primary"
-                icon={<UserDeleteOutlined />}
-                onClick={() => DisabledUser(record.id)}
-              />
-            </Col>
-            <Col>
-              <Popover
-                title="User details"
-                content={generateDetailedUserContent(record)}
-                visible={isPopoverVisibles[index]}
-                placement="left"
+                icon={<DeleteOutlined />}
+                onClick={() => disabledUser(record.id)}
               />
             </Col>
           </Row>
@@ -360,9 +394,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
 
   return (
     <>
-      {!isAdminAuthorized && (
-        <Redirect to="/401-access-denied" />
-      )}
+      {!isAdminAuthorized && <Redirect to="/401-access-denied" />}
       {isAdminAuthorized && usersPagedList !== undefined && (
         <>
           <Row>
@@ -441,7 +473,11 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
             <Col span={4} offset={1}>
               <Link to="/users/create">
                 <Button
-                  style={{ width: '100%' }}
+                  style={{
+                    width: '100%',
+                    backgroundColor: '#e9424d',
+                    border: '#e9424d',
+                  }}
                   type="primary"
                   icon={<UserAddOutlined />}
                 >
@@ -454,24 +490,6 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
           <Table
             style={{
               margin: '1.25em 0 1.25em 0',
-            }}
-            onRow={(record, rowIndex) => {
-              return {
-                onClick: (event) => {
-                  if (rowIndex !== undefined) {
-                    let newPopoverVisibles = Array.from(isPopoverVisibles)
-                    newPopoverVisibles[rowIndex] = true
-                    setIsPopoverVisible(newPopoverVisibles)
-                  }
-                },
-                onMouseLeave: (event) => {
-                  if (rowIndex !== undefined) {
-                    let newPopoverVisibles = Array.from(isPopoverVisibles)
-                    newPopoverVisibles[rowIndex] = false
-                    setIsPopoverVisible(newPopoverVisibles)
-                  }
-                },
-              }
             }}
             dataSource={usersList}
             columns={columns}

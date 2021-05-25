@@ -1,12 +1,10 @@
 import React from 'react';
 import { Layout, Menu } from 'antd';
-import {  
+import {
   LoginOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
-
-const { SubMenu } = Menu;
 
 const { Sider } = Layout;
 
@@ -16,7 +14,7 @@ function SiderMenu() {
   return (
     <Sider width={200} className="site-layout-background"
       style={{
-        marginTop: 60,
+        marginTop: 50,
         overflow: 'auto',
         height: '100vh',
         position: 'fixed',
@@ -27,19 +25,16 @@ function SiderMenu() {
         style={{ height: '100%', borderRight: 0 }}
         selectedKeys={[location.pathname]}
       >
-        <SubMenu key="sub1" icon={<UserOutlined />} title="Users">
-          <Menu.Item key="/users">
-            <Link to="/users">List</Link>
+        {sessionStorage.getItem("username") &&
+          <Menu.Item icon={<UserOutlined />} key="/users" className="menu-item">
+            <Link to="/users">Users</Link>
           </Menu.Item>
-          
-          <Menu.Item key="/users/create">
-            <Link to="/users/create">Create</Link>
+        }
+        {!sessionStorage.getItem("username") &&
+          <Menu.Item icon={<LoginOutlined />} key="/login" className="menu-item">
+            <Link to="/login">Login</Link>
           </Menu.Item>
-        
-        </SubMenu>
-        <SubMenu key="sub4" icon={<LoginOutlined />} title="Login">
-          <Menu.Item key="/login"><Link to="/login">Login</Link></Menu.Item>
-        </SubMenu>
+        }
       </Menu>
     </Sider>
   );

@@ -3,7 +3,7 @@ import Title from "antd/lib/typography/Title";
 import React from "react";
 import { useHistory } from "react-router-dom";
 import { UserLogin, UserType } from "../../models/User";
-import { AuthenticationService } from "../../services/AuthenticationSerivce";
+import { AuthenticationService } from "../../services/AuthenticationService";
 
 export function Login() {
   const layout = {
@@ -76,7 +76,7 @@ export function Login() {
         </Form.Item>
 
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
+          <Button style={{backgroundColor:'#e9424d', color:'white'}} htmlType="submit">
             Login
           </Button>
         </Form.Item>

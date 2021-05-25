@@ -36,24 +36,27 @@ namespace BackEndAPI.Controllers
             return Ok(await _userService.Create(user));
         }
         
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
         {
             await _userService.Update(id, model);
             return Ok();
         }
-
-        [HttpPut("disable/{id}")]
-        public async Task<IActionResult> Disabled(int id)
+        
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpPut("{userId}/disable/{id}")]
+        public async Task<IActionResult> Disabled(int userId, int id)
         {
-            await _userService.Disable(id);
+            await _userService.Disable(userId,id);
             return Ok();
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
-            [FromQuery] PaginationParameters paginationParameters
-        )
+                    [FromQuery] PaginationParameters paginationParameters
+                )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
@@ -61,16 +64,16 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
-        //Change Password
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("type/{type}")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersByType(
-            UserType type,
-            [FromQuery] PaginationParameters paginationParameters
-        )
+                    UserType type,
+                    [FromQuery] PaginationParameters paginationParameters
+                )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.GetUsersByType(
-                paginationParameters, 
+                paginationParameters,
                 Int32.Parse(adminClaim.Value),
                 type
             );
@@ -78,15 +81,16 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("search")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUsers(
-            [FromQuery] string query,
-            [FromQuery] PaginationParameters paginationParameters
-        )
+                    [FromQuery] string query,
+                    [FromQuery] PaginationParameters paginationParameters
+                )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.SearchUsers(
-                paginationParameters, 
+                paginationParameters,
                 Int32.Parse(adminClaim.Value),
                 query
             );

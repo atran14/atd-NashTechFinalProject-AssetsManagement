@@ -43,6 +43,7 @@ namespace BackEndAPI_Tests.Services_Tests
         public async Task Disable_Valid_ShouldBeSuccessful()
         {
             var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
             _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
@@ -55,7 +56,7 @@ namespace BackEndAPI_Tests.Services_Tests
             );
 
             //Act
-            await userService.Disable(It.IsAny<int>());
+            await userService.Disable(1,2);
 
             //Assert
             _userRepositoryMock.Verify(x => x.Update(User), Times.Once());
@@ -65,6 +66,7 @@ namespace BackEndAPI_Tests.Services_Tests
         public void Disable_ValidInAssignment_ShouldThrowToException()
         {
             var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
             _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
@@ -81,7 +83,7 @@ namespace BackEndAPI_Tests.Services_Tests
             var exception = Assert.ThrowsAsync<ArgumentException>(
                 async () =>
                 {
-                    await userService.Disable(It.IsAny<int>());
+                    await userService.Disable(1,2);
                 }
              );
 
@@ -94,6 +96,7 @@ namespace BackEndAPI_Tests.Services_Tests
         public void Disable_NotFoundId_ShouldThrowToException()
         {
             var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
             _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(Task.FromResult<User>(null));
             _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
@@ -110,7 +113,7 @@ namespace BackEndAPI_Tests.Services_Tests
             var exception = Assert.ThrowsAsync<InvalidOperationException>(
                 async () =>
                 {
-                    await userService.Disable(It.IsAny<int>());
+                    await userService.Disable(1,2);
                 }
              );
 
@@ -118,6 +121,66 @@ namespace BackEndAPI_Tests.Services_Tests
             //Assert
             Assert.AreSame("Can not find user", exception.Message);
         }
+        [Test]
+        public void Disable_DisableYourself_ShouldThrowToException()
+        {
+            var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
+            _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () =>
+                {
+                    await userService.Disable(1,1);
+                }
+             );
+
+
+            //Assert
+            Assert.AreSame("Can not disable yourself", exception.Message);
+        }
+
+        [Test]
+        public void Disable_HasOnlyOneAdminRemain_ShouldThrowToException()
+        {
+            var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(1);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
+            _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () =>
+                {
+                    await userService.Disable(1,2);
+                }
+             );
+
+
+            //Assert
+            Assert.AreSame("System has only one admin remain", exception.Message);
+        }
+
 
     }
 }

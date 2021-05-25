@@ -5,6 +5,8 @@ namespace BackEndAPI.Enums
         Available,
 
         NotAvailable,
+        
+        Assigned,
 
         WaitingForRecycling,
 

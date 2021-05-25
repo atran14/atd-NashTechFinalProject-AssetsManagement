@@ -9,15 +9,14 @@ import RoutingLogin from "./router/RoutingLogin";
 function App() {
   return (
     <div className="App">
-      {/* Only comment this to test my Part, because I haven't combined with other pages yet */}
-      {/* <Router history={history}>
-          <div>
-            <Switch>
-              <MainLayout />
-            </Switch>
-          </div>
-        </Router> */}
-      <RoutingLogin />
+      <Router history={history}>
+        <div>
+          <Switch>
+            <MainLayout />
+          </Switch>
+        </div>
+      </Router>
+      {/* <RoutingLogin /> */}
     </div>
   );
 }
