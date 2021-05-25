@@ -22,7 +22,6 @@ function getById(id: number) {
 }
 
 function changePassword(id: number, oldpassword: string, newpassword: string) {
-  alert(oldpassword + " and " + newpassword);
   const requestOptions = {
     method: "PUT",
     headers: authHeader(),
