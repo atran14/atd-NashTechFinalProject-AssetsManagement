@@ -10,6 +10,7 @@ import { Role } from "../helpers/role";
 
 export function HomePage() {
   const [show, setShow] = useState(false);
+  const [passwordChanged, setpasswordChanged] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -19,6 +20,10 @@ export function HomePage() {
   const handleShow = () => setShow(true);
 
   const [error, setError] = useState(null);
+
+  const handlePasswordChange = () => {
+    setpasswordChanged(true);
+  };
 
   let id = authenticationService.currentUserValue.id;
 
@@ -52,12 +57,17 @@ export function HomePage() {
           })}
           onSubmit={({ newpassword }, { setStatus, setSubmitting }) => {
             setStatus();
-            userService
-              .changePassword(id, " ", newpassword)
-              .then((response) => {
-                setError(response);
-                alert(response);
-              });
+            userService.changePassword(id, "string", newpassword).then(
+              () => {
+                setSubmitting(false);
+
+                handlePasswordChange();
+              },
+              (error) => {
+                setSubmitting(false);
+                setStatus(error);
+              }
+            );
           }}
           render={({ errors, status, touched, isSubmitting }) => (
             <Form>
@@ -71,7 +81,6 @@ export function HomePage() {
                       name="newpassword"
                       type="password"
                       className={
-                        "col-8" +
                         "form-control" +
                         (errors.newpassword && touched.newpassword
                           ? " is-invalid"
