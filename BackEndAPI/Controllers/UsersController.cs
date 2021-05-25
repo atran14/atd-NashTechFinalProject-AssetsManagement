@@ -94,7 +94,7 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
         
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("change-password/{id}")]
         public async Task<IActionResult> ChangePassword(int id, [FromBody]ChangePasswordRequest model)
         {
@@ -103,9 +103,12 @@ namespace BackEndAPI.Controllers
             {
                 return NotFound(Message.UserNotFound);
             }
-            if (user.Result.Password != model.OldPassword)
+            if (user.Result.OnFirstLogin == OnFirstLogin.No)
             {
-                return BadRequest(new {message = Message.OldPasswordIncorrect});
+                if (user.Result.Password != model.OldPassword)
+                {
+                    return BadRequest(new {message = Message.OldPasswordIncorrect});
+                }
             }
             await _userService.ChangePassword(id, model);
             return Ok(new {message = Message.ChangePasswordSucceed});
