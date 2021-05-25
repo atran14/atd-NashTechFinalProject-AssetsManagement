@@ -9,14 +9,14 @@ export const userService = {
 
 function getAll() {
   const requestOptions = { method: "GET", headers: authHeader() };
-  return fetch(`https://localhost:5001/users`, requestOptions).then(
+  return fetch(`https://localhost:5001/api/users`, requestOptions).then(
     handleResponse
   );
 }
 
 function getById(id: number) {
   const requestOptions = { method: "GET", headers: authHeader() };
-  return fetch(`https://localhost:5001/users/${id}`, requestOptions).then(
+  return fetch(`https://localhost:5001/api/users/${id}`, requestOptions).then(
     handleResponse
   );
 }
@@ -26,13 +26,12 @@ function changePassword(id: number, oldpassword: string, newpassword: string) {
     method: "PUT",
     headers: authHeader(),
     body: JSON.stringify({
-      id: id,
       oldPassword: oldpassword,
       newPassword: newpassword,
     }),
   };
   return fetch(
-    `https://localhost:5001/users/change-password/${id}`,
+    `https://localhost:5001/api/users/change-password/${id}`,
     requestOptions
   ).then(handleResponse);
 }
