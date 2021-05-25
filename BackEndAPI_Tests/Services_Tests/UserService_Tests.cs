@@ -16,7 +16,7 @@ using NUnit.Framework;
 namespace BackEndAPI_Tests.Services_Tests
 {
     [TestFixture]
-    public class UserServices_Tests
+    public class UserService_Tests
     {
 
         private static IQueryable<User> Users
@@ -123,7 +123,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
         private Mock<IOptions<AppSettings>> _optionsMock;
 
-        public UserServices_Tests()
+        public UserService_Tests()
         {
             if (_mapper == null)
             {

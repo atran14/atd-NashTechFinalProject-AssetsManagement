@@ -39,7 +39,7 @@ namespace BackEndAPI.Services
         {
             if (model is null)
             {
-                throw new ArgumentNullException(Message.NullInputModel);
+                throw new Exception(Message.NullInputModel);
             }
 
             var user = _userRepository.GetAll()
@@ -85,7 +85,7 @@ namespace BackEndAPI.Services
             var adminUser = await _userRepository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var filteredReturnRequests = _returnRequestRepository.GetAll()
@@ -93,7 +93,9 @@ namespace BackEndAPI.Services
 
             if (filterParameters.ReturnedDate is not null)
             {
-                filteredReturnRequests = filteredReturnRequests.Where(rr => rr.ReturnedDate == filterParameters.ReturnedDate);
+                filteredReturnRequests = filteredReturnRequests.Where(rr => 
+                                                                    rr.ReturnedDate != null 
+                                                                && rr.ReturnedDate.Value.Date == filterParameters.ReturnedDate.Value.Date);
             }
             if (filterParameters.RequestState is not null)
             {
@@ -128,7 +130,7 @@ namespace BackEndAPI.Services
             var adminUser = await _userRepository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var returnRequests = PagedList<ReturnRequest>.ToPagedList(
@@ -159,7 +161,7 @@ namespace BackEndAPI.Services
             var adminUser = await _userRepository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var returnRequests = PagedList<ReturnRequest>.ToPagedList(
