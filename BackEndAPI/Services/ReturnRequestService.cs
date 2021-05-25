@@ -13,17 +13,28 @@ namespace BackEndAPI.Services
             _repository = repository;
         }
 
-        public Task<GetUsersListPagedResponseDTO> FilterReturnRequests(PaginationParameters paginationParameters, int adminId, ReturnRequestFilterParameters type)
+        public Task<GetUsersListPagedResponseDTO> FilterReturnRequests(
+            PaginationParameters paginationParameters,
+            int adminId,
+            ReturnRequestFilterParameters filterParameters
+        )
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<GetUsersListPagedResponseDTO> GetAllReturnRequests(PaginationParameters paginationParameters, int adminId)
+        public Task<GetUsersListPagedResponseDTO> GetAllReturnRequests(
+            PaginationParameters paginationParameters,
+            int adminId
+        )
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<GetUsersListPagedResponseDTO> SearchReturnRequests(PaginationParameters paginationParameters, int adminId, string searchQuery)
+        public Task<GetUsersListPagedResponseDTO> SearchReturnRequests(
+            PaginationParameters paginationParameters,
+            int adminId,
+            string searchQuery
+        )
         {
             throw new System.NotImplementedException();
         }

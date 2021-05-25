@@ -37,7 +37,7 @@ namespace BackEndAPI.Services
         {
             var user = _repository.GetAll().SingleOrDefault(x => x.UserName == model.UserName && x.Password == model.Password);
             if (user == null) return null;
-            var token = generateJwtToken(user);
+            var token = GenerateJwtToken(user);
             return new AuthenticateResponse(user, token);
         }
 
@@ -114,8 +114,7 @@ namespace BackEndAPI.Services
             return _repository.GetAll().WithoutPasswords();
         }
 
-        //Generate JwtToken
-        private string generateJwtToken(User user)
+        private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -132,6 +131,7 @@ namespace BackEndAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        
         public async Task Disable(int userId, int id)
         {
             int countAdmin =  _repository.CountAdminRemain();
@@ -260,6 +260,7 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
+        
         public async Task<GetUsersListPagedResponseDTO> SearchUsers(
             PaginationParameters paginationParameters,
             int adminId,

@@ -13,7 +13,7 @@ namespace BackEndAPI.Interfaces
         Task<GetUsersListPagedResponseDTO> FilterReturnRequests(
             PaginationParameters paginationParameters,
             int adminId,
-            ReturnRequestFilterParameters type
+            ReturnRequestFilterParameters filterParameters
         );
 
         Task<GetUsersListPagedResponseDTO> SearchReturnRequests(
