@@ -107,12 +107,14 @@ namespace BackEndAPI
                 });
             });
 
-            services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 
             services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
+            services.AddTransient<IAsyncReturnRequestRepository, ReturnRequestRepository>();
+
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IReturnRequestService, ReturnRequestService>();
 
             services.AddIdentity<User, Role>()
                              .AddEntityFrameworkStores<AssetsManagementDBContext>()
