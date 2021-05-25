@@ -58,7 +58,7 @@ export function HomePage() {
           })}
           onSubmit={({ newpassword }, { setStatus, setSubmitting }) => {
             setStatus();
-            userService.changePassword(id, " ", newpassword).then(
+            userService.changePassword(id, "string", newpassword).then(
               () => {
                 setSubmitting(false);
 

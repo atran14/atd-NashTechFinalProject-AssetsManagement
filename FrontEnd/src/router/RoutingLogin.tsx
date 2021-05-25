@@ -52,6 +52,7 @@ export default class RoutingLogin extends React.Component<
   handleClose() {
     this.setState(() => ({ showModal: false }));
     this.setState(() => ({ isPasswordChanged: false }));
+    this.logout();
   }
   handleShow() {
     this.setState(() => ({ showModal: true }));
@@ -92,7 +93,7 @@ export default class RoutingLogin extends React.Component<
               )}
               {isUser && (
                 <Nav.Item>
-                  <Nav.Link eventKey="2" href="/Admin">
+                  <Nav.Link eventKey="2" href="/User">
                     User
                   </Nav.Link>
                 </Nav.Item>
