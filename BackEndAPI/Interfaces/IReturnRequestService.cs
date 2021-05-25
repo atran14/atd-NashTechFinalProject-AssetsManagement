@@ -5,21 +5,23 @@ namespace BackEndAPI.Interfaces
 {
     public interface IReturnRequestService
     {
-        Task<GetReturnRequestsPagedResponseDTO> GetAllReturnRequests(
+        Task<GetReturnRequestsPagedResponseDTO> GetAll(
            PaginationParameters paginationParameters,
            int adminId
        );
 
-        Task<GetReturnRequestsPagedResponseDTO> FilterReturnRequests(
+        Task<GetReturnRequestsPagedResponseDTO> Filter(
             PaginationParameters paginationParameters,
             int adminId,
             ReturnRequestFilterParameters filterParameters
         );
 
-        Task<GetReturnRequestsPagedResponseDTO> SearchReturnRequests(
+        Task<GetReturnRequestsPagedResponseDTO> Search(
             PaginationParameters paginationParameters,
             int adminId,
             string searchQuery
-        );   
+        );
+
+        Task<ReturnRequestDTO> Create(CreateReturnRequestModel model, int requestedById);
     }
 }

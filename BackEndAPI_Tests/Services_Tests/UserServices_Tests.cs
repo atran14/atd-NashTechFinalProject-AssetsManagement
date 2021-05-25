@@ -390,7 +390,7 @@ namespace BackEndAPI_Tests.Services_Tests
                 }
             );
 
-            Assert.AreEqual("Unauthorized access", exception.Message);
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
         }
 
         [Test]

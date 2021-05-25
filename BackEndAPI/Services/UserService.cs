@@ -49,7 +49,7 @@ namespace BackEndAPI.Services
             var adminUser = await _repository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var users = PagedList<User>.ToPagedList(
@@ -269,13 +269,13 @@ namespace BackEndAPI.Services
         {
             if (searchText == null)
             {
-                throw new Exception("Null search query");
+                throw new Exception(Message.NullSearchQuery);
             }
 
             var adminUser = await _repository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var users = PagedList<User>.ToPagedList(

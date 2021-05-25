@@ -17,7 +17,7 @@ namespace BackEndAPI.Entities
 
         public int? AcceptedByUserId { get; set; }
         
-        public virtual User? AcceptedByUser { get; set; }
+        public virtual User AcceptedByUser { get; set; }
 
         public DateTime? ReturnedDate { get; set; }
 
