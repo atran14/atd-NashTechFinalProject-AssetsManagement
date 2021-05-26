@@ -496,7 +496,7 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
-        public void Create_ValidUserInserted_ReturnsCreatedUser()
+        public async Task Create_ValidUserInserted_ReturnsCreatedUser()
         {
 
             //Arrange
@@ -512,9 +512,11 @@ namespace BackEndAPI_Tests.Services_Tests
             };
 
             User _user = _mapper.Map<User>(user);
+            _user.Id = 31;
 
             User createdUser = new User
             {
+                Id = 31,
                 FirstName = "Thang",
                 LastName = "Doan Viet",
                 DateOfBirth = new DateTime(1995, 06, 03),
@@ -527,8 +529,9 @@ namespace BackEndAPI_Tests.Services_Tests
                 Password = "thangdv@03061995"
             };
 
-            _userRepositoryMock.Setup(x => x.CountUsername("thangdv")).Returns(0);
-            _userRepositoryMock.Setup(x => x.Create(_user)).ReturnsAsync(createdUser);
+            _userRepositoryMock.Setup(x => x.CountUsername(It.IsAny<string>())).Returns(0);
+            _userRepositoryMock.Setup(x => x.Create(It.IsAny<User>())).ReturnsAsync(createdUser);
+            _userRepositoryMock.Setup(x => x.Update(It.IsAny<User>())).Returns(Task.CompletedTask).Verifiable();
             _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
             var userService = new UserService(
                 _userRepositoryMock.Object,
@@ -539,12 +542,12 @@ namespace BackEndAPI_Tests.Services_Tests
 
             //Act
 
-            var result = userService.Create(user);
+            var result = await userService.Create(user);
 
             //Assert
-            Assert.AreEqual("Thang", createdUser.FirstName);
-            Assert.AreEqual("Doan Viet", createdUser.LastName);
-            Assert.AreEqual(new DateTime(1995, 06, 03), createdUser.DateOfBirth);
+            Assert.AreEqual(result.FirstName, createdUser.FirstName);
+            Assert.AreEqual(result.LastName, createdUser.LastName);
+            Assert.AreEqual(result.DateOfBirth, createdUser.DateOfBirth);
 
         }
 

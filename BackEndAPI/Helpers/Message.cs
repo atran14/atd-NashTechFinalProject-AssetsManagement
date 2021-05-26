@@ -17,5 +17,13 @@ namespace BackEndAPI.Helpers
         public const string RestrictedAge = "User is under 18. Please select a different date";
         public const string WeekendJoinedDate = "Joined date is Saturday or Sunday. Please select a different date";
         public const string JoinedBeforeBirth ="Joined date is not later than date of birth. Please select a different date";
+        public const string NullOrEmptyCategoryName = "Category name can not be null or empty!";
+        public const string NullOrEmptyCategoryCode = "Category code can not be null or empty!";
+        public const string NullAssetCategory = "Asset Category can not be null!";
+        public const string CategoryNameExisted = "Category is already existed. Please enter a different category";
+        public const string CategoryCodeExisted = "Prefix is already existed. Please enter a different prefix";
+        public const string NullAsset = "Asset can not be null!";
+        public const string AssetNumberError = "Can not get number of assets!";
+        public const string NullOrEmptyPrefix = "Prefix can not be empty or contains only spaces!";
     }
 }
