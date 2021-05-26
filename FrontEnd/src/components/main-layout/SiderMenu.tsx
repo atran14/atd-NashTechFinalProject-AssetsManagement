@@ -3,6 +3,7 @@ import { Layout, Menu } from 'antd';
 import {
   LoginOutlined,
   UserOutlined,
+  DollarOutlined
 } from '@ant-design/icons';
 import { Link, useLocation } from 'react-router-dom';
 
@@ -20,22 +21,31 @@ function SiderMenu() {
         position: 'fixed',
         left: 0,
       }}>
-      <Menu theme="light"
-        mode="inline"
-        style={{ height: '100%', borderRight: 0 }}
-        selectedKeys={[location.pathname]}
-      >
-        {sessionStorage.getItem("username") &&
+      {sessionStorage.getItem("username") &&
+        <Menu theme="light"
+          mode="inline"
+          style={{ height: '100%', borderRight: 0 }}
+          selectedKeys={[location.pathname]}
+        >
           <Menu.Item icon={<UserOutlined />} key="/users" className="menu-item">
             <Link to="/users">Users</Link>
           </Menu.Item>
-        }
-        {!sessionStorage.getItem("username") &&
+          <Menu.Item icon={<DollarOutlined />} key="/assets" className="menu-item">
+            <Link to="/assets">Assets</Link>
+          </Menu.Item>
+        </Menu>
+      }
+      {!sessionStorage.getItem("username") &&
+        <Menu theme="light"
+          mode="inline"
+          style={{ height: '100%', borderRight: 0 }}
+          selectedKeys={[location.pathname]}
+        >
           <Menu.Item icon={<LoginOutlined />} key="/login" className="menu-item">
             <Link to="/login">Login</Link>
           </Menu.Item>
-        }
-      </Menu>
+        </Menu>
+      }
     </Sider>
   );
 }

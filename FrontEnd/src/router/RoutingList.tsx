@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { CreateAsset } from '../pages/asset-component/create';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
 import { Home } from '../pages/home-component/home';
@@ -43,6 +44,11 @@ const routes = [
     path: '/users/create',
     component: CreateUser,
     key: '/users/update',
+  },
+  {
+    path: '/assets/create',
+    component: CreateAsset,
+    key: '/assets/update',
   },
 ];
 
