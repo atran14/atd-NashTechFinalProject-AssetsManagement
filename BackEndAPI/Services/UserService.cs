@@ -303,28 +303,29 @@ namespace BackEndAPI.Services
                 Items = users.Select(u => _mapper.Map<UserDTO>(u))
             };
         }
-
-        public async Task ChangePassword(int id, string oldPassword, string newPassword)
+        
+        public async Task ChangePassword(int id, ChangePasswordRequest model)
         {
             var user = await _repository.GetById(id);
 
+            if (user.OnFirstLogin == OnFirstLogin.Yes)
+            {
+                user.OnFirstLogin = OnFirstLogin.No;
+            } 
+            
+            user.Password = model.NewPassword ;
+
+            await _repository.Update(user);
+        }
+        public async Task<User> GetUserByIdWithPassword(int id)
+        {
+            var user = await _repository.GetById(id);
             if (user == null)
             {
                 throw new InvalidOperationException(Message.UserNotFound);
             }
             
-            if (user.OnFirstLogin == OnFirstLogin.Yes)
-            {
-                user.OnFirstLogin = OnFirstLogin.No;
-            } 
-            else if (user.Password != oldPassword)
-            {
-                throw new InvalidOperationException(Message.OldPasswordIncorrect);
-            }
-            user.Password = newPassword;
-
-            await _repository.Update(user);
+            return user;
         }
-        
     }
 }

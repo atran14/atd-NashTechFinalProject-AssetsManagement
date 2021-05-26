@@ -97,13 +97,25 @@ namespace BackEndAPI.Controllers
 
             return Ok(users);
         }
-
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin,User")]
+        
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("change-password/{id}")]
-        public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
+        public async Task<IActionResult> ChangePassword(int id, [FromBody]ChangePasswordRequest model)
         {
-            await _userService.ChangePassword(id, oldPassword, newPassword);
-            return Ok(new { message = Message.ChangePasswordSucceed });
+            var user = _userService.GetUserByIdWithPassword(id);
+            if (user == null)
+            {
+                return NotFound(Message.UserNotFound);
+            }
+            if (user.Result.OnFirstLogin == OnFirstLogin.No)
+            {
+                if (user.Result.Password != model.OldPassword)
+                {
+                    return BadRequest(new {message = Message.OldPasswordIncorrect});
+                }
+            }
+            await _userService.ChangePassword(id, model);
+            return Ok(new {message = Message.ChangePasswordSucceed});
         }
     }
 }
