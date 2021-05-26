@@ -10,11 +10,6 @@ namespace BackEndAPI.Interfaces
     public interface IAssetService
     {
 
-        Task<GetUsersListPagedResponseDTO> GetUsers(
-            PaginationParameters paginationParameters,
-            int adminId
-        );
-
         Task<Asset> Create(CreateAssetModel model);
 
     }
