@@ -11,7 +11,7 @@ namespace BackEndAPI.Helpers
         public const string InternalError = "Internal server error!";
         public const string InvalidId = "Invalid Id!";
         public const string NullFirstName = "First Name can not be null!";
-        public const string EmptyOrSpacesFirstName = "First Name can not be empty or contains only spaces!";
+        public const string EmptyOrSpacesFirstName = "First Name can not bse empty or contains only spaces!";
         public const string NullLastName = "Last Name can not be null!";
         public const string EmptyOrSpacesLastName = "Last Name can not be empty or contains only spaces!";
         public const string NullOrEmptyUsername = "Username can not be null or empty!";
@@ -23,5 +23,13 @@ namespace BackEndAPI.Helpers
         public const string JoinedBeforeBirth ="Joined date is not later than date of birth. Please select a different date";
         public const string TriedToCreateReturnRequestForSomeoneElseAssignment = "You are trying to create a return request on an asset assigned to someone else. Please do that on assets assigned to YOU.";
         public const string AssignedAssetNotAccepted = "The assigned asset has not been accepted. Please wait until the asset is accepted";
+        public const string NullOrEmptyCategoryName = "Category name can not be null or empty!";
+        public const string NullOrEmptyCategoryCode = "Category code can not be null or empty!";
+        public const string NullAssetCategory = "Asset Category can not be null!";
+        public const string CategoryNameExisted = "Category is already existed. Please enter a different category";
+        public const string CategoryCodeExisted = "Prefix is already existed. Please enter a different prefix";
+        public const string NullAsset = "Asset can not be null!";
+        public const string AssetNumberError = "Can not get number of assets!";
+        public const string NullOrEmptyPrefix = "Prefix can not be empty or contains only spaces!";
     }
 }

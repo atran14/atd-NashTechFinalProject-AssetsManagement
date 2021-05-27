@@ -112,9 +112,13 @@ namespace BackEndAPI
             services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
             services.AddTransient<IAsyncReturnRequestRepository, ReturnRequestRepository>();
+            services.AddTransient<IAsyncAssetCategoryRepository, AssetCategoryRepository>();
+            services.AddTransient<IAsyncAssetRepository, AssetRepository>();
 
+            services.AddScoped<IReturnRequestService, ReturnRequestService>();            
             services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IReturnRequestService, ReturnRequestService>();
+            services.AddScoped<IAssetCategoryService, AssetCategoryService>();
+            services.AddScoped<IAssetService, AssetService>();
 
             services.AddIdentity<User, Role>()
                              .AddEntityFrameworkStores<AssetsManagementDBContext>()

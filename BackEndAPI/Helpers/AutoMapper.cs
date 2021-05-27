@@ -8,6 +8,7 @@ namespace BackEndAPI.Helpers
     {
         public AutoMapperProfile()
         {
+
             CreateMap<CreateUserModel, User>();
             
             CreateMap<User, UserDTO>();
@@ -23,6 +24,11 @@ namespace BackEndAPI.Helpers
                                                                 )
                         );
 
+
+
+            CreateMap<CreateCategoryModel, AssetCategory>();
+
+            CreateMap<CreateAssetModel, Asset>();
 
 
         }

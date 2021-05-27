@@ -4,9 +4,10 @@ import {
   LoginOutlined,
   UserOutlined,
   RollbackOutlined,
+  DollarOutlined,
 } from '@ant-design/icons'
-import { Link, useLocation } from 'react-router-dom'
 import { UserType } from '../../models/User'
+import { Link, useLocation } from 'react-router-dom';
 
 const { Sider } = Layout
 
@@ -48,17 +49,24 @@ function SiderMenu() {
             >
               <Link to="/return-requests">Return Requests</Link>
             </Menu.Item>
+            <Menu.Item 
+              icon={<DollarOutlined />} 
+              key="/assets"
+              className="menu-item"
+            >
+            <Link to="/assets">Assets</Link>
+            </Menu.Item>
           </>
         )}
         {userType && userType === UserType[UserType.USER] && (
           <>
-            <Menu.Item
+            {/* <Menu.Item
               icon={<UserOutlined />}
               key="/users"
               className="menu-item"
             >
               <Link to="/users">Users</Link>
-            </Menu.Item>
+            </Menu.Item> */}
           </>
         )}
         {!userType && (
@@ -70,7 +78,7 @@ function SiderMenu() {
             <Link to="/login">Login</Link>
           </Menu.Item>
         )}
-      </Menu>
+      </Menu>      
     </Sider>
   )
 }
