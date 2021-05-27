@@ -44,7 +44,7 @@ function SiderMenu() {
             </Menu.Item>
             <Menu.Item
               icon={<RollbackOutlined />}
-              key="//return-requests"
+              key="/return-requests"
               className="menu-item"
             >
               <Link to="/return-requests">Return Requests</Link>

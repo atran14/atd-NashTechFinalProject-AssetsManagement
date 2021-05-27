@@ -54,7 +54,7 @@ const routes = [
   {
     path: '/assets/create',
     component: CreateAsset,
-    key: '/assets/update',
+    key: '/assets/create',
   },
 ];
 

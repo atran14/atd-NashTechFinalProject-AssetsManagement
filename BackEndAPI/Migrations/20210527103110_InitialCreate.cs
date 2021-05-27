@@ -282,14 +282,40 @@ namespace BackEndAPI.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "JoinedDate", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "Password", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StaffCode", "Status", "TwoFactorEnabled", "Type", "UserName" },
                 values: new object[,]
                 {
-<<<<<<< HEAD:BackEndAPI/Migrations/20210525155605_InitialCreate.cs
-                    { 1, 0, "b531f734-17b3-42c5-b5fe-db9e6641cedb", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "388c8fe9-1557-438b-952a-0dfbb1e545b1", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
-=======
-                    { 1, 0, "a082076d-9147-44e3-8077-5a6d7eb02a9e", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "eebbf39c-c29d-4261-8892-f1a467b7dc2f", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
->>>>>>> develop:BackEndAPI/Migrations/20210523101526_Initial.cs
+                    { 1, 0, "fa0c21d1-df1e-4304-9be9-dbdb20c79ca7", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
+                    { 2, 0, "707b32f2-04a0-4f8f-8b1a-d89d31578386", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" },
+                    { 3, 0, "e06ff0a7-409f-4b76-b37d-2eea5bfeb7ae", new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt2@12011997", null, null, false, null, "SD0003", 0, false, 1, "binhnt2" },
+                    { 4, 0, "a3f1c503-6a5c-45fe-9afb-6924db26abd9", new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Anh", 1, new DateTime(2018, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Duc", 1, false, null, null, null, "anhnd@20012000", null, null, false, null, "SD0004", 0, false, 0, "anhnd" },
+                    { 5, 0, "bb88bd4a-71d3-4091-a6e8-6ee210279b8f", new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Van", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt@12011990", null, null, false, null, "SD0005", 0, false, 1, "binhnt" },
+                    { 6, 0, "3ebd67ca-985e-4008-b462-ae2d6a77610e", new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt2@120187", null, null, false, null, "SD0006", 0, false, 1, "binhnt2" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "Assets",
+                columns: new[] { "Id", "AssetCode", "AssetName", "CategoryId", "InstalledDate", "Location", "Specification", "State" },
+                values: new object[,]
+                {
+                    { 1, "LA000001", "Laptop 1", 1, new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "Balls-to-the-walls laptop, specced with the latest CPU and GPU", 1 },
+                    { 2, "LA000002", "Laptop 2", 1, new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "An even more balls-to-the-walls laptop, specced with even better CPU and GPU than laptop 1", 0 },
+                    { 3, "PC000001", "PC 1", 2, new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Balls-to-the-walls desktop, designed for ultimate Word experience", 0 },
+                    { 4, "PC000002", "PC 2", 2, new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "An even more balls-to-the-walls laptop, designed for the performant Excel workflow", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Assignments",
+                columns: new[] { "Id", "AssetId", "AssignedByUserId", "AssignedDate", "AssignedToUserId", "Note", "State" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Make sure to upgrade RAM when you have spare time. Thanks.", 1 },
+                    { 2, 2, 1, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "Make sure to upgrade RAM when you have spare time. Thanks.", 0 },
+                    { 3, 3, 4, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, "Make sure to upgrade RAM when you have spare time. Thanks.", 0 },
+                    { 4, 4, 4, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, "Make sure to upgrade RAM when you have spare time. Thanks.", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "ReturnRequest",
+                columns: new[] { "Id", "AcceptedByUserId", "AssignmentId", "RequestedByUserId", "ReturnedDate", "State" },
+                values: new object[] { 1, null, 1, 1, null, 0 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Assets_CategoryId",
