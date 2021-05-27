@@ -49,8 +49,8 @@ export function CreateAssignment() {
 
   let userService = UserService.getInstance();
   let assetService = AssetService.getInstance();
-
   let service = AssignmentsService.getInstance();
+  
   useEffect(() => {
     forceUpdate({});
   }, []);

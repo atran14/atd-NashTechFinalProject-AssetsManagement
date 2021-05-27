@@ -1,3 +1,5 @@
+import { AssetCategory } from "./AssetCategory"
+
 export type AssetInfo = {
 
     assetName: string,
@@ -30,6 +32,7 @@ export interface Asset {
     assetCode:string,
 
     categoryId: number,
+    category: AssetCategory,
 
     specification: string,
 
