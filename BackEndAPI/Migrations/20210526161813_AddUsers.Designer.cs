@@ -4,14 +4,16 @@ using BackEndAPI.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BackEndAPI.Migrations
 {
     [DbContext(typeof(AssetsManagementDBContext))]
-    partial class AssetsManagementDBContextModelSnapshot : ModelSnapshot
+    [Migration("20210526161813_AddUsers")]
+    partial class AddUsers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,52 +58,6 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Assets");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AssetCode = "LA000001",
-                            AssetName = "Laptop 1",
-                            CategoryId = 1,
-                            InstalledDate = new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Location = 0,
-                            Specification = "Balls-to-the-walls laptop, specced with the latest CPU and GPU",
-                            State = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AssetCode = "LA000002",
-                            AssetName = "Laptop 2",
-                            CategoryId = 1,
-                            InstalledDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Location = 0,
-                            Specification = "An even more balls-to-the-walls laptop, specced with even better CPU and GPU than laptop 1",
-                            State = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AssetCode = "PC000001",
-                            AssetName = "PC 1",
-                            CategoryId = 2,
-                            InstalledDate = new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Location = 1,
-                            Specification = "Balls-to-the-walls desktop, designed for ultimate Word experience",
-                            State = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AssetCode = "PC000002",
-                            AssetName = "PC 2",
-                            CategoryId = 2,
-                            InstalledDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Location = 1,
-                            Specification = "An even more balls-to-the-walls laptop, designed for the performant Excel workflow",
-                            State = 1
-                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.AssetCategory", b =>
@@ -172,48 +128,6 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("AssignedByUserId");
 
                     b.ToTable("Assignments");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AssetId = 1,
-                            AssignedByUserId = 1,
-                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AssignedToUserId = 2,
-                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
-                            State = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AssetId = 2,
-                            AssignedByUserId = 1,
-                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AssignedToUserId = 3,
-                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
-                            State = 0
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AssetId = 3,
-                            AssignedByUserId = 4,
-                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AssignedToUserId = 5,
-                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
-                            State = 0
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AssetId = 4,
-                            AssignedByUserId = 4,
-                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            AssignedToUserId = 6,
-                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
-                            State = 1
-                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.ReturnRequest", b =>
@@ -248,15 +162,6 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("RequestedByUserId");
 
                     b.ToTable("ReturnRequest");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AssignmentId = 1,
-                            RequestedByUserId = 1,
-                            State = 0
-                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.Role", b =>
@@ -398,7 +303,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3476ef8c-8fde-4099-a098-02ffe15f2c8e",
+                            ConcurrencyStamp = "6a80d73c-b992-4447-a7bd-dce727c616e0",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -420,7 +325,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "75f42109-818c-4aac-ae44-ec876285c194",
+                            ConcurrencyStamp = "b284a8a7-4fb1-45b6-8aac-8d331524e800",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -442,7 +347,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "516e72be-2360-4e58-ab12-66e71a578700",
+                            ConcurrencyStamp = "24a08db8-c98d-4134-ae72-6c7405f2e0cc",
                             DateOfBirth = new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -464,7 +369,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "12df2bbe-bee4-46a8-aed3-6895922075c0",
+                            ConcurrencyStamp = "628abad7-fff2-4bcc-a47f-791082e57ce7",
                             DateOfBirth = new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Anh",
@@ -486,7 +391,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "19f0f8be-c380-4a3a-9ddd-242c37799144",
+                            ConcurrencyStamp = "b97d1b0a-71f9-44dc-aa6d-e2a4ffb8af6c",
                             DateOfBirth = new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Van",
@@ -508,7 +413,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 6,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "49cd27a3-c6d6-4861-8955-3b7428f14f7f",
+                            ConcurrencyStamp = "da99ec9d-6d27-4c1c-a7ef-183d4b7b78ea",
                             DateOfBirth = new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",

@@ -95,8 +95,8 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     if (isAdminAuthorized) {
       ;(async () => {
         setIsFetchingData(true)
-        let userServices = UserService.getInstance()
-        let usersPagedResponse = await userServices.getUsers()
+        let userService = UserService.getInstance()
+        let usersPagedResponse = await userService.getUsers()
 
         setUsersPagedList(usersPagedResponse)
         setUsersList(usersPagedResponse.items)

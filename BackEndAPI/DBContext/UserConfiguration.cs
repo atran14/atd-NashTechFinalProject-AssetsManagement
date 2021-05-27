@@ -73,6 +73,66 @@ namespace BackEndAPI.DBContext
                         Password = "binhnt@12011994",
                         Location = Location.HaNoi,
                         Status = UserStatus.Active
+                    },
+                    new User
+                    {
+                        Id = 3,
+                        StaffCode = "SD0003",
+                        FirstName = "Binh",
+                        LastName = "Nguyen Thi",
+                        DateOfBirth = new DateTime(1997, 01, 12).Date,
+                        JoinedDate = new DateTime(2019, 12, 05).Date,
+                        Gender = Gender.Female,
+                        Type = UserType.User,
+                        UserName = "binhnt2",
+                        Password = "binhnt2@12011997",
+                        Location = Location.HaNoi,
+                        Status = UserStatus.Active
+                    },
+                    new User
+                    {
+                        Id = 4,
+                        StaffCode = "SD0004",
+                        FirstName = "Anh",
+                        LastName = "Nguyen Duc",
+                        DateOfBirth = new DateTime(2000, 01, 20),
+                        JoinedDate = new DateTime(2018, 09, 25),
+                        Gender = Gender.Female,
+                        Type = UserType.Admin,
+                        UserName = "anhnd",
+                        Password = "anhnd@20012000",
+                        Location = Location.HoChiMinh,
+                        Status = UserStatus.Active
+                    },
+                    new User
+                    {
+                        Id = 5,
+                        StaffCode = "SD0005",
+                        FirstName = "Van",
+                        LastName = "Nguyen Thi",
+                        DateOfBirth = new DateTime(1990, 01, 12).Date,
+                        JoinedDate = new DateTime(2021, 12, 05).Date,
+                        Gender = Gender.Female,
+                        Type = UserType.User,
+                        UserName = "binhnt",
+                        Password = "binhnt@12011990",
+                        Location = Location.HoChiMinh,
+                        Status = UserStatus.Active
+                    },
+                    new User
+                    {
+                        Id = 6,
+                        StaffCode = "SD0006",
+                        FirstName = "Binh",
+                        LastName = "Nguyen Thi",
+                        DateOfBirth = new DateTime(1987, 01, 12).Date,
+                        JoinedDate = new DateTime(2019, 12, 05).Date,
+                        Gender = Gender.Male,
+                        Type = UserType.User,
+                        UserName = "binhnt2",
+                        Password = "binhnt2@120187",
+                        Location = Location.HoChiMinh,
+                        Status = UserStatus.Active
                     }
             );
         }

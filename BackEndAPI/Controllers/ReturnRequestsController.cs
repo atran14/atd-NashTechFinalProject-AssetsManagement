@@ -24,8 +24,9 @@ namespace BackEndAPI.Controllers
                     [FromQuery] PaginationParameters paginationParameters
                 )
         {
-            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
-            var returnRequests = await _service.GetAll(paginationParameters, Int32.Parse(adminClaim.Value));
+            // var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            // var returnRequests = await _service.GetAll(paginationParameters, Int32.Parse(adminClaim.Value));
+            var returnRequests = await _service.GetAll(paginationParameters, 1);
 
             return Ok(returnRequests);
         }
@@ -33,7 +34,7 @@ namespace BackEndAPI.Controllers
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("filter")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> Filter(
-                    [FromBody] ReturnRequestFilterParameters filterParameters,
+                    [FromQuery] ReturnRequestFilterParameters filterParameters,
                     [FromQuery] PaginationParameters paginationParameters
                 )
         {
