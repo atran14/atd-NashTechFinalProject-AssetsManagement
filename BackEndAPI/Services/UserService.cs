@@ -328,5 +328,39 @@ namespace BackEndAPI.Services
             
             return user;
         }
+    
+        public async Task<IQueryable<UserDTO>> GetAllUsers(int userId)
+        {
+            var user = await _repository.GetById(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            var listUser = _repository.GetAll()
+                               .Where(x => x.Location == user.Location && x.Status == UserStatus.Active)
+                               .AsQueryable();
+            var sendListUser = listUser.Select(x => _mapper.Map<UserDTO>(x));
+            return sendListUser;
+        }
+
+        public async Task<IQueryable<UserDTO>> GetUserBySearching(int userId, string searchText)
+        {
+            var user = await _repository.GetById(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            var listUser = _repository.GetAll()
+                            .Where(x => x.Location == user.Location
+                            && x.Status == UserStatus.Active
+                            && (
+                                 (x.FirstName + " " + x.LastName).Contains(searchText)
+                                 || x.StaffCode.Contains(searchText)
+                                )
+                            )
+                            .AsQueryable();
+            var sendListUser = listUser.Select(x => _mapper.Map<UserDTO>(x));
+            return sendListUser;
+        }
     }
 }
