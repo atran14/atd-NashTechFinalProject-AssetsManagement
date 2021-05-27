@@ -1,0 +1,40 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using BackEndAPI.Entities;
+using BackEndAPI.Enums;
+using BackEndAPI.Models;
+
+namespace BackEndAPI.Interfaces
+{
+    public interface IAssignmentService
+    {
+        IQueryable<Assignment> GetAll();
+        Task Create(int userId, AssignmentModel model);
+        Task Update(int id, AssignmentModel model);
+        Task<GetAssignmentListPagedResponse> GetAllAssignments(
+         PaginationParameters paginationParameters,
+         int adminId
+     );
+        Task<Assignment> GetById(int id);
+
+        Task<GetAssignmentListPagedResponse> GetAssignmentByState(
+            PaginationParameters paginationParameters,
+            int adminId,
+            AssignmentState state
+    );
+
+           Task<GetAssignmentListPagedResponse> GetAssignmentByDate(
+            PaginationParameters paginationParameters,
+            int adminId,
+            DateTime date
+    );
+
+        Task<GetAssignmentListPagedResponse> SearchAssignments(
+            PaginationParameters paginationParameters,
+            int adminId,
+            string searchText
+        );
+    }
+}

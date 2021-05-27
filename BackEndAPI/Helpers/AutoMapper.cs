@@ -9,7 +9,9 @@ namespace BackEndAPI.Helpers
         public AutoMapperProfile()
         {
             CreateMap<CreateUserModel, User>();
+            CreateMap<AssignmentModel, Assignment>();
             CreateMap<User, UserDTO>();
+            CreateMap<Assignment, AssignmentDTO>();
         }
     }
 }

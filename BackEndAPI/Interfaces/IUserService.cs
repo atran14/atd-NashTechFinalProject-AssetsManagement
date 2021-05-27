@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using BackEndAPI.Entities;
 using BackEndAPI.Enums;
@@ -28,6 +29,9 @@ namespace BackEndAPI.Interfaces
         AuthenticateResponse Authenticate(AuthenticateRequest model);
 
         IEnumerable<User> GetAll();
+        Task<IQueryable<UserDTO>> GetAllUsers(int userId);
+
+        Task<IQueryable<UserDTO>> GetUserBySearching(int userId,string searchText);
 
         Task<User> Create(CreateUserModel user);
 

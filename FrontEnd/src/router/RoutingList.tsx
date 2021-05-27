@@ -1,5 +1,8 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
+import { CreateAssignment } from '../pages/assignment-component/create';
+import { ListAssignments } from '../pages/assignment-component/list';
+import { UpdateAssignment } from '../pages/assignment-component/update';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
 import { Home } from '../pages/home-component/home';
@@ -42,7 +45,22 @@ const routes = [
   {
     path: '/users/create',
     component: CreateUser,
-    key: '/users/update',
+    key: '/users/create',
+  },
+  {
+    path: '/assignments',
+    component: ListAssignments,
+    key: '/assignments',
+  },
+  {
+    path: '/assignments/create',
+    component: CreateAssignment,
+    key: '/assignments/create',
+  },
+  {
+    path: '/assignments/update/:assignmentId',
+    component: UpdateAssignment,
+    key: '/assignments/update/:assignmentId',
   },
 ];
 

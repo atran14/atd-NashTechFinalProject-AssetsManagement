@@ -134,7 +134,7 @@ namespace BackEndAPI.Services
         }
         public async Task Disable(int userId, int id)
         {
-            int countAdmin =  _repository.CountAdminRemain();
+            int countAdmin = _repository.CountAdminRemain();
             int userValid = _assignmentRepository.GetCountUser(id);
             var user = await _repository.GetById(id);
 
@@ -142,7 +142,7 @@ namespace BackEndAPI.Services
             {
                 throw new Exception("System has only one admin remain");
             }
-            
+
             if (userId == id)
             {
                 throw new Exception("Can not disable yourself");
@@ -312,11 +312,11 @@ namespace BackEndAPI.Services
             {
                 throw new InvalidOperationException(Message.UserNotFound);
             }
-            
+
             if (user.OnFirstLogin == OnFirstLogin.Yes)
             {
                 user.OnFirstLogin = OnFirstLogin.No;
-            } 
+            }
             else if (user.Password != oldPassword)
             {
                 throw new InvalidOperationException(Message.OldPasswordIncorrect);
@@ -325,6 +325,39 @@ namespace BackEndAPI.Services
 
             await _repository.Update(user);
         }
-        
+
+        public async Task<IQueryable<UserDTO>> GetAllUsers(int userId)
+        {
+            var user = await _repository.GetById(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            var listUser = _repository.GetAll()
+                               .Where(x => x.Location == user.Location && x.Status == UserStatus.Active)
+                               .AsQueryable();
+            var sendListUser = listUser.Select(x => _mapper.Map<UserDTO>(x));
+            return sendListUser;
+        }
+
+        public async Task<IQueryable<UserDTO>> GetUserBySearching(int userId, string searchText)
+        {
+            var user = await _repository.GetById(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            var listUser = _repository.GetAll()
+                            .Where(x => x.Location == user.Location
+                            && x.Status == UserStatus.Active
+                            && (
+                                 (x.FirstName + " " + x.LastName).Contains(searchText)
+                                 || x.StaffCode.Contains(searchText)
+                                )
+                            )
+                            .AsQueryable();
+            var sendListUser = listUser.Select(x => _mapper.Map<UserDTO>(x));
+            return sendListUser;
+        }
     }
 }

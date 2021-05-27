@@ -109,10 +109,12 @@ namespace BackEndAPI
 
             services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-
             services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
+            services.AddTransient<IAsyncAssetRepository, AssetRepository>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAssignmentService, AssignmentService>();
+            services.AddScoped<IAssetService, AssetService>();
 
             services.AddIdentity<User, Role>()
                              .AddEntityFrameworkStores<AssetsManagementDBContext>()
