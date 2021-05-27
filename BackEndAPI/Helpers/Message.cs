@@ -11,7 +11,7 @@ namespace BackEndAPI.Helpers
         public const string InternalError = "Internal server error!";
         public const string InvalidId = "Invalid Id!";
         public const string NullFirstName = "First Name can not be null!";
-        public const string EmptyOrSpacesFirstName = "First Name can not bse empty or contains only spaces!";
+        public const string EmptyOrSpacesFirstName = "First Name can not be empty or contains only spaces!";
         public const string NullLastName = "Last Name can not be null!";
         public const string EmptyOrSpacesLastName = "Last Name can not be empty or contains only spaces!";
         public const string NullOrEmptyUsername = "Username can not be null or empty!";
