@@ -398,7 +398,11 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
+<<<<<<< HEAD
                             ConcurrencyStamp = "fa0c21d1-df1e-4304-9be9-dbdb20c79ca7",
+=======
+                            ConcurrencyStamp = "857f0246-87f3-4962-97e6-5ae80d7f43ad",
+>>>>>>> feat/12
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -420,7 +424,11 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
+<<<<<<< HEAD
                             ConcurrencyStamp = "707b32f2-04a0-4f8f-8b1a-d89d31578386",
+=======
+                            ConcurrencyStamp = "f70242ed-9c6a-4297-a3d7-bcaee2df5c61",
+>>>>>>> feat/12
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",

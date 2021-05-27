@@ -108,7 +108,6 @@ namespace BackEndAPI
             });
 
             services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-
             services.AddTransient<IAsyncUserRepository, UserRepository>();
             services.AddTransient<IAsyncAssignmentRepository, AssignmentRepository>();
             services.AddTransient<IAsyncReturnRequestRepository, ReturnRequestRepository>();
@@ -118,6 +117,7 @@ namespace BackEndAPI
             services.AddScoped<IReturnRequestService, ReturnRequestService>();            
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IAssetCategoryService, AssetCategoryService>();
+            services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<IAssetService, AssetService>();
 
             services.AddIdentity<User, Role>()

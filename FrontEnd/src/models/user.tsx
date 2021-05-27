@@ -35,6 +35,8 @@ export interface User {
   status: number;
 }
 
+
+
 export type CreateUserModel = {
   firstName: string;
   lastName: string;

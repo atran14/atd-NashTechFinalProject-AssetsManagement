@@ -1,12 +1,20 @@
-import { Button, Col, Row, Table } from 'antd'
+import { Button, Col, DatePicker, Form, Input, Row, Select, Table } from 'antd'
 import { useEffect, useState } from 'react'
+import moment from 'moment'
 import { Link } from 'react-router-dom'
-import {CheckOutlined, CloseOutlined} from '@ant-design/icons'
+import {
+  CheckOutlined,
+  CloseOutlined,
+  FilterFilled,
+  SearchOutlined,
+} from '@ant-design/icons'
 import { ReturnRequestPagedListResponse } from '../../models/Pagination'
 import { ReturnRequest, ReturnRequestState } from '../../models/ReturnRequest'
 import { ReturnRequestService } from '../../services/ReturnRequestService'
 
 const ADMIN = 'ADMIN'
+
+const { Option } = Select
 
 interface SearchAction {
   action: 'filter' | 'search'
@@ -22,7 +30,8 @@ export function ListReturnRequests() {
   let [returnRequestsList, setReturnRequestsList] = useState<ReturnRequest[]>(
     [],
   )
-  let [filterSelected, setFilterSelected] = useState(false)
+  let [stateFilterSelected, setStateFilterSelected] = useState(false)
+  let [dateFilterSelected, setDateFilterSelected] = useState(false)
   let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>()
 
   useEffect(() => {
@@ -38,16 +47,19 @@ export function ListReturnRequests() {
           action: 'search',
           query: '',
         })
-
-        console.log({ returnRequestsPagedResponse })
-
         setIsFetchingData(false)
       })()
     }
   }, [])
 
-  const approveRequest = (id:number) => {}
-  const denyRequest = (id:number) => {}
+  const approveRequest = (rrId: number) => {}
+  const denyRequest = (rrId: number) => {}
+  const onRequestStateFilterButtonClicked = (values: any) => {}
+  const onReturnedDateFilterButtonClicked = (values: any) => {
+    let { filteredReturnedDate } = values
+    console.log({ filteredReturnedDate })
+  }
+  const onSearchButtonClicked = (values: any) => {}
 
   const columns: any = [
     {
@@ -93,11 +105,10 @@ export function ListReturnRequests() {
       dataIndex: 'acceptedByUser',
       key: 'acceptedByUser',
       sorter: (a: string | null, b: string | null) => {
-          if (a === null && b === null) return 0;
-          else if (a === null) return -1;
-          else if (b === null) return 1;
-          else return a.localeCompare(b)
-
+        if (a === null && b === null) return 0
+        else if (a === null) return -1
+        else if (b === null) return 1
+        else return a.localeCompare(b)
       },
       sortDirections: ['ascend', 'descend'],
     },
@@ -106,13 +117,18 @@ export function ListReturnRequests() {
       dataIndex: 'returnedDate',
       key: 'returnedDate',
       render: (text: any, record: ReturnRequest, index: number) => {
-        return <div>{record.returnedDate && new Date(record.returnedDate).toLocaleDateString()}</div>
+        return (
+          <div>
+            {record.returnedDate &&
+              new Date(record.returnedDate).toLocaleDateString()}
+          </div>
+        )
       },
       sorter: (a: string | null, b: string | null) => {
-          if (a === null && b === null) return 0;
-          else if (a === null) return -1;
-          else if (b === null) return 1;
-          else return new Date(a).getTime() - new Date(b).getTime();
+        if (a === null && b === null) return 0
+        else if (a === null) return -1
+        else if (b === null) return 1
+        else return new Date(a).getTime() - new Date(b).getTime()
       },
       sortDirections: ['ascend', 'descend'],
     },
@@ -132,11 +148,11 @@ export function ListReturnRequests() {
       key: 'action',
       render: (text: any, record: ReturnRequest, index: number) => {
         return (
-          <Row>            
+          <Row>
             <Col offset={1}>
               <Button
-                style={{backgroundColor: 'green'}}
-                icon={<CheckOutlined style={{color: "white"}}/>}
+                style={{ backgroundColor: 'green' }}
+                icon={<CheckOutlined style={{ color: 'white' }} />}
                 onClick={() => approveRequest(record.id)}
               />
             </Col>
@@ -156,6 +172,106 @@ export function ListReturnRequests() {
 
   return (
     <>
+      <Row>
+        <Col span={6}>
+          <Form onFinish={onRequestStateFilterButtonClicked}>
+            <Row justify="start">
+              <Col span={15}>
+                <Form.Item
+                  name="filteredRequestState"
+                  className="no-margin-no-padding"
+                >
+                  <Select
+                    placeholder="Select request state"
+                    style={{ width: '100%' }}
+                    onSelect={() => setStateFilterSelected(true)}
+                    disabled={isFetchingData}
+                  >
+                    <Option key="waitingForReturning" value={0}>
+                      Waiting for Returning
+                    </Option>
+                    <Option key="completed" value={1}>
+                      Completed
+                    </Option>
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col offset={1}>
+                <Form.Item className="no-margin-no-padding">
+                  <Button
+                    size="middle"
+                    icon={<FilterFilled />}
+                    htmlType="submit"
+                    disabled={!stateFilterSelected || isFetchingData}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+
+        <Col span={5}>
+          <Form onFinish={onReturnedDateFilterButtonClicked}>
+            <Row justify="start">
+              <Col span={15}>
+                <Form.Item
+                  name="filteredReturnedDate"
+                  className="no-margin-no-padding"
+                >
+                  <DatePicker picker="date" style={{ width: '100%' }}
+                    onChange={() => setDateFilterSelected(true)}
+                  />
+                </Form.Item>
+              </Col>
+
+              <Col offset={1}>
+                <Form.Item className="no-margin-no-padding">
+                  <Button
+                    size="middle"
+                    icon={<FilterFilled />}
+                    htmlType="submit"
+                    disabled={!dateFilterSelected || isFetchingData}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+
+        <Col span={6} offset={7}>
+          <Form
+            onFinish={onSearchButtonClicked}
+            initialValues={{
+              searchText: '',
+            }}
+          >
+            <Row justify="end">
+              <Col span={18}>
+                <Form.Item name="searchText" className="no-margin-no-padding">
+                  <Input
+                    allowClear
+                    disabled={isFetchingData}
+                    style={{ width: '100%' }}
+                    placeholder="e.g. Laptop 01/LA000001"
+                  />
+                </Form.Item>
+              </Col>
+              <Col offset={1}>
+                <Form.Item className="no-margin-no-padding">
+                  <Button
+                    size="middle"
+                    icon={<SearchOutlined />}
+                    type="primary"
+                    htmlType="submit"
+                    disabled={isFetchingData}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+          </Form>
+        </Col>
+      </Row>
       <Table
         style={{
           margin: '1.25em 0 1.25em 0',

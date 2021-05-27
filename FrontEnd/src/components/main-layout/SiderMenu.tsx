@@ -21,16 +21,16 @@ function SiderMenu() {
       className="site-layout-background"
       style={{
         marginTop: 50,
-        overflow: 'auto',
-        height: '100vh',
-        position: 'fixed',
+        overflow: "auto",
+        height: "100vh",
+        position: "fixed",
         left: 0,
       }}
     >
       <Menu
         theme="light"
         mode="inline"
-        style={{ height: '100%', borderRight: 0 }}
+        style={{ height: "100%", borderRight: 0 }}
         selectedKeys={[location.pathname]}
       >
         {userType && userType === UserType[UserType.ADMIN] && (

@@ -1,4 +1,5 @@
 import { ReturnRequest } from './ReturnRequest'
+import { Assignment } from './Assignment'
 import { User } from './User'
 
 export type PaginationParameters = {
@@ -19,3 +20,4 @@ interface PagedListResponse<TModel> {
 export interface UsersPagedListResponse extends PagedListResponse<User> {}
 
 export interface ReturnRequestPagedListResponse extends PagedListResponse<ReturnRequest> {}
+export interface AssignmentPagedListResponse extends PagedListResponse<Assignment> {}

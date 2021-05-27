@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using BackEndAPI.Enums;
 using BackEndAPI.Helpers;
+using System.Linq;
+using BackEndAPI.Entities;
 
 namespace BackEndAPI.Controllers
 {
@@ -35,7 +37,7 @@ namespace BackEndAPI.Controllers
         {
             return Ok(await _userService.Create(user));
         }
-        
+
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, EditUserModel model)
@@ -43,13 +45,38 @@ namespace BackEndAPI.Controllers
             await _userService.Update(id, model);
             return Ok();
         }
-        
+
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{userId}/disable/{id}")]
         public async Task<IActionResult> Disabled(int userId, int id)
         {
-            await _userService.Disable(userId,id);
+            await _userService.Disable(userId, id);
             return Ok();
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpGet("getalluser/{userId}")]
+        public async Task<IQueryable<UserDTO>> GetAll(int userId)
+        {
+            return await _userService.GetAllUsers(userId);
+           
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpGet("getAllNoCondition")]
+        public  IEnumerable<User> GetAllNoCondition()
+        {
+            return  _userService.GetAll();
+           
+        }
+
+        
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpGet("search/{userId}/{searchText}")]
+        public async Task<IQueryable<UserDTO>> GetUserBySearching(int userId, string searchText)
+        {
+            return await _userService.GetUserBySearching(userId, searchText);
+           
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]

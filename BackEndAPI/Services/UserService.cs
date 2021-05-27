@@ -134,7 +134,7 @@ namespace BackEndAPI.Services
         
         public async Task Disable(int userId, int id)
         {
-            int countAdmin =  _repository.CountAdminRemain();
+            int countAdmin = _repository.CountAdminRemain();
             int userValid = _assignmentRepository.GetCountUser(id);
             var user = await _repository.GetById(id);
 
@@ -142,7 +142,7 @@ namespace BackEndAPI.Services
             {
                 throw new Exception("System has only one admin remain");
             }
-            
+
             if (userId == id)
             {
                 throw new Exception("Can not disable yourself");

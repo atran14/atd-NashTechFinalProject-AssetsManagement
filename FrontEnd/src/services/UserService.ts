@@ -20,6 +20,10 @@ export class UserService extends HttpClient {
 
   public create = (user: CreateUserModel) => this.instance.post<User>("/api/users", user);
 
+  public getAllUsers = () => this.instance.get(`/api/Users/getalluser/${JSON.parse(sessionStorage.getItem("id")!)}`);
+  public getAllNoCondition = () => this.instance.get("/api/Users/getAllNoCondition");
+  public getUsersBySearch = (searchText : string) => this.instance.get(`/api/Users/search/${JSON.parse(sessionStorage.getItem("id")!)}/${searchText}`);
+
   public getUsers = (parameters?: PaginationParameters) => this.instance.get<UsersPagedListResponse>(
     "/api/Users",
     {

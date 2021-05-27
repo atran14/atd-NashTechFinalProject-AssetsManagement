@@ -27,10 +27,10 @@ namespace BackEndAPI.Helpers
 
 
             CreateMap<CreateCategoryModel, AssetCategory>();
-
             CreateMap<CreateAssetModel, Asset>();
-
-
+            CreateMap<AssignmentModel, Assignment>();
+            CreateMap<User, UserDTO>();
+            CreateMap<Assignment, AssignmentDTO>();
         }
     }
 }
