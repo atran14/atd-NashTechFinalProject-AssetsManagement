@@ -15,17 +15,15 @@ namespace BackEndAPI.Services
     public class AssignmentService : IAssignmentService
     {
         private readonly IMapper _mapper;
-        private readonly AppSettings _appSettings;
         private readonly IAsyncUserRepository _userrepository;
         private readonly IAsyncAssetRepository _assetrepository;
         private readonly IAsyncAssignmentRepository _repository;
-        public AssignmentService(IAsyncAssignmentRepository repository, IAsyncUserRepository userrepository, IAsyncAssetRepository assetrepository, IMapper mapper, IOptions<AppSettings> appSettings)
+        public AssignmentService(IAsyncAssignmentRepository repository, IAsyncUserRepository userrepository, IAsyncAssetRepository assetrepository, IMapper mapper)
         {
             _repository = repository;
             _userrepository = userrepository;
             _mapper = mapper;
             _assetrepository = assetrepository;
-            _appSettings = appSettings.Value;
         }
 
         public async Task Create(int userId, AssignmentModel model)
@@ -98,10 +96,7 @@ namespace BackEndAPI.Services
 
             var assignments = PagedList<Assignment>.ToPagedList(
                 _repository.GetAll()
-                    .Where(u =>
-                    u.State != AssignmentState.Declined
-
-                ),
+                ,
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -202,8 +197,7 @@ namespace BackEndAPI.Services
             var assignment = PagedList<Assignment>.ToPagedList(
                 _repository.GetAll()
                     .Where(u =>
-                    u.State != AssignmentState.Declined
-                    && u.State == state
+                    u.State == state
                 ),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
@@ -237,8 +231,6 @@ namespace BackEndAPI.Services
             var assignment = PagedList<Assignment>.ToPagedList(
                 _repository.GetAll()
                     .Where(u =>
-                    u.State != AssignmentState.Declined
-                    &&
                     (
                         u.Asset.AssetCode.Contains(searchText)
                         || u.Asset.AssetName.Contains(searchText)
@@ -260,7 +252,8 @@ namespace BackEndAPI.Services
             };
         }
 
-        public async Task<GetAssignmentListPagedResponse> GetAssignmentByDate(PaginationParameters paginationParameters, int adminId, DateTime date)
+        public async Task<GetAssignmentListPagedResponse> GetAssignmentByDate(PaginationParameters paginationParameters, int adminId, 
+        int year, int month, int day)
         {
              var adminUser = await _userrepository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
@@ -271,8 +264,7 @@ namespace BackEndAPI.Services
             var assignment = PagedList<Assignment>.ToPagedList(
                 _repository.GetAll()
                     .Where(u =>
-                    u.State != AssignmentState.Declined
-                    && u.AssignedDate == date
+                     u.AssignedDate.Year == year && u.AssignedDate.Month == month && u.AssignedDate.Day == day
                 ),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
@@ -293,6 +285,25 @@ namespace BackEndAPI.Services
         public IQueryable<Assignment> GetAll()
         {
             return _repository.GetAll().AsQueryable();
+        }
+
+        public async Task Delete(int id)
+        {
+            var assignment = await _repository.GetById(id);
+            var asset = await _assetrepository.GetById(assignment.AssetId);
+            if (assignment == null)
+            {
+                throw new InvalidOperationException("Can not find assignment");
+            }
+
+            if(assignment.State == AssignmentState.Accepted)
+            {
+                throw new Exception("Can not delete this assignment");
+            }
+            await _repository.Delete(assignment);
+            asset.State = AssetState.Available;
+            await _assetrepository.Update(asset);
+
         }
     }
 }

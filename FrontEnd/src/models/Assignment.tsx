@@ -1,4 +1,5 @@
 import {} from "module";
+import { type } from "os";
 import { Asset } from "./Asset";
 import {  User } from "./User";
 
@@ -30,6 +31,11 @@ export type Assignment = {
     state: number;
 };
 
+export type FilterDate = {
+    year : number;
+    month : number;
+    day : number;
+}
 
 export enum AssignmentState
 {

@@ -13,10 +13,10 @@ namespace BackEndAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetController : ControllerBase
+    public class AssetsController : ControllerBase
     {
         private readonly IAssetService _assetService;
-        public AssetController(IAssetService assetService)
+        public AssetsController(IAssetService assetService)
         {
             _assetService = assetService;
         }

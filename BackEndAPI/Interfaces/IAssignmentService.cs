@@ -13,6 +13,8 @@ namespace BackEndAPI.Interfaces
         IQueryable<Assignment> GetAll();
         Task Create(int userId, AssignmentModel model);
         Task Update(int id, AssignmentModel model);
+
+         Task Delete(int id);
         Task<GetAssignmentListPagedResponse> GetAllAssignments(
          PaginationParameters paginationParameters,
          int adminId
@@ -28,7 +30,9 @@ namespace BackEndAPI.Interfaces
            Task<GetAssignmentListPagedResponse> GetAssignmentByDate(
             PaginationParameters paginationParameters,
             int adminId,
-            DateTime date
+            int year,
+            int month,
+            int day
     );
 
         Task<GetAssignmentListPagedResponse> SearchAssignments(

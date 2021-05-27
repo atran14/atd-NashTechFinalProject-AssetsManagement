@@ -1,6 +1,6 @@
 import {} from "module";
 
-export type Asset = {
+export interface Asset  {
   id: number;
   assetCode: string;
   assetName: string;

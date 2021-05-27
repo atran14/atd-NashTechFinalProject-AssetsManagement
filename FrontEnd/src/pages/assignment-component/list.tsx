@@ -18,10 +18,11 @@ import {
   DeleteOutlined,
   FilterFilled,
   InfoCircleOutlined,
-  RedoOutlined
+  RedoOutlined,
+  ExclamationCircleOutlined
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
-import { Assignment, AssignmentState } from "../../models/Assignment";
+import { Assignment, AssignmentState, FilterDate } from "../../models/Assignment";
 import {
   AssignmentPagedListResponse,
   PaginationParameters,
@@ -30,16 +31,17 @@ import { AssignmentsService } from "../../services/AssignmentService";
 import { Asset } from "../../models/Asset";
 import { User } from "../../models/User";
 import { UserService } from "../../services/UserService";
-import { AssetService } from "../../services/AssetService";
 import { Link } from "react-router-dom";
-import moment from "moment";
+
+
 
 interface SearchAction {
   action: "filter" | "search" | "filterDate";
   query: number | string | Date;
 }
 const { Option } = Select;
-const dateFormat = "YYYY-MM-DD";
+const { confirm } = Modal;
+const dateFormat = "DD/MM/YYYY";
 export function ListAssignments() {
   let [isFetchingData, setIsFetchingData] = useState(false);
   let [assignmentPagedList, setAssignmentPagedList] =
@@ -109,6 +111,7 @@ export function ListAssignments() {
       sorter: (a: Assignment, b: Assignment) => a.id - b.id,
       sortDirections: ["ascend", "descend"],
       width: 60,
+
     },
     {
       title: "Asset Code",
@@ -199,6 +202,11 @@ export function ListAssignments() {
       dataIndex: "action",
       key: "action",
       render: (text: any, record: Assignment, index: number) => {
+        var check = false;
+        if(record.state !== AssignmentState.Accepted){
+          check = true;
+        }
+     
         return (
           <Row onClick={(e) => e.stopPropagation()}>
             <Col>
@@ -219,13 +227,15 @@ export function ListAssignments() {
                 danger
                 type="primary"
                 icon={<DeleteOutlined />}
-                //onClick={() => disabledUser(record.id)}
+                onClick={() => deleteAssignment(record.id)}
+                disabled={!check}
               />
             </Col>
             <Button
               ghost
               type="primary"
               icon={<RedoOutlined />}
+              disabled={check}
             />
             <Col></Col>
           </Row>
@@ -268,8 +278,13 @@ export function ListAssignments() {
 
         case "filterDate":
           let filterDateQuery = latestSearchAction.query as Date;
+          let filterDate : FilterDate = {
+            year : filterDateQuery.getFullYear(),
+            month : filterDateQuery.getMonth(),
+            day : filterDateQuery.getDay()
+          }
           assignmentPagedResponse = await assignmentService.filterByDate(
-            filterDateQuery,
+            filterDate,
             parameters
           );
           break;
@@ -332,14 +347,21 @@ export function ListAssignments() {
       setIsFetchingData(true);
 
       let { filteredAssignmentByDate } = values;
+    
+      
       if (filteredAssignmentByDate === null) {
         message.error("Date is empty");
         setIsFetchingData(false);
       } else {
+        let filterDate : FilterDate = {
+          year :JSON.parse(filteredAssignmentByDate._d.getFullYear().toString()),
+          month :JSON.parse (filteredAssignmentByDate._d.getMonth().toString()) + 1,
+          day : JSON.parse(filteredAssignmentByDate._d.getDate().toString())
+        }
         let assignmentService = AssignmentsService.getInstance();
         let assignmentPagedResponse: AssignmentPagedListResponse =
           await assignmentService.filterByDate(
-            filteredAssignmentByDate as Date
+            filterDate
           );
 
         setLatestSearchAction({
@@ -352,6 +374,27 @@ export function ListAssignments() {
       }
     })();
   };
+
+  function deleteAssignment(id: number) {
+    confirm({
+      title: "Do you want to delete this assignment?",
+      icon: <ExclamationCircleOutlined />,
+      onOk() {
+        try {
+          assignmentService.delete(id);
+          message.success("Deleted Successfully");
+          setAssignmentList((userId: any[]) =>
+            userId.filter((item) => item.id !== id)
+          );
+        } catch {
+          message.error("Something went wrong");
+        }
+      },
+      onCancel() {
+        console.log("Cancel");
+      },
+    });
+  }
 
   return (
     <>
@@ -377,6 +420,9 @@ export function ListAssignments() {
                         </Option>
                         <Option key="Accepted" value={1}>
                           Accepted
+                        </Option>
+                        <Option key="Declined" value={2}>
+                          Declined
                         </Option>
                       </Select>
                     </Form.Item>
