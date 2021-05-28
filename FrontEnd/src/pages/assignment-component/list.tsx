@@ -26,15 +26,11 @@ import { Assignment, AssignmentState, FilterDate } from '../../models/Assignment
 import {
   AssignmentPagedListResponse,
   PaginationParameters,
-  ReturnRequestPagedListResponse,
 } from '../../models/Pagination'
 import { AssignmentsService } from '../../services/AssignmentService'
-import { Asset } from '../../models/Asset'
 import { User } from '../../models/User'
 import { UserService } from '../../services/UserService'
-import { AssetService } from '../../services/AssetService'
 import { Link } from 'react-router-dom'
-import moment from 'moment'
 import { ReturnRequestService } from '../../services/ReturnRequestService'
 
 interface SearchAction {
@@ -52,7 +48,6 @@ export function ListAssignments() {
     AssignmentPagedListResponse
   >()
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([])
-  const [asset, setAsset] = useState<Asset[]>([])
   const [user, setUser] = useState<User[]>([])
   let [filterSelected, setFilterSelected] = useState(false)
   let [filterDateSelected, setFilterDateSelected] = useState(false)
@@ -285,7 +280,6 @@ export function ListAssignments() {
   const onPaginationConfigChanged = (page: number, pageSize?: number) => {
     (async () => {
       setIsFetchingData(true);
-      let assignmentService = AssignmentsService.getInstance();
       let parameters: PaginationParameters = {
         PageNumber: page,
         PageSize: pageSize ?? 10,
@@ -338,7 +332,6 @@ export function ListAssignments() {
     (async () => {
       setIsFetchingData(true);
       let { searchText } = values;
-      let assignmentService = AssignmentsService.getInstance();
       let assignmentPagedResponse: AssignmentPagedListResponse;
 
       if (searchText.length === 0) {
@@ -364,7 +357,6 @@ export function ListAssignments() {
       setIsFetchingData(true);
 
       let { filteredAssignmentByState } = values;
-      let assignmentService = AssignmentsService.getInstance();
       let assignmentPagedResponse: AssignmentPagedListResponse =
         await assignmentService.filterByState(
           filteredAssignmentByState as number
@@ -396,7 +388,6 @@ export function ListAssignments() {
           month :JSON.parse (filteredAssignmentByDate._d.getMonth().toString()) + 1,
           day : JSON.parse(filteredAssignmentByDate._d.getDate().toString())
         }
-        let assignmentService = AssignmentsService.getInstance();
         let assignmentPagedResponse: AssignmentPagedListResponse =
           await assignmentService.filterByDate(
             filterDate

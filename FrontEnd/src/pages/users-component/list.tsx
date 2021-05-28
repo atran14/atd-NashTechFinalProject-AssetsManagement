@@ -63,6 +63,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     action: 'search',
     query: '',
   })
+  let assignmentService = AssignmentsService.getInstance()
 
   useEffect(() => {
     if (isAdminAuthorized) {
@@ -84,7 +85,6 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
 
   useEffect(() => {
     (async () => {
-      let assignmentService = AssignmentsService.getInstance()
       let list = await assignmentService.getAllNoCondition();
       setAssignmentList(list);
     })();

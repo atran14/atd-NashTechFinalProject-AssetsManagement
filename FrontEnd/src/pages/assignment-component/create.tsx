@@ -10,7 +10,6 @@ import {
   Space,
   Table,
 } from "antd";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { AssignmentModel } from "../../models/Assignment";
