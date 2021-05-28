@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom';
 import { CreateAsset } from '../pages/asset-component/create';
 import { CreateAssignment } from '../pages/assignment-component/create';
 import { ListAssignments } from '../pages/assignment-component/list';
+import { ListAssignmentsForEachUser } from '../pages/assignment-component/list-by-user';
 import { UpdateAssignment } from '../pages/assignment-component/update';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
@@ -53,6 +54,11 @@ const routes = [
     path: '/assignments',
     component: ListAssignments,
     key: '/assignments',
+  },
+  {
+    path: '/assignments/list',
+    component: ListAssignmentsForEachUser,
+    key: '/assignments/list',
   },
   {
     path: '/assignments/create',

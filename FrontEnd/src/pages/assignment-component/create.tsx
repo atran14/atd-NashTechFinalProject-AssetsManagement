@@ -75,7 +75,7 @@ export function CreateAssignment() {
   const today = new Date();
 
   const validateAssignedDate = async (rule: any, value: any, callback: any) => {
-    if (value && value._d < moment(today)) {
+    if (value && value._d.getDate() < today.getDate()) {
       throw new Error("Assign date is earlier than current time");
     }
   };

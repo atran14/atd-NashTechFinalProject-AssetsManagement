@@ -43,8 +43,16 @@ namespace BackEndAPI.Controllers
         [HttpGet("getAllNoCondition")]
         public IQueryable<Assignment> GetAllNoCondition()
         {
-            
-            return  _assignmentService.GetAll();
+
+            return _assignmentService.GetAll();
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("getAllForEachUser/{userId}")]
+        public async Task<IQueryable<Assignment>> GetAllForEachUser(int userId)
+        {
+
+            return await _assignmentService.GetAllForUser(userId);
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
@@ -58,6 +66,7 @@ namespace BackEndAPI.Controllers
 
             return Ok(assignments);
         }
+
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("{id}")]
         public async Task<Assignment> GetById(int id)
@@ -84,9 +93,9 @@ namespace BackEndAPI.Controllers
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
-        [HttpGet("date/{date}")]
+        [HttpGet("date/{month}/{day}/{year}")]
         public async Task<ActionResult<GetAssignmentListPagedResponse>> GetAssignmetByDate(
-         DateTime date,
+         int year, int month, int day,
          [FromQuery] PaginationParameters paginationParameters
      )
         {
@@ -94,7 +103,9 @@ namespace BackEndAPI.Controllers
             var assignment = await _assignmentService.GetAssignmentByDate(
                 paginationParameters,
                 Int32.Parse(adminClaim.Value),
-                date
+                year,
+                month,
+                day
             );
 
             return Ok(assignment);
@@ -117,10 +128,12 @@ namespace BackEndAPI.Controllers
             return Ok(assignment);
         }
 
-
-
-
-
-
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _assignmentService.Delete(id);
+            return Ok();
+        }
     }
 }

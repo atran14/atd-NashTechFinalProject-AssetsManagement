@@ -9,8 +9,7 @@ namespace BackEndAPI.Helpers
         public AutoMapperProfile()
         {
 
-            CreateMap<CreateUserModel, User>();
-            
+            CreateMap<CreateUserModel, User>(); 
             CreateMap<User, UserDTO>();
             CreateMap<ReturnRequest, ReturnRequestDTO>()
                 .ForMember(dto => dto.AssetCode, b => b.MapFrom(rr => rr.Assignment.Asset.AssetCode))

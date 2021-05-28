@@ -30,6 +30,11 @@ export type Assignment = {
     state: number;
 };
 
+export type FilterDate = {
+    year : number;
+    month : number;
+    day : number;
+}
 
 export enum AssignmentState
 {

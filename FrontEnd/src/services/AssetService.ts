@@ -20,6 +20,8 @@ export class AssetService extends HttpClient {
   public create = (asset: CreateAssetModel) => this.instance.post<Asset>("/api/assets", asset);
 
   public getAllAssets = () => this.instance.get(`/api/Asset/getallasset/${JSON.parse(sessionStorage.getItem("id")!)}`);
+
   public getAssetsBySearch = (searchText : string) => this.instance.get(`/api/Asset/search/${JSON.parse(sessionStorage.getItem("id")!)}/${searchText}`);
+
   public getAsset = (id : number) => this.instance.get<Asset>(`/api/Asset/${id}`);
 }

@@ -16,13 +16,6 @@ export type AssetInfo = {
 
 }
 
-// export type EditUserModel = {
-//     dateOfBirth: Date,
-//     joinedDate: Date,
-//     gender: number,
-//     type: number
-// }
-
 export interface Asset {
 
     id:number,

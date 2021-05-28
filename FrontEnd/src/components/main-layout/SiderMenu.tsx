@@ -6,9 +6,10 @@ import {
   RollbackOutlined,
   DollarOutlined,
   SolutionOutlined,
-} from '@ant-design/icons'
-import { UserType } from '../../models/User'
-import { Link, useLocation } from 'react-router-dom';
+  HomeOutlined
+} from "@ant-design/icons";
+import { UserType } from "../../models/User";
+import { Link, useLocation } from "react-router-dom";
 
 const { Sider } = Layout
 
@@ -34,6 +35,15 @@ function SiderMenu() {
         style={{ height: "100%", borderRight: 0 }}
         selectedKeys={[location.pathname]}
       >
+        {userType && (
+          <Menu.Item
+            icon={<HomeOutlined />}
+            key="/assignments/list"
+            className="menu-item"
+          >
+            <Link to="/assignments/list">Home</Link>
+          </Menu.Item>
+        )}
         {userType && userType === UserType[UserType.ADMIN] && (
           <>
             <Menu.Item
@@ -43,19 +53,19 @@ function SiderMenu() {
             >
               <Link to="/users">Users</Link>
             </Menu.Item>
-            <Menu.Item 
-              icon={<DollarOutlined />} 
+            <Menu.Item
+              icon={<DollarOutlined />}
               key="/assets"
               className="menu-item"
             >
-            <Link to="/assets">Assets</Link>
+              <Link to="/assets">Assets</Link>
             </Menu.Item>
-            <Menu.Item 
-              icon={<SolutionOutlined />} 
+            <Menu.Item
+              icon={<SolutionOutlined />}
               key="/assignments"
               className="menu-item"
             >
-            <Link to="/assignments">Assignments</Link>
+              <Link to="/assignments">Assignments</Link>
             </Menu.Item>
             <Menu.Item
               icon={<RollbackOutlined />}
@@ -63,7 +73,7 @@ function SiderMenu() {
               className="menu-item"
             >
               <Link to="/return-requests">Return Requests</Link>
-            </Menu.Item>            
+            </Menu.Item>
           </>
         )}
         {userType && userType === UserType[UserType.USER] && (
@@ -86,7 +96,7 @@ function SiderMenu() {
             <Link to="/login">Login</Link>
           </Menu.Item>
         )}
-      </Menu>      
+      </Menu>
     </Sider>
   )
 }

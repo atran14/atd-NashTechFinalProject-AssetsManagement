@@ -31,6 +31,7 @@ namespace BackEndAPI.Services
             IMapper mapper)
         {
             _assetRepository = assetRepository;
+            _userRepository = userRepository;
             _categoryRepository = categoryRepository;
             _mapper = mapper;
         }

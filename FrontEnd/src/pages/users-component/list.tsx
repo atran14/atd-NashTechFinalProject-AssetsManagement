@@ -90,6 +90,13 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     })();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      let list = await assignmentService.getAllNoCondition();
+      setAssignmentList(list);
+    })();
+  }, []);
+
   function notDisabledYourself(id: number) {
     if (id === JSON.parse(sessionStorage.getItem('id')!)) {
       return false
