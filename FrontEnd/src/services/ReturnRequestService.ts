@@ -44,12 +44,21 @@ export class ReturnRequestService extends HttpClient {
       {
         params: {
           ReturnedDate: filter?.returnedDate,
-          RequestStateL: filter?.state,
+          RequestState: filter?.state,
           PageNumber: parameters?.PageNumber ?? 1,
           PageSize: parameters?.PageSize ?? 10
         }
       }
     )
+
+  public getAssociatedCount = (assetCode: string) => this.instance.get<number>(
+    "api/ReturnRequests/count",
+    {
+      params: {
+        AssetCode: assetCode
+      }
+    }
+  )
 
   public create = (parameters: CreateReturnRequestModel) =>
       this.instance.post(`/api/ReturnRequests`, parameters);

@@ -41,7 +41,6 @@ import { Assignment } from '../../models/Assignment'
 const { Option } = Select
 const { confirm } = Modal
 
-
 interface PassedInEditedUserProps {
   editedUser: User
 }
@@ -59,7 +58,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
   let [filterSelected, setFilterSelected] = useState(false)
-  let [assignmentList, setAssignmentList] = useState<Assignment[]>()
+  let [assignmentList, setAssignmentList] = useState<Assignment[]>([])
   let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>({
     action: 'search',
     query: '',

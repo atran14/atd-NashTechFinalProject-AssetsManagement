@@ -118,8 +118,6 @@ namespace BackEndAPI.Services
                 HasPrevious = pagedFilteredReturnRequests.HasPrevious,
                 Items = pagedFilteredReturnRequests.Select(rr => _mapper.Map<ReturnRequestDTO>(rr))
             };
-
-            throw new System.NotImplementedException();
         }
 
         public async Task<GetReturnRequestsPagedResponseDTO> GetAll(
@@ -134,8 +132,7 @@ namespace BackEndAPI.Services
             }
 
             var returnRequests = PagedList<ReturnRequest>.ToPagedList(
-                _returnRequestRepository.GetAll()
-                    .Where(rr => rr.Assignment.AssignedByUserId == adminUser.Id),
+                _returnRequestRepository.GetAll(),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -150,6 +147,17 @@ namespace BackEndAPI.Services
                 HasPrevious = returnRequests.HasPrevious,
                 Items = returnRequests.Select(rr => _mapper.Map<ReturnRequestDTO>(rr))
             };
+        }
+
+        public int GetAssociatedActiveCount(string assetCode)
+        {
+            if (string.IsNullOrWhiteSpace(assetCode)) {
+                return 0;
+            }
+
+            var associatedReturnRequests = _returnRequestRepository.GetAll()
+                .Where(rr => rr.Assignment.Asset.AssetCode == assetCode);
+            return associatedReturnRequests.Count();
         }
 
         public async Task<GetReturnRequestsPagedResponseDTO> Search(

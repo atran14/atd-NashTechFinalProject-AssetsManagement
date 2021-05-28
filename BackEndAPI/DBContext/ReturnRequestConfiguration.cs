@@ -30,16 +30,7 @@ namespace BackEndAPI.DBContext
             builder.HasOne(a => a.RequestedByUser)
                     .WithMany(c => c.Requests)
                     .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasData(
-                    new ReturnRequest
-                    {
-                        Id = 1,
-                        RequestedByUserId = 1,
-                        AssignmentId = 1,
-                        State = RequestState.WaitingForReturning
-                    }
-            );
+            
         }
     }
 }

@@ -1,24 +1,43 @@
-import { Button, Col, DatePicker, Form, Input, Row, Select, Table } from 'antd'
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Pagination,
+  Row,
+  Select,
+  Table,
+} from 'antd'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import {
   CheckOutlined,
   CloseOutlined,
   FilterFilled,
   SearchOutlined,
 } from '@ant-design/icons'
-import { ReturnRequestPagedListResponse } from '../../models/Pagination'
-import { ReturnRequest, ReturnRequestState } from '../../models/ReturnRequest'
+import {
+  PaginationParameters,
+  ReturnRequestPagedListResponse,
+} from '../../models/Pagination'
+import { ReturnRequest, ReturnRequestFilterParameters, ReturnRequestState } from '../../models/ReturnRequest'
 import { ReturnRequestService } from '../../services/ReturnRequestService'
+import Search from 'antd/lib/transfer/search'
 
 const ADMIN = 'ADMIN'
 
 const { Option } = Select
 
 interface SearchAction {
-  action: 'filter' | 'search'
-  query: Date | number | string
+  type: 'search'
+  query: string
+}
+
+interface FilterAction {
+  type: 'filter'
+  query: number | string
 }
 
 export function ListReturnRequests() {
@@ -32,7 +51,10 @@ export function ListReturnRequests() {
   )
   let [stateFilterSelected, setStateFilterSelected] = useState(false)
   let [dateFilterSelected, setDateFilterSelected] = useState(false)
-  let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>()
+  let [latestAction, setLatestAction] = useState<SearchAction | FilterAction>({
+    type: 'search',
+    query: '',
+  })
 
   useEffect(() => {
     if (isAdminAuthorized) {
@@ -41,10 +63,12 @@ export function ListReturnRequests() {
         let returnRequestService = ReturnRequestService.getInstance()
         let returnRequestsPagedResponse = await returnRequestService.getAll()
 
+        console.log({returnRequestsPagedResponse})
+
         setReturnRequestsPagedList(returnRequestsPagedResponse)
         setReturnRequestsList(returnRequestsPagedResponse.items)
-        setLatestSearchAction({
-          action: 'search',
+        setLatestAction({
+          type: 'search',
           query: '',
         })
         setIsFetchingData(false)
@@ -54,12 +78,98 @@ export function ListReturnRequests() {
 
   const approveRequest = (rrId: number) => {}
   const denyRequest = (rrId: number) => {}
-  const onRequestStateFilterButtonClicked = (values: any) => {}
-  const onReturnedDateFilterButtonClicked = (values: any) => {
-    let { filteredReturnedDate } = values
-    console.log({ filteredReturnedDate })
+
+  const onRequestStateFilterButtonClicked = (values: any) => {
+    ;(async () => {
+      setIsFetchingData(true)
+
+      let filteredState = values['filteredRequestState'] as number
+      let requestService = ReturnRequestService.getInstance()
+      let filteredRequestsPagedResponse = await requestService.filter({
+        state: filteredState,
+      })
+
+      setReturnRequestsPagedList(filteredRequestsPagedResponse)
+      setReturnRequestsList(filteredRequestsPagedResponse.items)
+      setLatestAction({
+        query: filteredState,
+      } as FilterAction)
+
+      setIsFetchingData(false)
+    })()
   }
-  const onSearchButtonClicked = (values: any) => {}
+
+  const onReturnedDateFilterButtonClicked = (values: any) => {
+    ;(async () => {
+      setIsFetchingData(true)
+
+      let filteredReturnedDate = moment(values['filteredReturnedDate']).format(
+        'YYYY-MM-DD',
+      )
+      let requestService = ReturnRequestService.getInstance()
+      let filteredRequestsPagedResponse = await requestService.filter({
+        returnedDate: filteredReturnedDate,
+      })
+
+      setReturnRequestsPagedList(filteredRequestsPagedResponse)
+      setReturnRequestsList(filteredRequestsPagedResponse.items)
+      setLatestAction({
+        query: filteredReturnedDate,
+      } as FilterAction)
+
+      setIsFetchingData(false)
+    })()
+  }
+
+  const onSearchButtonClicked = (values: any) => {
+    ;(async () => {
+      setIsFetchingData(true)
+      let { searchText } = values
+      let requestService = ReturnRequestService.getInstance()
+      let assignmentPagedResponse = await requestService.search(searchText)
+
+      setLatestAction({
+        query: searchText,
+      } as SearchAction)
+      setReturnRequestsPagedList(assignmentPagedResponse)
+      setReturnRequestsList(assignmentPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
+
+  const onPaginationConfigChanged = (page: number, pageSize?: number) => {
+    ;(async() => {
+      setIsFetchingData(true)
+      let requestService = ReturnRequestService.getInstance()
+      let paginationParameters: PaginationParameters = {
+        PageNumber: page,
+        PageSize: pageSize ?? 10,
+      }
+  
+      let returnRequestsPagedResponse: ReturnRequestPagedListResponse
+      switch (latestAction.type) {
+        case 'search':
+          returnRequestsPagedResponse = await requestService.search(
+            latestAction.query,
+            paginationParameters
+          )
+          break
+        case 'filter':
+          let filterParameters : ReturnRequestFilterParameters = {
+            returnedDate: typeof latestAction.query === "string" ? latestAction.query : undefined,
+            state: typeof latestAction.query === "number" ? latestAction.query : undefined
+          }
+
+          returnRequestsPagedResponse = await requestService.filter(
+            filterParameters,
+            paginationParameters
+          )
+          break
+      }
+  
+      setIsFetchingData(false)
+    })()
+  }
 
   const columns: any = [
     {
@@ -172,116 +282,143 @@ export function ListReturnRequests() {
 
   return (
     <>
-      <Row>
-        <Col span={6}>
-          <Form onFinish={onRequestStateFilterButtonClicked}>
-            <Row justify="start">
-              <Col span={15}>
-                <Form.Item
-                  name="filteredRequestState"
-                  className="no-margin-no-padding"
-                >
-                  <Select
-                    placeholder="Select request state"
-                    style={{ width: '100%' }}
-                    onSelect={() => setStateFilterSelected(true)}
-                    disabled={isFetchingData}
-                  >
-                    <Option key="waitingForReturning" value={0}>
-                      Waiting for Returning
-                    </Option>
-                    <Option key="completed" value={1}>
-                      Completed
-                    </Option>
-                  </Select>
-                </Form.Item>
-              </Col>
+      {!isAdminAuthorized && <Redirect to="/401-access-denied" />}
+      {isAdminAuthorized && returnRequestsPagedList !== undefined && (
+        <>
+          <Row>
+            <Col span={6}>
+              <Form onFinish={onRequestStateFilterButtonClicked}>
+                <Row justify="start">
+                  <Col span={15}>
+                    <Form.Item
+                      name="filteredRequestState"
+                      className="no-margin-no-padding"
+                    >
+                      <Select
+                        placeholder="Select request state"
+                        style={{ width: '100%' }}
+                        onSelect={() => setStateFilterSelected(true)}
+                        disabled={isFetchingData}
+                        allowClear
+                      >
+                        <Option key="waitingForReturning" value={0}>
+                          Waiting for Returning
+                        </Option>
+                        <Option key="completed" value={1}>
+                          Completed
+                        </Option>
+                      </Select>
+                    </Form.Item>
+                  </Col>
 
-              <Col offset={1}>
-                <Form.Item className="no-margin-no-padding">
-                  <Button
-                    size="middle"
-                    icon={<FilterFilled />}
-                    htmlType="submit"
-                    disabled={!stateFilterSelected || isFetchingData}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<FilterFilled />}
+                        htmlType="submit"
+                        disabled={!stateFilterSelected || isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
 
-        <Col span={5}>
-          <Form onFinish={onReturnedDateFilterButtonClicked}>
-            <Row justify="start">
-              <Col span={15}>
-                <Form.Item
-                  name="filteredReturnedDate"
-                  className="no-margin-no-padding"
-                >
-                  <DatePicker picker="date" style={{ width: '100%' }}
-                    onChange={() => setDateFilterSelected(true)}
-                  />
-                </Form.Item>
-              </Col>
+            <Col span={5}>
+              <Form onFinish={onReturnedDateFilterButtonClicked}>
+                <Row justify="start">
+                  <Col span={15}>
+                    <Form.Item
+                      name="filteredReturnedDate"
+                      className="no-margin-no-padding"
+                    >
+                      <DatePicker
+                        picker="date"
+                        style={{ width: '100%' }}
+                        onChange={() => setDateFilterSelected(true)}
+                        disabled={isFetchingData}
+                        allowClear
+                      />
+                    </Form.Item>
+                  </Col>
 
-              <Col offset={1}>
-                <Form.Item className="no-margin-no-padding">
-                  <Button
-                    size="middle"
-                    icon={<FilterFilled />}
-                    htmlType="submit"
-                    disabled={!dateFilterSelected || isFetchingData}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<FilterFilled />}
+                        htmlType="submit"
+                        disabled={!dateFilterSelected || isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
 
-        <Col span={6} offset={7}>
-          <Form
-            onFinish={onSearchButtonClicked}
-            initialValues={{
-              searchText: '',
+            <Col span={6} offset={7}>
+              <Form
+                onFinish={onSearchButtonClicked}
+                initialValues={{
+                  searchText: '',
+                }}
+              >
+                <Row justify="end">
+                  <Col span={18}>
+                    <Form.Item
+                      name="searchText"
+                      className="no-margin-no-padding"
+                    >
+                      <Input
+                        allowClear
+                        disabled={isFetchingData}
+                        style={{ width: '100%' }}
+                        placeholder="e.g. Laptop 01/LA000001"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<SearchOutlined />}
+                        type="primary"
+                        htmlType="submit"
+                        disabled={isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
+            </Col>
+          </Row>
+
+          <Table
+            style={{
+              margin: '1.25em 0 1.25em 0',
             }}
-          >
-            <Row justify="end">
-              <Col span={18}>
-                <Form.Item name="searchText" className="no-margin-no-padding">
-                  <Input
-                    allowClear
-                    disabled={isFetchingData}
-                    style={{ width: '100%' }}
-                    placeholder="e.g. Laptop 01/LA000001"
-                  />
-                </Form.Item>
-              </Col>
-              <Col offset={1}>
-                <Form.Item className="no-margin-no-padding">
-                  <Button
-                    size="middle"
-                    icon={<SearchOutlined />}
-                    type="primary"
-                    htmlType="submit"
-                    disabled={isFetchingData}
-                  />
-                </Form.Item>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
-      </Row>
-      <Table
-        style={{
-          margin: '1.25em 0 1.25em 0',
-        }}
-        dataSource={returnRequestsList}
-        columns={columns}
-        scroll={{ y: 400 }}
-        pagination={false}
-        loading={isFetchingData}
-      />
+            dataSource={returnRequestsList}
+            columns={columns}
+            scroll={{ y: 400 }}
+            pagination={false}
+            loading={isFetchingData}
+          />
+
+          <Row justify="center">
+            <Col>
+              <Pagination
+                disabled={isFetchingData}
+                total={returnRequestsPagedList.totalCount}
+                showTotal={(total: number) => `Total: ${total} result(s)`}
+                pageSizeOptions={['10', '20', '50']}
+                showSizeChanger
+                onChange={onPaginationConfigChanged}
+              />
+            </Col>
+          </Row>
+        </>
+      )}
     </>
   )
 }

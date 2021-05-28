@@ -23,5 +23,7 @@ namespace BackEndAPI.Interfaces
         );
 
         Task<ReturnRequestDTO> Create(CreateReturnRequestModel model, int requestedById);
+
+        int GetAssociatedActiveCount(string assetCode); 
     }
 }

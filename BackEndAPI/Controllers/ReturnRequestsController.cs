@@ -73,6 +73,14 @@ namespace BackEndAPI.Controllers
             var userId = Int32.Parse(userClaim.Value); 
             return Ok(await _service.Create(model, userId));
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("count")]
+        public ActionResult<int> GetAssociatedActiveCount([FromQuery] string assetCode)
+        {
+            var userClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            return Ok(_service.GetAssociatedActiveCount(assetCode));
+        }
     }
 }
 

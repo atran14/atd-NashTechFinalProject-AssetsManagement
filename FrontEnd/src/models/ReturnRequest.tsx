@@ -15,7 +15,7 @@ export enum ReturnRequestState {
 }
 
 export interface ReturnRequestFilterParameters {
-    returnedDate?: Date;
+    returnedDate?: string;
     state?: ReturnRequestState;
 }
 

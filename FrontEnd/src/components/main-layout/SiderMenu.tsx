@@ -5,6 +5,7 @@ import {
   UserOutlined,
   RollbackOutlined,
   DollarOutlined,
+  SolutionOutlined,
 } from '@ant-design/icons'
 import { UserType } from '../../models/User'
 import { Link, useLocation } from 'react-router-dom';
@@ -42,13 +43,6 @@ function SiderMenu() {
             >
               <Link to="/users">Users</Link>
             </Menu.Item>
-            <Menu.Item
-              icon={<RollbackOutlined />}
-              key="/return-requests"
-              className="menu-item"
-            >
-              <Link to="/return-requests">Return Requests</Link>
-            </Menu.Item>
             <Menu.Item 
               icon={<DollarOutlined />} 
               key="/assets"
@@ -56,6 +50,20 @@ function SiderMenu() {
             >
             <Link to="/assets">Assets</Link>
             </Menu.Item>
+            <Menu.Item 
+              icon={<SolutionOutlined />} 
+              key="/assignments"
+              className="menu-item"
+            >
+            <Link to="/assignments">Assignments</Link>
+            </Menu.Item>
+            <Menu.Item
+              icon={<RollbackOutlined />}
+              key="/return-requests"
+              className="menu-item"
+            >
+              <Link to="/return-requests">Return Requests</Link>
+            </Menu.Item>            
           </>
         )}
         {userType && userType === UserType[UserType.USER] && (
