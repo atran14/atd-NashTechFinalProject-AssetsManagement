@@ -24,9 +24,8 @@ namespace BackEndAPI.Controllers
                     [FromQuery] PaginationParameters paginationParameters
                 )
         {
-            // var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
-            // var returnRequests = await _service.GetAll(paginationParameters, Int32.Parse(adminClaim.Value));
-            var returnRequests = await _service.GetAll(paginationParameters, 1);
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var returnRequests = await _service.GetAll(paginationParameters, Int32.Parse(adminClaim.Value));            
 
             return Ok(returnRequests);
         }
