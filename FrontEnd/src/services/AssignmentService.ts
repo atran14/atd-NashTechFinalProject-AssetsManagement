@@ -32,7 +32,7 @@ export class AssignmentsService extends HttpClient {
     public update = (id : number ,assignment : AssignmentModel) => this.instance.put(`/api/Assignments/${id}`, assignment);
     public delete = (id : number) => this.instance.delete(`/api/Assignments/delete/${id}`);
     public getAssignment = (id : number) => this.instance.get<Assignment>(`/api/Assignments/${id}`);
-    public getAllForEachUser = (id : number) => this.instance.get(`/api/Assignments/getAllForEachUser/${id}`);
+    public getAllForEachUser = (id : number) => this.instance.get<Assignment[]>(`/api/Assignments/getAllForEachUser/${id}`);
     public getAllNoCondition = () => this.instance.get("/api/Assignments/getAllNoCondition");
     public filterByState = (state : AssignmentState, parameters?: PaginationParameters) => {
       return this.instance.get<AssignmentPagedListResponse>(`/api/Assignments/state/${state.valueOf()}`,

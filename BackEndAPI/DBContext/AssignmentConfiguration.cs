@@ -57,7 +57,7 @@ namespace BackEndAPI.DBContext
                         AssignedToUserId = 3,
                         AssignedDate = new DateTime(2021, 2, 15),
                         Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
-                        State = AssignmentState.WaitingForAcceptance
+                        State = AssignmentState.Accepted
                     },
                     new Assignment
                     {

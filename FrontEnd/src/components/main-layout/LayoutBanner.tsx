@@ -103,7 +103,7 @@ function LayoutBanner() {
           <Modal.Header>
             <Modal.Title>Change Password</Modal.Title>
           </Modal.Header>
-          {passwordChanged && (
+          {!passwordChanged && (
             <Formik
               initialValues={{
                 newpassword: "",

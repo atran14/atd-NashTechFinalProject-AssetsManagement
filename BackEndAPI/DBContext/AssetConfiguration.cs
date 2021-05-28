@@ -56,7 +56,7 @@ namespace BackEndAPI.DBContext
                         Specification = "An even more balls-to-the-walls laptop, specced with even better CPU and GPU than laptop 1",
                         InstalledDate = new DateTime(2021, 1, 1),
                         Location = Location.HaNoi,
-                        State = AssetState.Available
+                        State = AssetState.NotAvailable
                     },
                     new Asset
                     {

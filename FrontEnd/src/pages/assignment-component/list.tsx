@@ -22,7 +22,11 @@ import {
   ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
-import { Assignment, AssignmentState, FilterDate } from '../../models/Assignment'
+import {
+  Assignment,
+  AssignmentState,
+  FilterDate,
+} from '../../models/Assignment'
 import {
   AssignmentPagedListResponse,
   PaginationParameters,
@@ -77,10 +81,9 @@ export function ListAssignments() {
 
       for (const element of assignmentPagedResponse.items) {
         let associatedRRCount = await returnRequestService.getAssociatedCount(
-          element.asset.assetCode
+          element.asset.assetCode,
         )
-        let isWaitingForAdminDecision =
-          associatedRRCount > 0
+        let isWaitingForAdminDecision = associatedRRCount > 0
         let isAcceptedState = element.state === AssignmentState.Accepted
         if (!isAcceptedState) {
           disabledButtonStates.push(true)
@@ -107,7 +110,7 @@ export function ListAssignments() {
           <p>
             Assigned to :
             {user.map((c: User) => {
-              if (c.id === assignment.assignedToUserId) return c.userName;
+              if (c.id === assignment.assignedToUserId) return c.userName
             })}
           </p>
           <p>Assigned by : {assignment.assignedByUser.userName}</p>
@@ -138,110 +141,108 @@ export function ListAssignments() {
 
   const columns: any = [
     {
-      title: "No.",
-      dataIndex: "id",
-      key: "id",
+      title: 'No.',
+      dataIndex: 'id',
+      key: 'id',
       sorter: (a: Assignment, b: Assignment) => a.id - b.id,
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
       width: 60,
-
     },
     {
-      title: "Asset Code",
-      dataIndex: "assetCode",
-      key: "assetCode",
-      sorter: (a: Assignment, b: Assignment) => 
-        a.asset.assetCode.localeCompare(b.asset.assetCode)
-      ,
+      title: 'Asset Code',
+      dataIndex: 'assetCode',
+      key: 'assetCode',
+      sorter: (a: Assignment, b: Assignment) =>
+        a.asset.assetCode.localeCompare(b.asset.assetCode),
       render: (text: any, record: Assignment, index: number) => {
-        return <div>{record.asset.assetCode}</div>;
+        return <div>{record.asset.assetCode}</div>
       },
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Asset Name",
-      dataIndex: "assetName",
-      key: "assetName",
+      title: 'Asset Name',
+      dataIndex: 'assetName',
+      key: 'assetName',
       sorter: (a: Assignment, b: Assignment) =>
         a.asset.assetName.localeCompare(b.asset.assetName),
       render: (text: any, record: Assignment, index: number) => {
-        return <div>{record.asset.assetName}</div>;
+        return <div>{record.asset.assetName}</div>
       },
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Assigned to",
-      dataIndex: "assignedToUserId",
-      key: "assignedToUserId",
+      title: 'Assigned to',
+      dataIndex: 'assignedToUserId',
+      key: 'assignedToUserId',
       sorter: (a: Assignment, b: Assignment) => {
         let userA = user.map((x: User) => {
-          if (x.id === a.assignedToUserId) return x.userName;
-        });
+          if (x.id === a.assignedToUserId) return x.userName
+        })
         let userB = user.map((x: User) => {
-          if (x.id === b.assignedToUserId) return x.userName;
-        });
-        return userA.toString().localeCompare(userB.toString());
+          if (x.id === b.assignedToUserId) return x.userName
+        })
+        return userA.toString().localeCompare(userB.toString())
       },
       render: (text: any, record: Assignment, index: number) => {
         return (
           <div>
             {user.map((c: User) => {
-              if (c.id === record.assignedToUserId) return c.userName;
+              if (c.id === record.assignedToUserId) return c.userName
             })}
           </div>
-        );
+        )
       },
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Assigned by",
-      dataIndex: "assignedByUserId",
-      key: "assignedByUserId",
+      title: 'Assigned by',
+      dataIndex: 'assignedByUserId',
+      key: 'assignedByUserId',
       sorter: (a: Assignment, b: Assignment) => {
-        a.assignedByUser.userName.localeCompare(b.assignedByUser.userName);
+        a.assignedByUser.userName.localeCompare(b.assignedByUser.userName)
       },
       render: (text: any, record: Assignment, index: number) => {
-        return <div>{record.assignedByUser.userName}</div>;
+        return <div>{record.assignedByUser.userName}</div>
       },
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "Assigned Date",
-      dataIndex: "assignedDate",
-      key: "assignedDate",
+      title: 'Assigned Date',
+      dataIndex: 'assignedDate',
+      key: 'assignedDate',
       render: (text: any, record: Assignment, index: number) => {
-        return <div>{new Date(record.assignedDate).toLocaleDateString()}</div>;
+        return <div>{new Date(record.assignedDate).toLocaleDateString()}</div>
       },
       sorter: (a: Assignment, b: Assignment) => {
         return (
           new Date(a.assignedDate).getTime() -
           new Date(b.assignedDate).getTime()
-        );
+        )
       },
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "State",
-      dataIndex: "state",
-      key: "state",
+      title: 'State',
+      dataIndex: 'state',
+      key: 'state',
       render: (text: any, record: Assignment, index: number) => {
-        return <div>{AssignmentState[record.state]}</div>;
+        return <div>{AssignmentState[record.state]}</div>
       },
       sorter: (a: Assignment, b: Assignment) => a.state - b.state,
-      sortDirections: ["ascend", "descend"],
+      sortDirections: ['ascend', 'descend'],
     },
     {
-      title: "",
-      dataIndex: "action",
-      key: "action",
+      title: '',
+      dataIndex: 'action',
+      key: 'action',
       render: (text: any, record: Assignment, index: number) => {
-        var check = false;
-        if(record.state !== AssignmentState.Accepted){
-          check = true;
+        var check = false
+        if (record.state !== AssignmentState.Accepted) {
+          check = true
         }
-     
+
         return (
-          <Row >
+          <Row>
             <Col>
               <Link to={`/assignments/update/${record.id}`}>
                 <Button type="primary" icon={<EditOutlined />} />
@@ -264,165 +265,167 @@ export function ListAssignments() {
                 disabled={!check}
               />
             </Col>
-            <Button
-              ghost
-              type="primary"
-              icon={<RedoOutlined />}
-              disabled={check}
-            />
-            <Col></Col>
+            <Col>
+              <Button
+                ghost
+                type="primary"
+                icon={<RedoOutlined />}
+                disabled={check}
+                onClick={() => createReturnRequest(index, record)}
+              />
+            </Col>
           </Row>
-        );
+        )
       },
     },
-  ];
+  ]
 
   const onPaginationConfigChanged = (page: number, pageSize?: number) => {
-    (async () => {
-      setIsFetchingData(true);
+    ;(async () => {
+      setIsFetchingData(true)
       let parameters: PaginationParameters = {
         PageNumber: page,
         PageSize: pageSize ?? 10,
-      };
+      }
 
-      let assignmentPagedResponse: AssignmentPagedListResponse;
+      let assignmentPagedResponse: AssignmentPagedListResponse
       switch (latestSearchAction.action) {
-        case "search":
-          let searchQuery = latestSearchAction.query as string;
+        case 'search':
+          let searchQuery = latestSearchAction.query as string
           if (searchQuery.length === 0) {
             assignmentPagedResponse = await assignmentService.getAssignments(
-              parameters
-            );
+              parameters,
+            )
           } else {
             assignmentPagedResponse = await assignmentService.searchAssignment(
               searchQuery,
-              parameters
-            );
+              parameters,
+            )
           }
-          break;
-        case "filter":
-          let filterQuery = latestSearchAction.query as number;
+          break
+        case 'filter':
+          let filterQuery = latestSearchAction.query as number
           assignmentPagedResponse = await assignmentService.filterByState(
             filterQuery,
-            parameters
-          );
-          break;
+            parameters,
+          )
+          break
 
-        case "filterDate":
-          let filterDateQuery = latestSearchAction.query as Date;
-          let filterDate : FilterDate = {
-            year : filterDateQuery.getFullYear(),
-            month : filterDateQuery.getMonth(),
-            day : filterDateQuery.getDay()
+        case 'filterDate':
+          let filterDateQuery = latestSearchAction.query as Date
+          let filterDate: FilterDate = {
+            year: filterDateQuery.getFullYear(),
+            month: filterDateQuery.getMonth(),
+            day: filterDateQuery.getDay(),
           }
           assignmentPagedResponse = await assignmentService.filterByDate(
             filterDate,
-            parameters
-          );
-          break;
+            parameters,
+          )
+          break
       }
 
-      setAssignmentPagedList(assignmentPagedResponse);
-      setAssignmentList(assignmentPagedResponse.items);
-      setIsFetchingData(false);
-    })();
-  };
+      setAssignmentPagedList(assignmentPagedResponse)
+      setAssignmentList(assignmentPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
 
   const onSearchButtonClicked = (values: any) => {
-    (async () => {
-      setIsFetchingData(true);
-      let { searchText } = values;
-      let assignmentPagedResponse: AssignmentPagedListResponse;
+    ;(async () => {
+      setIsFetchingData(true)
+      let { searchText } = values
+      let assignmentPagedResponse: AssignmentPagedListResponse
 
       if (searchText.length === 0) {
-        assignmentPagedResponse = await assignmentService.getAssignments();
+        assignmentPagedResponse = await assignmentService.getAssignments()
       } else {
         assignmentPagedResponse = await assignmentService.searchAssignment(
-          searchText
-        );
+          searchText,
+        )
       }
 
       setLatestSearchAction({
-        action: "search",
+        action: 'search',
         query: searchText as string,
-      });
-      setAssignmentPagedList(assignmentPagedResponse);
-      setAssignmentList(assignmentPagedResponse.items);
-      setIsFetchingData(false);
-    })();
-  };
+      })
+      setAssignmentPagedList(assignmentPagedResponse)
+      setAssignmentList(assignmentPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
 
   const onFilterStateButtonClicked = (values: any) => {
-    (async () => {
-      setIsFetchingData(true);
+    ;(async () => {
+      setIsFetchingData(true)
 
-      let { filteredAssignmentByState } = values;
-      let assignmentPagedResponse: AssignmentPagedListResponse =
-        await assignmentService.filterByState(
-          filteredAssignmentByState as number
-        );
+      let { filteredAssignmentByState } = values
+      let assignmentPagedResponse: AssignmentPagedListResponse = await assignmentService.filterByState(
+        filteredAssignmentByState as number,
+      )
 
       setLatestSearchAction({
-        action: "filter",
+        action: 'filter',
         query: filteredAssignmentByState as number,
-      });
-      setAssignmentPagedList(assignmentPagedResponse);
-      setAssignmentList(assignmentPagedResponse.items);
-      setIsFetchingData(false);
-    })();
-  };
+      })
+      setAssignmentPagedList(assignmentPagedResponse)
+      setAssignmentList(assignmentPagedResponse.items)
+      setIsFetchingData(false)
+    })()
+  }
 
   const onFilterDateButtonClicked = (values: any) => {
-    (async () => {
-      setIsFetchingData(true);
+    ;(async () => {
+      setIsFetchingData(true)
 
-      let { filteredAssignmentByDate } = values;
-    
-      
+      let { filteredAssignmentByDate } = values
+
       if (filteredAssignmentByDate === null) {
-        message.error("Date is empty");
-        setIsFetchingData(false);
+        message.error('Date is empty')
+        setIsFetchingData(false)
       } else {
-        let filterDate : FilterDate = {
-          year :JSON.parse(filteredAssignmentByDate._d.getFullYear().toString()),
-          month :JSON.parse (filteredAssignmentByDate._d.getMonth().toString()) + 1,
-          day : JSON.parse(filteredAssignmentByDate._d.getDate().toString())
+        let filterDate: FilterDate = {
+          year: JSON.parse(
+            filteredAssignmentByDate._d.getFullYear().toString(),
+          ),
+          month:
+            JSON.parse(filteredAssignmentByDate._d.getMonth().toString()) + 1,
+          day: JSON.parse(filteredAssignmentByDate._d.getDate().toString()),
         }
-        let assignmentPagedResponse: AssignmentPagedListResponse =
-          await assignmentService.filterByDate(
-            filterDate
-          );
+        let assignmentPagedResponse: AssignmentPagedListResponse = await assignmentService.filterByDate(
+          filterDate,
+        )
 
         setLatestSearchAction({
-          action: "filterDate",
+          action: 'filterDate',
           query: filteredAssignmentByDate as Date,
-        });
-        setAssignmentPagedList(assignmentPagedResponse);
-        setAssignmentList(assignmentPagedResponse.items);
-        setIsFetchingData(false);
+        })
+        setAssignmentPagedList(assignmentPagedResponse)
+        setAssignmentList(assignmentPagedResponse.items)
+        setIsFetchingData(false)
       }
-    })();
-  };
+    })()
+  }
 
   function deleteAssignment(id: number) {
     confirm({
-      title: "Do you want to delete this assignment?",
+      title: 'Do you want to delete this assignment?',
       icon: <ExclamationCircleOutlined />,
       onOk() {
         try {
-          assignmentService.delete(id);
-          message.success("Deleted Successfully");
+          assignmentService.delete(id)
+          message.success('Deleted Successfully')
           setAssignmentList((userId: any[]) =>
-            userId.filter((item) => item.id !== id)
-          );
+            userId.filter((item) => item.id !== id),
+          )
         } catch {
-          message.error("Something went wrong");
+          message.error('Something went wrong')
         }
       },
       onCancel() {
-        console.log("Cancel");
+        console.log('Cancel')
       },
-    });
+    })
   }
 
   return (
@@ -440,7 +443,7 @@ export function ListAssignments() {
                     >
                       <Select
                         placeholder="Select assignment state"
-                        style={{ width: "100%" }}
+                        style={{ width: '100%' }}
                         onSelect={() => setFilterSelected(true)}
                         disabled={isFetchingData}
                       >
@@ -504,7 +507,7 @@ export function ListAssignments() {
               <Form
                 onFinish={onSearchButtonClicked}
                 initialValues={{
-                  searchText: "",
+                  searchText: '',
                 }}
               >
                 <Row justify="end">
