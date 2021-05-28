@@ -47,6 +47,14 @@ namespace BackEndAPI.Controllers
             return _assignmentService.GetAll();
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("getAllForEachUser/{userId}")]
+        public async Task<IQueryable<Assignment>> GetAllForEachUser(int userId)
+        {
+
+            return await _assignmentService.GetAllForUser(userId);
+        }
+
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Assignment>>> GetAllAssignments(

@@ -72,7 +72,7 @@ namespace BackEndAPI.Services
                 throw new Exception("Can not assign this asset");
             }
 
-            if (model.AssignedDate < DateTime.Now)
+            if (model.AssignedDate.Date < DateTime.Now.Date)
             {
                 throw new Exception("Assign Date is earlier than now");
             }
@@ -161,7 +161,7 @@ namespace BackEndAPI.Services
                 throw new Exception("Can not assign this asset");
             }
 
-            if (model.AssignedDate < DateTime.Now)
+            if (model.AssignedDate.Date < DateTime.Now.Date)
             {
                 throw new Exception("Assign Date is earlier than now");
             }
@@ -304,6 +304,18 @@ namespace BackEndAPI.Services
             asset.State = AssetState.Available;
             await _assetrepository.Update(asset);
 
+        }
+
+        public async Task<IQueryable<Assignment>> GetAllForUser(int userId)
+        {
+            var user = await _userrepository.GetById(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            return _repository.GetAll().Where(u => u.AssignedToUserId == userId
+                                                    && u.AssignedDate.Date <= DateTime.Now.Date)
+                                        .AsQueryable();
         }
     }
 }

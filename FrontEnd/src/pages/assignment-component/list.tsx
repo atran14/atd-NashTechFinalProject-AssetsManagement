@@ -47,7 +47,6 @@ export function ListAssignments() {
   let [assignmentPagedList, setAssignmentPagedList] =
     useState<AssignmentPagedListResponse>();
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([]);
-  const [asset, setAsset] = useState<Asset[]>([]);
   const [user, setUser] = useState<User[]>([]);
   let [filterSelected, setFilterSelected] = useState(false);
   let [filterDateSelected, setFilterDateSelected] = useState(false);
@@ -115,11 +114,11 @@ export function ListAssignments() {
     },
     {
       title: "Asset Code",
-      dataIndex: "assetName",
-      key: "assetName",
-      sorter: (a: Assignment, b: Assignment) => {
-        a.asset.assetCode.localeCompare(b.asset.assetCode);
-      },
+      dataIndex: "assetCode",
+      key: "assetCode",
+      sorter: (a: Assignment, b: Assignment) => 
+        a.asset.assetCode.localeCompare(b.asset.assetCode)
+      ,
       render: (text: any, record: Assignment, index: number) => {
         return <div>{record.asset.assetCode}</div>;
       },
@@ -208,7 +207,7 @@ export function ListAssignments() {
         }
      
         return (
-          <Row onClick={(e) => e.stopPropagation()}>
+          <Row >
             <Col>
               <Link to={`/assignments/update/${record.id}`}>
                 <Button type="primary" icon={<EditOutlined />} />

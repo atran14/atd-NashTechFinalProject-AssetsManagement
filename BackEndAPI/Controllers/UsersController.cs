@@ -62,7 +62,7 @@ namespace BackEndAPI.Controllers
            
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("getAllNoCondition")]
         public  IEnumerable<User> GetAllNoCondition()
         {
