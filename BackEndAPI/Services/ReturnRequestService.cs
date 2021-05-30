@@ -75,14 +75,15 @@ namespace BackEndAPI.Services
             var newReturnRequest = new ReturnRequest
             {
                 Assignment = assignment,
+                AssetCodeCopy = assignment.Asset.AssetCode,
+                AssetNameCopy = assignment.Asset.AssetName,
+                AssignedDateCopy = assignment.AssignedDate.Date,
                 RequestedByUser = user,
                 State = RequestState.WaitingForReturning
             };
             var resultReturnRequest = await _returnRequestRepository.Create(newReturnRequest);
             return _mapper.Map<ReturnRequestDTO>(resultReturnRequest);
         }
-
-
 
         public async Task<GetReturnRequestsPagedResponseDTO> Filter(
             PaginationParameters paginationParameters,
@@ -96,8 +97,7 @@ namespace BackEndAPI.Services
                 throw new Exception(Message.UnauthorizedUser);
             }
 
-            var filteredReturnRequests = _returnRequestRepository.GetAll()
-                .Where(rr => rr.Assignment.AssignedByUserId == adminUser.Id);
+            var filteredReturnRequests = _returnRequestRepository.GetAll();
 
             if (filterParameters.ReturnedDate is not null)
             {
@@ -181,14 +181,19 @@ namespace BackEndAPI.Services
                 throw new Exception(Message.UnauthorizedUser);
             }
 
-            var returnRequests = PagedList<ReturnRequest>.ToPagedList(
-                _returnRequestRepository.GetAll()
-                    .Where(rr => rr.Assignment.AssignedByUserId == adminUser.Id
-                        && (
+            var resultingSearch = _returnRequestRepository.GetAll();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                resultingSearch = resultingSearch.Where(rr =>
                             rr.RequestedByUser.UserName.StartsWith(searchQuery)
                             || rr.Assignment.Asset.AssetCode.StartsWith(searchQuery)
                             || rr.Assignment.Asset.AssetName.StartsWith(searchQuery)
-                        )),
+                        );
+            }
+
+            var returnRequests = PagedList<ReturnRequest>.ToPagedList(
+                resultingSearch,
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -205,14 +210,15 @@ namespace BackEndAPI.Services
             };
         }
 
-        public async Task Approve(int id)
+        public async Task Approve(int rrId, int adminId)
         {
-            var returnRequest = await _returnRequestRepository.GetById(id);
+            var returnRequest = await _returnRequestRepository.GetById(rrId);
             if (returnRequest == null)
             {
                 throw new Exception(Message.ReturnRequestNotFound);
             }
 
+            var admin = await _userRepository.GetById(adminId);
             var associatedAssignment = returnRequest.Assignment;
             var associatedAsset = await _assetRepository.GetById(associatedAssignment.AssetId);
             await _assignmentRepository.Delete(associatedAssignment);
@@ -220,12 +226,13 @@ namespace BackEndAPI.Services
             await _assetRepository.Update(associatedAsset);
 
             returnRequest.State = RequestState.Completed;
+            returnRequest.AcceptedByUser = admin;
             returnRequest.ReturnedDate = DateTime.Now.Date;
             await _returnRequestRepository.Update(returnRequest);
         }
-        public async Task Deny(int id)
+        public async Task Deny(int rrId, int adminId)
         {
-            var returnRequest = await _returnRequestRepository.GetById(id);
+            var returnRequest = await _returnRequestRepository.GetById(rrId);
             if (returnRequest == null)
             {
                 throw new Exception(Message.ReturnRequestNotFound);

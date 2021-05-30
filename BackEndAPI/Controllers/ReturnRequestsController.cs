@@ -81,17 +81,21 @@ namespace BackEndAPI.Controllers
             return Ok(_service.GetAssociatedActiveCount(assetCode));
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{rrId}/approve")]
         public async Task<IActionResult> Approve(int rrId) {
-            await _service.Approve(rrId);
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+
+            await _service.Approve(rrId, Int32.Parse(adminClaim.Value));
             return Ok();
         }
 
-        [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpPut("{rrId}/deny")]
         public async Task<IActionResult> Deny(int rrId) {
-            await _service.Deny(rrId);
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+
+            await _service.Deny(rrId, Int32.Parse(adminClaim.Value));
             return Ok();
         }
     }

@@ -4,31 +4,40 @@ import {
   DatePicker,
   Form,
   Input,
+  message,
+  Modal,
   Pagination,
   Row,
   Select,
   Table,
+  Typography,  
 } from 'antd'
 import { useEffect, useState } from 'react'
 import moment from 'moment'
-import { Link, Redirect } from 'react-router-dom'
+import { Link, Redirect, useHistory } from 'react-router-dom'
 import {
   CheckOutlined,
   CloseOutlined,
   FilterFilled,
   SearchOutlined,
+  ExclamationCircleOutlined,
 } from '@ant-design/icons'
 import {
   PaginationParameters,
   ReturnRequestPagedListResponse,
 } from '../../models/Pagination'
-import { ReturnRequest, ReturnRequestFilterParameters, ReturnRequestState } from '../../models/ReturnRequest'
+import {
+  ReturnRequest,
+  ReturnRequestFilterParameters,
+  ReturnRequestState,
+} from '../../models/ReturnRequest'
 import { ReturnRequestService } from '../../services/ReturnRequestService'
-import Search from 'antd/lib/transfer/search'
 
 const ADMIN = 'ADMIN'
 
 const { Option } = Select
+const { confirm } = Modal
+const { Text } = Typography;
 
 interface SearchAction {
   type: 'search'
@@ -49,21 +58,20 @@ export function ListReturnRequests() {
   let [returnRequestsList, setReturnRequestsList] = useState<ReturnRequest[]>(
     [],
   )
-  let [stateFilterSelected, setStateFilterSelected] = useState(false)
-  let [dateFilterSelected, setDateFilterSelected] = useState(false)
   let [latestAction, setLatestAction] = useState<SearchAction | FilterAction>({
     type: 'search',
     query: '',
   })
+  let returnRequestService = ReturnRequestService.getInstance()
+  let history = useHistory()
 
   useEffect(() => {
     if (isAdminAuthorized) {
       ;(async () => {
         setIsFetchingData(true)
-        let returnRequestService = ReturnRequestService.getInstance()
         let returnRequestsPagedResponse = await returnRequestService.getAll()
 
-        console.log({returnRequestsPagedResponse})
+        console.log({ returnRequestsPagedResponse })
 
         setReturnRequestsPagedList(returnRequestsPagedResponse)
         setReturnRequestsList(returnRequestsPagedResponse.items)
@@ -76,8 +84,37 @@ export function ListReturnRequests() {
     }
   }, [])
 
-  const approveRequest = (rrId: number) => {}
-  const denyRequest = (rrId: number) => {}
+  const approveRequest = (rrId: number) => {
+    confirm({
+      title: "Do you want to approve this request?",
+      icon: <ExclamationCircleOutlined />,
+      onOk: () => {
+        try {
+          returnRequestService.approve(rrId)
+          message.success('Request approved!')
+          history.push('/return-requests')
+        } catch (e) {
+          message.error("Something went wrong")
+        }        
+      }
+    })
+  }
+
+  const denyRequest = (rrId: number) => {
+    confirm({
+      title: "Do you want to deny this request?",
+      icon: <ExclamationCircleOutlined />,
+      onOk: () => {
+        try {
+          returnRequestService.deny(rrId)
+          message.success('Request denied!')
+          history.push('/return-requests')
+        } catch (e) {
+          message.error("Something went wrong")
+        }        
+      }
+    })
+  }
 
   const onRequestStateFilterButtonClicked = (values: any) => {
     ;(async () => {
@@ -106,8 +143,7 @@ export function ListReturnRequests() {
       let filteredReturnedDate = moment(values['filteredReturnedDate']).format(
         'YYYY-MM-DD',
       )
-      let requestService = ReturnRequestService.getInstance()
-      let filteredRequestsPagedResponse = await requestService.filter({
+      let filteredRequestsPagedResponse = await returnRequestService.filter({
         returnedDate: filteredReturnedDate,
       })
 
@@ -125,48 +161,58 @@ export function ListReturnRequests() {
     ;(async () => {
       setIsFetchingData(true)
       let { searchText } = values
-      let requestService = ReturnRequestService.getInstance()
-      let assignmentPagedResponse = await requestService.search(searchText)
+      let returnRequestPagedResponse = await returnRequestService.search(
+        searchText,
+      )
 
       setLatestAction({
         query: searchText,
       } as SearchAction)
-      setReturnRequestsPagedList(assignmentPagedResponse)
-      setReturnRequestsList(assignmentPagedResponse.items)
+      setReturnRequestsPagedList(returnRequestPagedResponse)
+      setReturnRequestsList(returnRequestPagedResponse.items)
       setIsFetchingData(false)
     })()
   }
 
   const onPaginationConfigChanged = (page: number, pageSize?: number) => {
-    ;(async() => {
+    ;(async () => {
       setIsFetchingData(true)
       let requestService = ReturnRequestService.getInstance()
       let paginationParameters: PaginationParameters = {
         PageNumber: page,
         PageSize: pageSize ?? 10,
       }
-  
+
       let returnRequestsPagedResponse: ReturnRequestPagedListResponse
       switch (latestAction.type) {
         case 'search':
           returnRequestsPagedResponse = await requestService.search(
             latestAction.query,
-            paginationParameters
+            paginationParameters,
           )
           break
         case 'filter':
-          let filterParameters : ReturnRequestFilterParameters = {
-            returnedDate: typeof latestAction.query === "string" ? latestAction.query : undefined,
-            state: typeof latestAction.query === "number" ? latestAction.query : undefined
+          let filterParameters: ReturnRequestFilterParameters = {
+            returnedDate:
+              typeof latestAction.query === 'string'
+                ? latestAction.query
+                : undefined,
+            state:
+              typeof latestAction.query === 'number'
+                ? latestAction.query
+                : undefined,
           }
 
           returnRequestsPagedResponse = await requestService.filter(
             filterParameters,
-            paginationParameters
+            paginationParameters,
           )
           break
       }
-  
+
+      setReturnRequestsPagedList(returnRequestsPagedResponse)
+      setReturnRequestsList(returnRequestsPagedResponse.items)
+
       setIsFetchingData(false)
     })()
   }
@@ -247,6 +293,10 @@ export function ListReturnRequests() {
       dataIndex: 'state',
       key: 'state',
       render: (text: any, record: ReturnRequest, index: number) => {
+        if (record.state === ReturnRequestState.Completed) {
+          return <Text strong type="success">Completed</Text>
+        }
+        
         return <div>{ReturnRequestState[record.state]}</div>
       },
       sorter: (a: ReturnRequestState, b: ReturnRequestState) => a - b,
@@ -257,25 +307,27 @@ export function ListReturnRequests() {
       dataIndex: 'action',
       key: 'action',
       render: (text: any, record: ReturnRequest, index: number) => {
-        return (
-          <Row>
-            <Col offset={1}>
-              <Button
-                style={{ backgroundColor: 'green' }}
-                icon={<CheckOutlined style={{ color: 'white' }} />}
-                onClick={() => approveRequest(record.id)}
-              />
-            </Col>
-            <Col offset={1}>
-              <Button
-                danger
-                type="primary"
-                icon={<CloseOutlined />}
-                onClick={() => denyRequest(record.id)}
-              />
-            </Col>
-          </Row>
-        )
+        if (!record.returnedDate) {
+          return (
+            <Row>
+              <Col offset={1}>
+                <Button
+                  style={{ backgroundColor: 'green' }}
+                  icon={<CheckOutlined style={{ color: 'white' }} />}
+                  onClick={() => approveRequest(record.id)}
+                />
+              </Col>
+              <Col offset={1}>
+                <Button
+                  danger
+                  type="primary"
+                  icon={<CloseOutlined />}
+                  onClick={() => denyRequest(record.id)}
+                />
+              </Col>
+            </Row>
+          )
+        }
       },
     },
   ]
@@ -297,7 +349,6 @@ export function ListReturnRequests() {
                       <Select
                         placeholder="Select request state"
                         style={{ width: '100%' }}
-                        onSelect={() => setStateFilterSelected(true)}
                         disabled={isFetchingData}
                         allowClear
                       >
@@ -317,7 +368,7 @@ export function ListReturnRequests() {
                         size="middle"
                         icon={<FilterFilled />}
                         htmlType="submit"
-                        disabled={!stateFilterSelected || isFetchingData}
+                        disabled={isFetchingData}
                       />
                     </Form.Item>
                   </Col>
@@ -336,7 +387,6 @@ export function ListReturnRequests() {
                       <DatePicker
                         picker="date"
                         style={{ width: '100%' }}
-                        onChange={() => setDateFilterSelected(true)}
                         disabled={isFetchingData}
                         allowClear
                       />
@@ -349,7 +399,7 @@ export function ListReturnRequests() {
                         size="middle"
                         icon={<FilterFilled />}
                         htmlType="submit"
-                        disabled={!dateFilterSelected || isFetchingData}
+                        disabled={isFetchingData}
                       />
                     </Form.Item>
                   </Col>

@@ -26,7 +26,7 @@ export class ReturnRequestService extends HttpClient {
       }
     });
 
-  public search = (searchText: string, parameters?: PaginationParameters) => 
+  public search = (searchText: string, parameters?: PaginationParameters) =>
     this.instance.get<ReturnRequestPagedListResponse>(
       `/api/ReturnRequests/search`,
       {
@@ -61,5 +61,11 @@ export class ReturnRequestService extends HttpClient {
   )
 
   public create = (parameters: CreateReturnRequestModel) =>
-      this.instance.post(`/api/ReturnRequests`, parameters);
+    this.instance.post(`/api/ReturnRequests`, parameters);
+
+  public approve = (id: number) =>
+    this.instance.put(`/api/ReturnRequests/${id}/approve`);
+
+  public deny = (id: number) =>
+    this.instance.put(`/api/ReturnRequests/${id}/deny`);
 }

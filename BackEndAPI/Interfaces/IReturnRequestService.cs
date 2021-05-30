@@ -26,8 +26,8 @@ namespace BackEndAPI.Interfaces
 
         int GetAssociatedActiveCount(string assetCode);
 
-        Task Approve(int id);
+        Task Approve(int rrId, int adminId);
 
-        Task Deny(int id);
+        Task Deny(int rrId, int adminId);
     }
 }

@@ -71,9 +71,14 @@ namespace BackEndAPI_Tests.Services_Tests
                     {
                         Id = 1,
                         AssetId = 1,
+                        Asset = new Asset {
+                            AssetName = "Laptop 1",
+                            AssetCode = "LA000001"
+                        },
                         AssignedByUserId = 1,
                         AssignedToUserId = 2,
                         Note = "Testing1",
+                        AssignedDate = DateTime.Now.Date,
                         State = AssignmentState.Accepted
                     }
                 }
@@ -1289,14 +1294,15 @@ namespace BackEndAPI_Tests.Services_Tests
                 Assignment = simulatedAssignment
             };
 
-            var simulatedAsset = new Asset {
+            var simulatedAsset = new Asset
+            {
                 Id = 1,
                 State = AssetState.Assigned
-            };            
+            };
 
             _returnRequestRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(simulatedReturnRequest);
             _assetRepositoryMock.Setup(x => x.GetById(simulatedReturnRequest.Assignment.AssetId)).ReturnsAsync(simulatedAsset);
-
+            _userRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(new User { Id = 1, UserName = "abc", Type = UserType.Admin });
             _returnRequestRepositoryMock.Setup(x => x.Update(simulatedReturnRequest)).Returns(Task.CompletedTask);
             _assetRepositoryMock.Setup(x => x.Update(simulatedAsset)).Returns(Task.CompletedTask);
             _assignmentRepositoryMock.Setup(x => x.Delete(simulatedReturnRequest.Assignment)).Returns(Task.CompletedTask);
@@ -1308,9 +1314,9 @@ namespace BackEndAPI_Tests.Services_Tests
                 _assignmentRepositoryMock.Object,
                 _mapper
             );
-            
+
             //Act
-            await service.Approve(1);
+            await service.Approve(1, 1);
 
             //Assert
             _assetRepositoryMock.VerifyAll();
@@ -1324,7 +1330,7 @@ namespace BackEndAPI_Tests.Services_Tests
             //Arrange     
             _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(null as ReturnRequest);
             _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
-
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<User>());
             _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
             _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
             _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
@@ -1336,10 +1342,10 @@ namespace BackEndAPI_Tests.Services_Tests
                 _assignmentRepositoryMock.Object,
                 _mapper
             );
-            
+
             //Act
             var exception = Assert.ThrowsAsync<Exception>(
-                async () => await service.Approve(2)
+                async () => await service.Approve(2, 1)
             );
 
             //Assert
@@ -1365,14 +1371,16 @@ namespace BackEndAPI_Tests.Services_Tests
                 Assignment = simulatedAssignment
             };
 
-            var simulatedAsset = new Asset {
+            var simulatedAsset = new Asset
+            {
                 Id = 1,
                 State = AssetState.Assigned
-            };            
+            };
 
+            _userRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(new User { Id = 1, UserName = "abc", Type = UserType.Admin });
             _returnRequestRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(simulatedReturnRequest);
             _returnRequestRepositoryMock.Setup(x => x.Delete(simulatedReturnRequest)).Returns(Task.CompletedTask);
-            
+
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
                 _assetRepositoryMock.Object,
@@ -1380,9 +1388,9 @@ namespace BackEndAPI_Tests.Services_Tests
                 _assignmentRepositoryMock.Object,
                 _mapper
             );
-            
+
             //Act
-            await service.Deny(1);
+            await service.Deny(1, 1);
 
             //Assert
             _assetRepositoryMock.VerifyAll();
@@ -1394,9 +1402,10 @@ namespace BackEndAPI_Tests.Services_Tests
         public void Deny_ReturnRequestNotExist_ShouldThrowException()
         {
             //Arrange
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<User>());
             _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(null as ReturnRequest);
             _returnRequestRepositoryMock.Setup(x => x.Delete(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
-            
+
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
                 _assetRepositoryMock.Object,
@@ -1404,10 +1413,10 @@ namespace BackEndAPI_Tests.Services_Tests
                 _assignmentRepositoryMock.Object,
                 _mapper
             );
-            
+
             //Act
             var exception = Assert.ThrowsAsync<Exception>(
-                async () => await service.Deny(2)
+                async () => await service.Deny(2, 1)
             );
 
             //Assert
