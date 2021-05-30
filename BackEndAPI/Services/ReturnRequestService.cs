@@ -15,22 +15,26 @@ namespace BackEndAPI.Services
 
         private readonly IAsyncUserRepository _userRepository;
         private readonly IAsyncAssignmentRepository _assignmentRepository;
+        private readonly IAsyncAssetRepository _assetRepository;
         private readonly IAsyncReturnRequestRepository _returnRequestRepository;
         private readonly IMapper _mapper;
 
 
         public ReturnRequestService(
             IAsyncUserRepository userRepository,
+            IAsyncAssetRepository assetRepository,
             IAsyncReturnRequestRepository returnRequestRepository,
             IAsyncAssignmentRepository assignmentRepository,
             IMapper mapper
         )
         {
             _userRepository = userRepository;
+            _assetRepository = assetRepository;
             _returnRequestRepository = returnRequestRepository;
             _assignmentRepository = assignmentRepository;
             _mapper = mapper;
         }
+
 
         public async Task<ReturnRequestDTO> Create(
             CreateReturnRequestModel model,
@@ -49,7 +53,8 @@ namespace BackEndAPI.Services
             {
                 throw new Exception(Message.UserNotFound);
             }
-            if (user.Status == UserStatus.Disabled) {
+            if (user.Status == UserStatus.Disabled)
+            {
                 throw new Exception(Message.UnauthorizedUser);
             }
 
@@ -62,7 +67,8 @@ namespace BackEndAPI.Services
             {
                 throw new Exception(Message.TriedToCreateReturnRequestForSomeoneElseAssignment);
             }
-            if (assignment.State != AssignmentState.Accepted) {
+            if (assignment.State != AssignmentState.Accepted)
+            {
                 throw new Exception(Message.AssignedAssetNotAccepted);
             }
 
@@ -75,6 +81,8 @@ namespace BackEndAPI.Services
             var resultReturnRequest = await _returnRequestRepository.Create(newReturnRequest);
             return _mapper.Map<ReturnRequestDTO>(resultReturnRequest);
         }
+
+
 
         public async Task<GetReturnRequestsPagedResponseDTO> Filter(
             PaginationParameters paginationParameters,
@@ -93,8 +101,8 @@ namespace BackEndAPI.Services
 
             if (filterParameters.ReturnedDate is not null)
             {
-                filteredReturnRequests = filteredReturnRequests.Where(rr => 
-                                                                    rr.ReturnedDate != null 
+                filteredReturnRequests = filteredReturnRequests.Where(rr =>
+                                                                    rr.ReturnedDate != null
                                                                 && rr.ReturnedDate.Value.Date == filterParameters.ReturnedDate.Value.Date);
             }
             if (filterParameters.RequestState is not null)
@@ -151,7 +159,8 @@ namespace BackEndAPI.Services
 
         public int GetAssociatedActiveCount(string assetCode)
         {
-            if (string.IsNullOrWhiteSpace(assetCode)) {
+            if (string.IsNullOrWhiteSpace(assetCode))
+            {
                 return 0;
             }
 
@@ -194,6 +203,34 @@ namespace BackEndAPI.Services
                 HasPrevious = returnRequests.HasPrevious,
                 Items = returnRequests.Select(rr => _mapper.Map<ReturnRequestDTO>(rr))
             };
+        }
+
+        public async Task Approve(int id)
+        {
+            var returnRequest = await _returnRequestRepository.GetById(id);
+            if (returnRequest == null)
+            {
+                throw new Exception(Message.ReturnRequestNotFound);
+            }
+
+            var associatedAssignment = returnRequest.Assignment;
+            var associatedAsset = await _assetRepository.GetById(associatedAssignment.AssetId);
+            await _assignmentRepository.Delete(associatedAssignment);
+            associatedAsset.State = AssetState.Available;
+            await _assetRepository.Update(associatedAsset);
+
+            returnRequest.State = RequestState.Completed;
+            returnRequest.ReturnedDate = DateTime.Now.Date;
+            await _returnRequestRepository.Update(returnRequest);
+        }
+        public async Task Deny(int id)
+        {
+            var returnRequest = await _returnRequestRepository.GetById(id);
+            if (returnRequest == null)
+            {
+                throw new Exception(Message.ReturnRequestNotFound);
+            }
+            await _returnRequestRepository.Delete(returnRequest);
         }
     }
 }

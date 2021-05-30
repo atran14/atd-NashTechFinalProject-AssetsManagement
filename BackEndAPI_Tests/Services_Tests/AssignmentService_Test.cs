@@ -106,6 +106,7 @@ namespace BackEndAPI_Tests.Services_Tests
             Assert.IsFalse(assignmentPagedListResponse.HasNext);
             Assert.IsFalse(assignmentPagedListResponse.HasPrevious);
         }
+        
         [Test]
         public void GetAssignments_UserNotAdmin_ShouldThrowException()
         {
