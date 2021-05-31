@@ -219,6 +219,10 @@ namespace BackEndAPI.Services
             }
 
             var admin = await _userRepository.GetById(adminId);
+            if (admin.Type != UserType.Admin || admin.Status == UserStatus.Disabled)
+            {
+                throw new Exception(Message.UnauthorizedUser);
+            }
             var associatedAssignment = returnRequest.Assignment;
             var associatedAsset = await _assetRepository.GetById(associatedAssignment.AssetId);
             await _assignmentRepository.Delete(associatedAssignment);
@@ -237,6 +241,13 @@ namespace BackEndAPI.Services
             {
                 throw new Exception(Message.ReturnRequestNotFound);
             }
+
+            var admin = await _userRepository.GetById(adminId);
+            if (admin.Type != UserType.Admin || admin.Status == UserStatus.Disabled)
+            {
+                throw new Exception(Message.UnauthorizedUser);
+            }
+            
             await _returnRequestRepository.Delete(returnRequest);
         }
     }

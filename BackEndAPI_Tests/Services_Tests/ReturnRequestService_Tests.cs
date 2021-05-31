@@ -1325,6 +1325,69 @@ namespace BackEndAPI_Tests.Services_Tests
         }
 
         [Test]
+        public void Approve_UserNotAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new User {Type = UserType.User});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Approve(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
+
+        [Test]
+        public void Approve_DisabledAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(
+                new User {Type = UserType.Admin, Status = UserStatus.Disabled});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Approve(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
+
+        [Test]
         public void Approve_ReturnRequestNotExist_ShouldThrowException()
         {
             //Arrange     
@@ -1396,6 +1459,69 @@ namespace BackEndAPI_Tests.Services_Tests
             _assetRepositoryMock.VerifyAll();
             _assignmentRepositoryMock.VerifyAll();
             _returnRequestRepositoryMock.VerifyAll();
+        }
+
+        [Test]
+        public void Deny_UserNotAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new User {Type = UserType.User});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Deny(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
+
+        [Test]
+        public void Deny_DisabledAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(
+                new User {Type = UserType.Admin, Status = UserStatus.Disabled});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Deny(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
         }
 
         [Test]
