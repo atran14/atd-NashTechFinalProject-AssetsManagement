@@ -46,7 +46,6 @@ import {
     const [isModalAssetVisible, setIsModalAssetVisible] = useState(false);
     const [user, setUser] = useState<User[]>([]);
     const [asset, setAsset] = useState<Asset[]>([]);
-    const [category, setCategory] = useState([]);
     const [notStateWaiting, setNotStateWaiting] = useState(false);
     const { assignmentId } = useParams<any>();
   
@@ -100,7 +99,7 @@ import {
     const today = new Date();
   
     const validateAssignedDate = async (rule: any, value: any, callback: any) => {
-      if (value && value._d.getDate() < today.getDate()) {
+      if (value && value._d < moment(today)) {
         throw new Error("Assign date is earlier than current time");
       }
     };

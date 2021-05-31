@@ -166,9 +166,9 @@ namespace BackEndAPI.Services
                 throw new Exception("Assign Date is earlier than now");
             }
 
-            if (assignment.State != AssignmentState.WaitingForAcceptance)
+            if (assignment.State == AssignmentState.Accepted)
             {
-                throw new Exception("State of this assignment is not 'Waiting for acceptance' ");
+                throw new Exception("State of this assignment is not 'Waiting for acceptance or Declined' ");
             }
 
             assignment.AssetId = model.AssetId;

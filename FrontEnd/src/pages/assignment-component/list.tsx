@@ -28,7 +28,6 @@ import {
   PaginationParameters,
 } from "../../models/Pagination";
 import { AssignmentsService } from "../../services/AssignmentService";
-import { Asset } from "../../models/Asset";
 import { User } from "../../models/User";
 import { UserService } from "../../services/UserService";
 import { Link } from "react-router-dom";
