@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BackEndAPI.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InitialCreate_DA : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -285,21 +285,12 @@ namespace BackEndAPI.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "JoinedDate", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "Password", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StaffCode", "Status", "TwoFactorEnabled", "Type", "UserName" },
                 values: new object[,]
                 {
-<<<<<<< HEAD:BackEndAPI/Migrations/20210530172342_InitialCreate_DA.cs
-                    { 1, 0, "47a07386-cb8c-45d2-84c6-f741f8f9c408", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "3c76700c-ee43-4d1e-9706-841c2e9563fa", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" },
-                    { 3, 0, "f7360147-28d5-4b8e-84b7-8a4653a3890d", new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt2@12011997", null, null, false, null, "SD0003", 0, false, 1, "binhnt2" },
-                    { 4, 0, "8a696997-e1a8-40d6-b016-f0e0c021b4b7", new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Anh", 1, new DateTime(2018, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Duc", 1, false, null, null, null, "anhnd@20012000", null, null, false, null, "SD0004", 0, false, 0, "anhnd" },
-                    { 5, 0, "6460f95c-6810-4ed2-b96b-cf3453731f83", new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Van", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt@12011990", null, null, false, null, "SD0005", 0, false, 1, "binhnt" },
-                    { 6, 0, "e2adecaa-b432-41f4-bce7-3251f258a60f", new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt2@120187", null, null, false, null, "SD0006", 0, false, 1, "binhnt2" }
-=======
-                    { 1, 0, "b0196fba-cc1f-4c91-95b5-04d46afa137d", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "b8a773f8-ec82-4d53-b513-db65c9eef6c1", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" },
-                    { 3, 0, "b93ffecd-c1f8-45d5-be52-2ac5eb709828", new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt2@12011997", null, null, false, null, "SD0003", 0, false, 1, "binhnt2" },
-                    { 4, 0, "9caccb2d-38a7-402f-9665-20d55327ed2b", new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Anh", 1, new DateTime(2018, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Duc", 1, false, null, null, null, "anhnd@20012000", null, null, false, null, "SD0004", 0, false, 0, "anhnd" },
-                    { 5, 0, "76c456db-b8b0-4e0f-bb7b-d986afaf1d62", new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Van", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt@12011990", null, null, false, null, "SD0005", 0, false, 1, "binhnt" },
-                    { 6, 0, "f5d34495-4a90-4633-82f9-e9a1c09a5ee5", new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt2@120187", null, null, false, null, "SD0006", 0, false, 1, "binhnt2" }
->>>>>>> develop:BackEndAPI/Migrations/20210531040917_InitialCreate.cs
+                    { 1, 0, "8db1b565-d0fc-4a86-8d64-a96b4d7f1d5c", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
+                    { 2, 0, "a1ae4b57-4045-4b82-b7ac-46ab8390e794", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" },
+                    { 3, 0, "6b8600d1-cae0-4ea8-aa0c-6cd018328d92", new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt2@12011997", null, null, false, null, "SD0003", 0, false, 1, "binhnt2" },
+                    { 4, 0, "d33255fe-e620-4c3b-8066-3f7fdf6ea09f", new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Anh", 1, new DateTime(2018, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Duc", 1, false, null, null, null, "anhnd@20012000", null, null, false, null, "SD0004", 0, false, 0, "anhnd" },
+                    { 5, 0, "b01924f9-033c-4ae0-9a97-f4055eb13c35", new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Van", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt@12011990", null, null, false, null, "SD0005", 0, false, 1, "binhnt" },
+                    { 6, 0, "269b9f1c-42df-4a8d-9d39-e418fccbab4b", new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt2@120187", null, null, false, null, "SD0006", 0, false, 1, "binhnt2" }
                 });
 
             migrationBuilder.InsertData(
