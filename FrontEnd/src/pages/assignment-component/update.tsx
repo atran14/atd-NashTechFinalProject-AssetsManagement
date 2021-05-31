@@ -46,7 +46,6 @@ import {
     const [isModalAssetVisible, setIsModalAssetVisible] = useState(false);
     const [user, setUser] = useState<User[]>([]);
     const [asset, setAsset] = useState<Asset[]>([]);
-    const [category, setCategory] = useState([]);
     const [notStateWaiting, setNotStateWaiting] = useState(false);
     const { assignmentId } = useParams<any>();
   
@@ -100,7 +99,10 @@ import {
     const today = new Date();
   
     const validateAssignedDate = async (rule: any, value: any, callback: any) => {
-      if (value && value._d.getDate() < today.getDate()) {
+      today.setHours(0);
+      today.setMinutes(0);
+      today.setSeconds(0);
+      if (value && value._d < today) {
         throw new Error("Assign date is earlier than current time");
       }
     };
@@ -284,10 +286,6 @@ import {
               rules={[
                 { required: true, message: "User is required!" },
                 { max: 50, message: "Maximum 50 characters!" },
-                {
-                  pattern: /^[A-Za-z ]+$/i,
-                  message: "Alphabet characters only!",
-                },
                 { whitespace: true, message: "User can not be empty!" },
               ]}
             >
@@ -312,10 +310,6 @@ import {
               name="assetName"
               rules={[
                 { required: true, message: "Asset is required!" },
-                {
-                  pattern: /^[A-Za-z ]+$/i,
-                  message: "Alphabet characters only!",
-                },
                 { max: 50, message: "Maximum 50 characters!" },
                 { whitespace: true, message: "Asset can not be empty!" },
               ]}

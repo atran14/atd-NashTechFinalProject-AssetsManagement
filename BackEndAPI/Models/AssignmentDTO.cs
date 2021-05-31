@@ -23,6 +23,6 @@ namespace BackEndAPI.Models
 
         public string Note { get; set; }
 
-        public virtual ReturnRequest Request { get; set; }
+    
     }
 }

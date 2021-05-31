@@ -9,7 +9,7 @@ using BackEndAPI.Entities;
 
 namespace Namespace
 {
-    // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+     // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class AssetsController : ControllerBase
@@ -53,6 +53,6 @@ namespace Namespace
             return await _service.GetById(id);
 
         }
-
+    
     }
 }

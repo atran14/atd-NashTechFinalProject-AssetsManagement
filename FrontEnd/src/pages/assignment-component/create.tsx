@@ -20,6 +20,8 @@ import { SearchOutlined } from "@ant-design/icons";
 import { AssetService } from "../../services/AssetService";
 import { Asset } from "../../models/Asset";
 
+
+
 const { TextArea } = Input;
 
 export function CreateAssignment() {
@@ -44,7 +46,7 @@ export function CreateAssignment() {
   const [isModalAssetVisible, setIsModalAssetVisible] = useState(false);
   const [user, setUser] = useState<User[]>([]);
   const [asset, setAsset] = useState<Asset[]>([]);
-
+  
 
   let userService = UserService.getInstance();
   let assetService = AssetService.getInstance();
@@ -74,7 +76,10 @@ export function CreateAssignment() {
   const today = new Date();
 
   const validateAssignedDate = async (rule: any, value: any, callback: any) => {
-    if (value && value._d.getDate() < today.getDate()) {
+    today.setHours(0);
+    today.setMinutes(0);
+    today.setSeconds(0);
+    if (value && value._d <  today) {
       throw new Error("Assign date is earlier than current time");
     }
   };

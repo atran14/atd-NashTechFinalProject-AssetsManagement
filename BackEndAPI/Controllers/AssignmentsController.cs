@@ -66,7 +66,6 @@ namespace BackEndAPI.Controllers
             return Ok(assignments);
         }
 
-        // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpGet("{id}")]
         public async Task<Assignment> GetById(int id)
