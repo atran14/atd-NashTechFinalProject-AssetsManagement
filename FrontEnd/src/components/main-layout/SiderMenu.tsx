@@ -1,5 +1,5 @@
-import React from "react";
-import { Layout, Menu } from "antd";
+import React from 'react'
+import { Layout, Menu } from 'antd'
 import {
   LoginOutlined,
   UserOutlined,
@@ -11,11 +11,11 @@ import {
 import { UserType } from "../../models/User";
 import { Link, useLocation } from "react-router-dom";
 
-const { Sider } = Layout;
+const { Sider } = Layout
 
 function SiderMenu() {
-  let location = useLocation();
-  let userType = sessionStorage.getItem("type");
+  let location = useLocation()
+  let userType = sessionStorage.getItem('type')
 
   return (
     <Sider
@@ -98,7 +98,7 @@ function SiderMenu() {
         )}
       </Menu>
     </Sider>
-  );
+  )
 }
 
-export default SiderMenu;
+export default SiderMenu

@@ -82,8 +82,8 @@ namespace BackEndAPI.Controllers
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetAllUsers(
-            [FromQuery] PaginationParameters paginationParameters
-        )
+                    [FromQuery] PaginationParameters paginationParameters
+                )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.GetUsers(paginationParameters, Int32.Parse(adminClaim.Value));
@@ -91,12 +91,12 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
-        //Change Password
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("type/{type}")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersByType(
-            UserType type,
-            [FromQuery] PaginationParameters paginationParameters
-        )
+                    UserType type,
+                    [FromQuery] PaginationParameters paginationParameters
+                )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.GetUsersByType(
@@ -108,11 +108,12 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("search")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUsers(
-            [FromQuery] string query,
-            [FromQuery] PaginationParameters paginationParameters
-        )
+                    [FromQuery] string query,
+                    [FromQuery] PaginationParameters paginationParameters
+                )
         {
             var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
             var users = await _userService.SearchUsers(
@@ -123,13 +124,25 @@ namespace BackEndAPI.Controllers
 
             return Ok(users);
         }
-
-        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin,User")]
+        
+        [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("change-password/{id}")]
-        public async Task<IActionResult> ChangePassword(int id, string oldPassword, string newPassword)
+        public async Task<IActionResult> ChangePassword(int id, [FromBody]ChangePasswordRequest model)
         {
-            await _userService.ChangePassword(id, oldPassword, newPassword);
-            return Ok(new { message = Message.ChangePasswordSucceed });
+            var user = _userService.GetUserByIdWithPassword(id);
+            if (user == null)
+            {
+                return NotFound(Message.UserNotFound);
+            }
+            if (user.Result.OnFirstLogin == OnFirstLogin.No)
+            {
+                if (user.Result.Password != model.OldPassword)
+                {
+                    return BadRequest(new {message = Message.OldPasswordIncorrect});
+                }
+            }
+            await _userService.ChangePassword(id, model);
+            return Ok(new {message = Message.ChangePasswordSucceed});
         }
     }
 }

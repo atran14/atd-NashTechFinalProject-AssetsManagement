@@ -56,6 +56,52 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Assets");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AssetCode = "LA000001",
+                            AssetName = "Laptop 1",
+                            CategoryId = 1,
+                            InstalledDate = new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Location = 0,
+                            Specification = "Balls-to-the-walls laptop, specced with the latest CPU and GPU",
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AssetCode = "LA000002",
+                            AssetName = "Laptop 2",
+                            CategoryId = 1,
+                            InstalledDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Location = 0,
+                            Specification = "An even more balls-to-the-walls laptop, specced with even better CPU and GPU than laptop 1",
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AssetCode = "PC000001",
+                            AssetName = "PC 1",
+                            CategoryId = 2,
+                            InstalledDate = new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Location = 1,
+                            Specification = "Balls-to-the-walls desktop, designed for ultimate Word experience",
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AssetCode = "PC000002",
+                            AssetName = "PC 2",
+                            CategoryId = 2,
+                            InstalledDate = new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Location = 1,
+                            Specification = "An even more balls-to-the-walls laptop, designed for the performant Excel workflow",
+                            State = 1
+                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.AssetCategory", b =>
@@ -126,6 +172,48 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("AssignedByUserId");
 
                     b.ToTable("Assignments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AssetId = 1,
+                            AssignedByUserId = 1,
+                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            AssignedToUserId = 2,
+                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AssetId = 2,
+                            AssignedByUserId = 1,
+                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            AssignedToUserId = 3,
+                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
+                            State = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AssetId = 3,
+                            AssignedByUserId = 4,
+                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            AssignedToUserId = 5,
+                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
+                            State = 0
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AssetId = 4,
+                            AssignedByUserId = 4,
+                            AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            AssignedToUserId = 6,
+                            Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
+                            State = 1
+                        });
                 });
 
             modelBuilder.Entity("BackEndAPI.Entities.ReturnRequest", b =>
@@ -134,6 +222,9 @@ namespace BackEndAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("AcceptedByUserId")
+                        .HasColumnType("int");
 
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
@@ -148,6 +239,8 @@ namespace BackEndAPI.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AcceptedByUserId");
 
                     b.HasIndex("AssignmentId")
                         .IsUnique();
@@ -296,7 +389,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "857f0246-87f3-4962-97e6-5ae80d7f43ad",
+                            ConcurrencyStamp = "a49e3b15-693d-4b34-ac36-98f30ad19c0b",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -318,7 +411,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f70242ed-9c6a-4297-a3d7-bcaee2df5c61",
+                            ConcurrencyStamp = "940b01a0-8112-4743-9b5b-f70cf4dd8826",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -335,6 +428,94 @@ namespace BackEndAPI.Migrations
                             TwoFactorEnabled = false,
                             Type = 1,
                             UserName = "binhnt"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "e165b4d0-9b2e-4bcd-9fd2-ddee302e8b51",
+                            DateOfBirth = new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = false,
+                            FirstName = "Binh",
+                            Gender = 1,
+                            JoinedDate = new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Thi",
+                            Location = 0,
+                            LockoutEnabled = false,
+                            OnFirstLogin = 0,
+                            Password = "binhnt2@12011997",
+                            PhoneNumberConfirmed = false,
+                            StaffCode = "SD0003",
+                            Status = 0,
+                            TwoFactorEnabled = false,
+                            Type = 1,
+                            UserName = "binhnt2"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3a93e365-8ce7-4dc6-a6d4-4b798b50c84b",
+                            DateOfBirth = new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = false,
+                            FirstName = "Anh",
+                            Gender = 1,
+                            JoinedDate = new DateTime(2018, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Duc",
+                            Location = 1,
+                            LockoutEnabled = false,
+                            OnFirstLogin = 0,
+                            Password = "anhnd@20012000",
+                            PhoneNumberConfirmed = false,
+                            StaffCode = "SD0004",
+                            Status = 0,
+                            TwoFactorEnabled = false,
+                            Type = 0,
+                            UserName = "anhnd"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "db8068dd-a2de-44e6-b57d-311c46d2ffca",
+                            DateOfBirth = new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = false,
+                            FirstName = "Van",
+                            Gender = 1,
+                            JoinedDate = new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Thi",
+                            Location = 1,
+                            LockoutEnabled = false,
+                            OnFirstLogin = 0,
+                            Password = "binhnt@12011990",
+                            PhoneNumberConfirmed = false,
+                            StaffCode = "SD0005",
+                            Status = 0,
+                            TwoFactorEnabled = false,
+                            Type = 1,
+                            UserName = "binhnt"
+                        },
+                        new
+                        {
+                            Id = 6,
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "16285eaa-7dfc-4c99-ba34-2588c8621451",
+                            DateOfBirth = new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            EmailConfirmed = false,
+                            FirstName = "Binh",
+                            Gender = 0,
+                            JoinedDate = new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            LastName = "Nguyen Thi",
+                            Location = 1,
+                            LockoutEnabled = false,
+                            OnFirstLogin = 0,
+                            Password = "binhnt2@120187",
+                            PhoneNumberConfirmed = false,
+                            StaffCode = "SD0006",
+                            Status = 0,
+                            TwoFactorEnabled = false,
+                            Type = 1,
+                            UserName = "binhnt2"
                         });
                 });
 
@@ -469,6 +650,10 @@ namespace BackEndAPI.Migrations
 
             modelBuilder.Entity("BackEndAPI.Entities.ReturnRequest", b =>
                 {
+                    b.HasOne("BackEndAPI.Entities.User", "AcceptedByUser")
+                        .WithMany()
+                        .HasForeignKey("AcceptedByUserId");
+
                     b.HasOne("BackEndAPI.Entities.Assignment", "Assignment")
                         .WithOne("Request")
                         .HasForeignKey("BackEndAPI.Entities.ReturnRequest", "AssignmentId")
@@ -480,6 +665,8 @@ namespace BackEndAPI.Migrations
                         .HasForeignKey("RequestedByUserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.Navigation("AcceptedByUser");
 
                     b.Navigation("Assignment");
 

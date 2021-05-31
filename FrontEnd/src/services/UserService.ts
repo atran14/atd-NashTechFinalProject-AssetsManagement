@@ -37,12 +37,12 @@ export class UserService extends HttpClient {
 
   public filterByType = (type: UserType, parameters?: PaginationParameters) => {
     return this.instance.get<UsersPagedListResponse>(`/api/Users/type/${type.valueOf()}`,
-    {
-      params: {
-        PageNumber: parameters?.PageNumber ?? 1,
-        PageSize: parameters?.PageSize ?? 10
-      }
-    })
+      {
+        params: {
+          PageNumber: parameters?.PageNumber ?? 1,
+          PageSize: parameters?.PageSize ?? 10
+        }
+      })
   }
 
   public searchUsers = (searchText: string, parameters?: PaginationParameters) => this.instance.get<UsersPagedListResponse>(

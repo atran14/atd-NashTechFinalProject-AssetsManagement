@@ -37,7 +37,7 @@ namespace BackEndAPI.Services
         {
             var user = _repository.GetAll().SingleOrDefault(x => x.UserName == model.UserName && x.Password == model.Password);
             if (user == null) return null;
-            var token = generateJwtToken(user);
+            var token = GenerateJwtToken(user);
             return new AuthenticateResponse(user, token);
         }
 
@@ -49,7 +49,7 @@ namespace BackEndAPI.Services
             var adminUser = await _repository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var users = PagedList<User>.ToPagedList(
@@ -114,8 +114,7 @@ namespace BackEndAPI.Services
             return _repository.GetAll().WithoutPasswords();
         }
 
-        //Generate JwtToken
-        private string generateJwtToken(User user)
+        private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -132,6 +131,7 @@ namespace BackEndAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        
         public async Task Disable(int userId, int id)
         {
             int countAdmin = _repository.CountAdminRemain();
@@ -260,6 +260,7 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
+        
         public async Task<GetUsersListPagedResponseDTO> SearchUsers(
             PaginationParameters paginationParameters,
             int adminId,
@@ -268,13 +269,13 @@ namespace BackEndAPI.Services
         {
             if (searchText == null)
             {
-                throw new Exception("Null search query");
+                throw new Exception(Message.NullSearchQuery);
             }
 
             var adminUser = await _repository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var users = PagedList<User>.ToPagedList(
@@ -303,29 +304,31 @@ namespace BackEndAPI.Services
                 Items = users.Select(u => _mapper.Map<UserDTO>(u))
             };
         }
-
-        public async Task ChangePassword(int id, string oldPassword, string newPassword)
+        
+        public async Task ChangePassword(int id, ChangePasswordRequest model)
         {
             var user = await _repository.GetById(id);
-
-            if (user == null)
-            {
-                throw new InvalidOperationException(Message.UserNotFound);
-            }
 
             if (user.OnFirstLogin == OnFirstLogin.Yes)
             {
                 user.OnFirstLogin = OnFirstLogin.No;
-            }
-            else if (user.Password != oldPassword)
-            {
-                throw new InvalidOperationException(Message.OldPasswordIncorrect);
-            }
-            user.Password = newPassword;
+            } 
+            
+            user.Password = model.NewPassword ;
 
             await _repository.Update(user);
         }
-
+        public async Task<User> GetUserByIdWithPassword(int id)
+        {
+            var user = await _repository.GetById(id);
+            if (user == null)
+            {
+                throw new InvalidOperationException(Message.UserNotFound);
+            }
+            
+            return user;
+        }
+    
         public async Task<IQueryable<UserDTO>> GetAllUsers(int userId)
         {
             var user = await _repository.GetById(userId);
@@ -359,5 +362,6 @@ namespace BackEndAPI.Services
             var sendListUser = listUser.Select(x => _mapper.Map<UserDTO>(x));
             return sendListUser;
         }
+
     }
 }

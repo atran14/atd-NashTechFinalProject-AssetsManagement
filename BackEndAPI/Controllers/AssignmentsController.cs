@@ -43,7 +43,6 @@ namespace BackEndAPI.Controllers
         [HttpGet("getAllNoCondition")]
         public IQueryable<Assignment> GetAllNoCondition()
         {
-
             return _assignmentService.GetAll();
         }
 
@@ -135,11 +134,5 @@ namespace BackEndAPI.Controllers
             await _assignmentService.Delete(id);
             return Ok();
         }
-
-
-
-
-
-
     }
 }

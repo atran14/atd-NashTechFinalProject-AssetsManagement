@@ -6,14 +6,21 @@ import { AssignmentsService } from "../../services/AssignmentService";
 import { UserService } from "../../services/UserService";
 import {
     InfoCircleOutlined,
+    RedoOutlined,
+    ExclamationCircleOutlined,
   } from "@ant-design/icons";
+import { ReturnRequestService } from "../../services/ReturnRequestService";
+
+const { confirm } = Modal
 
 export function ListAssignmentsForEachUser() {
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([]);
   const [user, setUser] = useState<User[]>([]);
+  let [isDisabledStates, setIsDisabledStates] = useState<boolean[]>([])
 
   let userService = UserService.getInstance();
   let assignmentService = AssignmentsService.getInstance();
+  let returnRequestService = ReturnRequestService.getInstance();
 
   useEffect(() => {
     (async () => {
@@ -27,6 +34,23 @@ export function ListAssignmentsForEachUser() {
       let listAssignments = await assignmentService.getAllForEachUser(
         JSON.parse(sessionStorage.getItem("id")!)
       );
+      let disabledButtonStates: boolean[] = []
+
+      for (const element of listAssignments) {
+        let associatedRRCount = await returnRequestService.getAssociatedCount(
+          element.asset.assetCode
+        )
+        let isWaitingForAdminDecision =
+          associatedRRCount > 0
+        let isAcceptedState = element.state === AssignmentState.Accepted
+        if (!isAcceptedState) {
+          disabledButtonStates.push(true)
+        } else {
+          disabledButtonStates.push(isWaitingForAdminDecision)
+        }
+      }
+
+      setIsDisabledStates(disabledButtonStates)
       setAssignmentList(listAssignments);
     })();
   }, []);
@@ -53,6 +77,22 @@ export function ListAssignmentsForEachUser() {
       ),
       onOk() {},
     });
+  }
+
+  const createReturnRequest = (index: number, record: Assignment) => {
+    confirm({
+      title: 'Do you want to return this asset?',
+      icon: <ExclamationCircleOutlined />,
+      onOk: async () => {
+        await returnRequestService.create({
+          assignmentId: record.id,
+        })
+
+        let newIsDisabledStates = [...isDisabledStates]
+        newIsDisabledStates[index] = !newIsDisabledStates[index]
+        setIsDisabledStates(newIsDisabledStates)
+      },
+    })
   }
 
   const columns: any = [
@@ -144,10 +184,6 @@ export function ListAssignmentsForEachUser() {
         dataIndex: "action",
         key: "action",
         render: (text: any, record: Assignment, index: number) => {
-          var check = false;
-          if(record.state !== AssignmentState.Accepted){
-            check = true;
-          } 
           return (
             <Row >
               <Col>
@@ -158,6 +194,15 @@ export function ListAssignmentsForEachUser() {
                   onClick={() => detailAssignment(record.id)}
                 />
               </Col>
+              <Col>
+              <Button
+                ghost
+                type="primary"
+                icon={<RedoOutlined />}
+                disabled={isDisabledStates[index]}
+                onClick={() => createReturnRequest(index, record)}
+              />
+            </Col>
             </Row>
           );
         },

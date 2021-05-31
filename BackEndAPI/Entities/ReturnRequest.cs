@@ -8,14 +8,20 @@ namespace BackEndAPI.Entities
         public int Id { get; set; }
 
         public int AssignmentId { get; set; }
+        
         public virtual Assignment Assignment { get; set; }
 
         public int RequestedByUserId { get; set; }
+        
         public virtual User RequestedByUser { get; set; }
 
-        public DateTime? ReturnedDate{get;set;}
-
-        public RequestState State{get;set;}
+        public int? AcceptedByUserId { get; set; }
         
+        public virtual User AcceptedByUser { get; set; }
+
+        public DateTime? ReturnedDate { get; set; }
+
+        public RequestState State { get; set; }
+
     }
 }

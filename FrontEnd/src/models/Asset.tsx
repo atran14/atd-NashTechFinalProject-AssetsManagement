@@ -1,30 +1,77 @@
-import {} from "module";
+import { AssetCategory } from "./AssetCategory"
 
-export interface Asset  {
-  id: number;
-  assetCode: string;
-  assetName: string;
-  categoryId: number;
-  category: Category;
-  specification: string;
-  installedDate: Date;
-  state: number;
-  location: number;
-};
-export enum Location {
-  HANOI,
-  HOCHIMINH,
+export type AssetInfo = {
+
+    assetName: string,
+
+    categoryId: number,
+
+    specification: string,
+
+    installedDate: Date,
+
+    state: number,
+
+    location: number
+
 }
+
+export interface Asset {
+
+    id:number,
+
+    assetName: string,
+
+    assetCode:string,
+
+    categoryId: number,
+    category: AssetCategory,
+
+    specification: string,
+
+    installedDate: Date,
+
+    state: number,
+
+    location: number
+
+}
+
+export type CreateAssetModel = {
+
+    assetName: string,
+
+    categoryId: number,
+
+    specification: string,
+
+    installedDate: Date,
+
+    state: number,
+
+    location: number
+
+}
+
 
 export enum AssetState {
-    Available,
-    NotAvailable,
-    WaitingForRecycling,
-    Recycled
+
+    AVAILABLE,
+
+    NOTAVAILABLE,
+    
+    ASSIGNED,
+
+    WAITINGFORRECYCLING,
+
+    RECYCLED
+    
 }
 
-export type Category = {
-  id: number;
-  categoryCode : string;
-  categoryName: string;
-};
+export enum Location {
+
+    HANOI,
+
+    HOCHIMINH
+
+}
