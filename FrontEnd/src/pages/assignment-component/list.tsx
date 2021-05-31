@@ -75,8 +75,7 @@ export function ListAssignments() {
   useEffect(() => {
     ;(async () => {
       setIsFetchingData(true)
-      let assignmentServices = AssignmentsService.getInstance()
-      let assignmentPagedResponse = await assignmentServices.getAssignments()
+      let assignmentPagedResponse = await assignmentService.getAssignments()
       let disabledButtonStates: boolean[] = []
 
       for (const element of assignmentPagedResponse.items) {
@@ -270,7 +269,7 @@ export function ListAssignments() {
                 ghost
                 type="primary"
                 icon={<RedoOutlined />}
-                disabled={check}
+                disabled={isDisabledStates[index]}
                 onClick={() => createReturnRequest(index, record)}
               />
             </Col>

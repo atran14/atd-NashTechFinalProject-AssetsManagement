@@ -226,7 +226,16 @@ namespace BackEndAPI.Migrations
                     b.Property<int?>("AcceptedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AssignmentId")
+                    b.Property<string>("AssetCodeCopy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssetNameCopy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AssignedDateCopy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("AssignmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("RequestedByUserId")
@@ -243,7 +252,8 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("AcceptedByUserId");
 
                     b.HasIndex("AssignmentId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AssignmentId] IS NOT NULL");
 
                     b.HasIndex("RequestedByUserId");
 
@@ -389,7 +399,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b0196fba-cc1f-4c91-95b5-04d46afa137d",
+                            ConcurrencyStamp = "8db1b565-d0fc-4a86-8d64-a96b4d7f1d5c",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -411,7 +421,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b8a773f8-ec82-4d53-b513-db65c9eef6c1",
+                            ConcurrencyStamp = "a1ae4b57-4045-4b82-b7ac-46ab8390e794",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -433,7 +443,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b93ffecd-c1f8-45d5-be52-2ac5eb709828",
+                            ConcurrencyStamp = "6b8600d1-cae0-4ea8-aa0c-6cd018328d92",
                             DateOfBirth = new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -455,7 +465,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9caccb2d-38a7-402f-9665-20d55327ed2b",
+                            ConcurrencyStamp = "d33255fe-e620-4c3b-8066-3f7fdf6ea09f",
                             DateOfBirth = new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Anh",
@@ -477,7 +487,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "76c456db-b8b0-4e0f-bb7b-d986afaf1d62",
+                            ConcurrencyStamp = "b01924f9-033c-4ae0-9a97-f4055eb13c35",
                             DateOfBirth = new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Van",
@@ -499,7 +509,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 6,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f5d34495-4a90-4633-82f9-e9a1c09a5ee5",
+                            ConcurrencyStamp = "269b9f1c-42df-4a8d-9d39-e418fccbab4b",
                             DateOfBirth = new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -657,8 +667,7 @@ namespace BackEndAPI.Migrations
                     b.HasOne("BackEndAPI.Entities.Assignment", "Assignment")
                         .WithOne("Request")
                         .HasForeignKey("BackEndAPI.Entities.ReturnRequest", "AssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("BackEndAPI.Entities.User", "RequestedByUser")
                         .WithMany("Requests")

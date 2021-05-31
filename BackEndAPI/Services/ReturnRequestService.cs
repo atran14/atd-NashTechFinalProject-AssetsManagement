@@ -15,22 +15,26 @@ namespace BackEndAPI.Services
 
         private readonly IAsyncUserRepository _userRepository;
         private readonly IAsyncAssignmentRepository _assignmentRepository;
+        private readonly IAsyncAssetRepository _assetRepository;
         private readonly IAsyncReturnRequestRepository _returnRequestRepository;
         private readonly IMapper _mapper;
 
 
         public ReturnRequestService(
             IAsyncUserRepository userRepository,
+            IAsyncAssetRepository assetRepository,
             IAsyncReturnRequestRepository returnRequestRepository,
             IAsyncAssignmentRepository assignmentRepository,
             IMapper mapper
         )
         {
             _userRepository = userRepository;
+            _assetRepository = assetRepository;
             _returnRequestRepository = returnRequestRepository;
             _assignmentRepository = assignmentRepository;
             _mapper = mapper;
         }
+
 
         public async Task<ReturnRequestDTO> Create(
             CreateReturnRequestModel model,
@@ -49,7 +53,8 @@ namespace BackEndAPI.Services
             {
                 throw new Exception(Message.UserNotFound);
             }
-            if (user.Status == UserStatus.Disabled) {
+            if (user.Status == UserStatus.Disabled)
+            {
                 throw new Exception(Message.UnauthorizedUser);
             }
 
@@ -62,13 +67,17 @@ namespace BackEndAPI.Services
             {
                 throw new Exception(Message.TriedToCreateReturnRequestForSomeoneElseAssignment);
             }
-            if (assignment.State != AssignmentState.Accepted) {
+            if (assignment.State != AssignmentState.Accepted)
+            {
                 throw new Exception(Message.AssignedAssetNotAccepted);
             }
 
             var newReturnRequest = new ReturnRequest
             {
                 Assignment = assignment,
+                AssetCodeCopy = assignment.Asset.AssetCode,
+                AssetNameCopy = assignment.Asset.AssetName,
+                AssignedDateCopy = assignment.AssignedDate.Date,
                 RequestedByUser = user,
                 State = RequestState.WaitingForReturning
             };
@@ -88,13 +97,12 @@ namespace BackEndAPI.Services
                 throw new Exception(Message.UnauthorizedUser);
             }
 
-            var filteredReturnRequests = _returnRequestRepository.GetAll()
-                .Where(rr => rr.Assignment.AssignedByUserId == adminUser.Id);
+            var filteredReturnRequests = _returnRequestRepository.GetAll();
 
             if (filterParameters.ReturnedDate is not null)
             {
-                filteredReturnRequests = filteredReturnRequests.Where(rr => 
-                                                                    rr.ReturnedDate != null 
+                filteredReturnRequests = filteredReturnRequests.Where(rr =>
+                                                                    rr.ReturnedDate != null
                                                                 && rr.ReturnedDate.Value.Date == filterParameters.ReturnedDate.Value.Date);
             }
             if (filterParameters.RequestState is not null)
@@ -151,7 +159,8 @@ namespace BackEndAPI.Services
 
         public int GetAssociatedActiveCount(string assetCode)
         {
-            if (string.IsNullOrWhiteSpace(assetCode)) {
+            if (string.IsNullOrWhiteSpace(assetCode))
+            {
                 return 0;
             }
 
@@ -172,14 +181,19 @@ namespace BackEndAPI.Services
                 throw new Exception(Message.UnauthorizedUser);
             }
 
-            var returnRequests = PagedList<ReturnRequest>.ToPagedList(
-                _returnRequestRepository.GetAll()
-                    .Where(rr => rr.Assignment.AssignedByUserId == adminUser.Id
-                        && (
+            var resultingSearch = _returnRequestRepository.GetAll();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                resultingSearch = resultingSearch.Where(rr =>
                             rr.RequestedByUser.UserName.StartsWith(searchQuery)
                             || rr.Assignment.Asset.AssetCode.StartsWith(searchQuery)
                             || rr.Assignment.Asset.AssetName.StartsWith(searchQuery)
-                        )),
+                        );
+            }
+
+            var returnRequests = PagedList<ReturnRequest>.ToPagedList(
+                resultingSearch,
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -194,6 +208,47 @@ namespace BackEndAPI.Services
                 HasPrevious = returnRequests.HasPrevious,
                 Items = returnRequests.Select(rr => _mapper.Map<ReturnRequestDTO>(rr))
             };
+        }
+
+        public async Task Approve(int rrId, int adminId)
+        {
+            var returnRequest = await _returnRequestRepository.GetById(rrId);
+            if (returnRequest == null)
+            {
+                throw new Exception(Message.ReturnRequestNotFound);
+            }
+
+            var admin = await _userRepository.GetById(adminId);
+            if (admin.Type != UserType.Admin || admin.Status == UserStatus.Disabled)
+            {
+                throw new Exception(Message.UnauthorizedUser);
+            }
+            var associatedAssignment = returnRequest.Assignment;
+            var associatedAsset = await _assetRepository.GetById(associatedAssignment.AssetId);
+            await _assignmentRepository.Delete(associatedAssignment);
+            associatedAsset.State = AssetState.Available;
+            await _assetRepository.Update(associatedAsset);
+
+            returnRequest.State = RequestState.Completed;
+            returnRequest.AcceptedByUser = admin;
+            returnRequest.ReturnedDate = DateTime.Now.Date;
+            await _returnRequestRepository.Update(returnRequest);
+        }
+        public async Task Deny(int rrId, int adminId)
+        {
+            var returnRequest = await _returnRequestRepository.GetById(rrId);
+            if (returnRequest == null)
+            {
+                throw new Exception(Message.ReturnRequestNotFound);
+            }
+
+            var admin = await _userRepository.GetById(adminId);
+            if (admin.Type != UserType.Admin || admin.Status == UserStatus.Disabled)
+            {
+                throw new Exception(Message.UnauthorizedUser);
+            }
+            
+            await _returnRequestRepository.Delete(returnRequest);
         }
     }
 }

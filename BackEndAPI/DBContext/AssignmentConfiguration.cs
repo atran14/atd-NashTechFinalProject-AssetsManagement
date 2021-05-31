@@ -36,6 +36,11 @@ namespace BackEndAPI.DBContext
             builder.HasOne(a => a.AssignedByUser)
                     .WithMany(c => c.Assignments);
 
+        builder.HasOne(a=> a.Request)
+                .WithOne(c => c.Assignment)
+                .HasForeignKey<ReturnRequest>(c => c.AssignmentId)
+                .OnDelete(deleteBehavior: DeleteBehavior.SetNull);
+
             builder.Ignore(e => e.AssignedToUser);
 
             builder.HasData(
