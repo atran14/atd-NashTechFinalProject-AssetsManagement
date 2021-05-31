@@ -20,6 +20,10 @@ export class UserService extends HttpClient {
 
   public create = (user: CreateUserModel) => this.instance.post<User>("/api/users", user);
 
+  public getAllUsers = () => this.instance.get(`/api/Users/getalluser/${JSON.parse(sessionStorage.getItem("id")!)}`);
+  public getAllNoCondition = () => this.instance.get("/api/Users/getAllNoCondition");
+  public getUsersBySearch = (searchText : string) => this.instance.get(`/api/Users/search/${JSON.parse(sessionStorage.getItem("id")!)}/${searchText}`);
+
   public getUsers = (parameters?: PaginationParameters) => this.instance.get<UsersPagedListResponse>(
     "/api/Users",
     {
@@ -33,12 +37,12 @@ export class UserService extends HttpClient {
 
   public filterByType = (type: UserType, parameters?: PaginationParameters) => {
     return this.instance.get<UsersPagedListResponse>(`/api/Users/type/${type.valueOf()}`,
-    {
-      params: {
-        PageNumber: parameters?.PageNumber ?? 1,
-        PageSize: parameters?.PageSize ?? 10
-      }
-    })
+      {
+        params: {
+          PageNumber: parameters?.PageNumber ?? 1,
+          PageSize: parameters?.PageSize ?? 10
+        }
+      })
   }
 
   public searchUsers = (searchText: string, parameters?: PaginationParameters) => this.instance.get<UsersPagedListResponse>(

@@ -4,7 +4,7 @@ namespace BackEndAPI.Models
     {
         private int _maxPageSize = 50;
         private int _minPageSize = 10;
-        private int _pageSize = 10;
+        private int _pageSize = 1;
         private int _pageNumber = 1;
 
         public int PageNumber

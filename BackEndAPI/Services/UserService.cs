@@ -37,7 +37,7 @@ namespace BackEndAPI.Services
         {
             var user = _repository.GetAll().SingleOrDefault(x => x.UserName == model.UserName && x.Password == model.Password);
             if (user == null) return null;
-            var token = generateJwtToken(user);
+            var token = GenerateJwtToken(user);
             return new AuthenticateResponse(user, token);
         }
 
@@ -49,7 +49,7 @@ namespace BackEndAPI.Services
             var adminUser = await _repository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var users = PagedList<User>.ToPagedList(
@@ -114,8 +114,7 @@ namespace BackEndAPI.Services
             return _repository.GetAll().WithoutPasswords();
         }
 
-        //Generate JwtToken
-        private string generateJwtToken(User user)
+        private string GenerateJwtToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
@@ -132,9 +131,10 @@ namespace BackEndAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
+        
         public async Task Disable(int userId, int id)
         {
-            int countAdmin =  _repository.CountAdminRemain();
+            int countAdmin = _repository.CountAdminRemain();
             int userValid = _assignmentRepository.GetCountUser(id);
             var user = await _repository.GetById(id);
 
@@ -142,7 +142,7 @@ namespace BackEndAPI.Services
             {
                 throw new Exception("System has only one admin remain");
             }
-            
+
             if (userId == id)
             {
                 throw new Exception("Can not disable yourself");
@@ -260,6 +260,7 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
+        
         public async Task<GetUsersListPagedResponseDTO> SearchUsers(
             PaginationParameters paginationParameters,
             int adminId,
@@ -268,13 +269,13 @@ namespace BackEndAPI.Services
         {
             if (searchText == null)
             {
-                throw new Exception("Null search query");
+                throw new Exception(Message.NullSearchQuery);
             }
 
             var adminUser = await _repository.GetById(adminId);
             if (adminUser.Type != UserType.Admin)
             {
-                throw new Exception("Unauthorized access");
+                throw new Exception(Message.UnauthorizedUser);
             }
 
             var users = PagedList<User>.ToPagedList(
@@ -327,5 +328,40 @@ namespace BackEndAPI.Services
             
             return user;
         }
+    
+        public async Task<IQueryable<UserDTO>> GetAllUsers(int userId)
+        {
+            var user = await _repository.GetById(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            var listUser = _repository.GetAll()
+                               .Where(x => x.Location == user.Location && x.Status == UserStatus.Active)
+                               .AsQueryable();
+            var sendListUser = listUser.Select(x => _mapper.Map<UserDTO>(x));
+            return sendListUser;
+        }
+
+        public async Task<IQueryable<UserDTO>> GetUserBySearching(int userId, string searchText)
+        {
+            var user = await _repository.GetById(userId);
+            if (user == null)
+            {
+                throw new InvalidOperationException("Can not find user");
+            }
+            var listUser = _repository.GetAll()
+                            .Where(x => x.Location == user.Location
+                            && x.Status == UserStatus.Active
+                            && (
+                                 (x.FirstName + " " + x.LastName).Contains(searchText)
+                                 || x.StaffCode.Contains(searchText)
+                                )
+                            )
+                            .AsQueryable();
+            var sendListUser = listUser.Select(x => _mapper.Map<UserDTO>(x));
+            return sendListUser;
+        }
+
     }
 }

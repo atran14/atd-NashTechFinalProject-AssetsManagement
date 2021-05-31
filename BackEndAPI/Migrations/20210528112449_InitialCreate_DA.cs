@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace BackEndAPI.Migrations
 {
-    public partial class Initial : Migration
+    public partial class InitialCreate_DA : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -242,6 +242,7 @@ namespace BackEndAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AssignmentId = table.Column<int>(type: "int", nullable: false),
                     RequestedByUserId = table.Column<int>(type: "int", nullable: false),
+                    AcceptedByUserId = table.Column<int>(type: "int", nullable: true),
                     ReturnedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     State = table.Column<int>(type: "int", nullable: false)
                 },
@@ -254,6 +255,12 @@ namespace BackEndAPI.Migrations
                         principalTable: "Assignments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ReturnRequest_User_AcceptedByUserId",
+                        column: x => x.AcceptedByUserId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_ReturnRequest_User_RequestedByUserId",
                         column: x => x.RequestedByUserId,
@@ -275,8 +282,34 @@ namespace BackEndAPI.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "FirstName", "Gender", "JoinedDate", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "Password", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "StaffCode", "Status", "TwoFactorEnabled", "Type", "UserName" },
                 values: new object[,]
                 {
-                    { 1, 0, "a082076d-9147-44e3-8077-5a6d7eb02a9e", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
-                    { 2, 0, "eebbf39c-c29d-4261-8892-f1a467b7dc2f", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" }
+                    { 1, 0, "a49e3b15-693d-4b34-ac36-98f30ad19c0b", new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Van", 0, false, null, null, null, "binhnv@20011993", null, null, false, null, "SD0001", 0, false, 0, "binhnv" },
+                    { 2, 0, "940b01a0-8112-4743-9b5b-f70cf4dd8826", new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt@12011994", null, null, false, null, "SD0002", 0, false, 1, "binhnt" },
+                    { 3, 0, "e165b4d0-9b2e-4bcd-9fd2-ddee302e8b51", new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 1, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 0, false, null, null, null, "binhnt2@12011997", null, null, false, null, "SD0003", 0, false, 1, "binhnt2" },
+                    { 4, 0, "3a93e365-8ce7-4dc6-a6d4-4b798b50c84b", new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Anh", 1, new DateTime(2018, 9, 25, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Duc", 1, false, null, null, null, "anhnd@20012000", null, null, false, null, "SD0004", 0, false, 0, "anhnd" },
+                    { 5, 0, "db8068dd-a2de-44e6-b57d-311c46d2ffca", new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Van", 1, new DateTime(2021, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt@12011990", null, null, false, null, "SD0005", 0, false, 1, "binhnt" },
+                    { 6, 0, "16285eaa-7dfc-4c99-ba34-2588c8621451", new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), null, false, "Binh", 0, new DateTime(2019, 12, 5, 0, 0, 0, 0, DateTimeKind.Unspecified), "Nguyen Thi", 1, false, null, null, null, "binhnt2@120187", null, null, false, null, "SD0006", 0, false, 1, "binhnt2" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Assets",
+                columns: new[] { "Id", "AssetCode", "AssetName", "CategoryId", "InstalledDate", "Location", "Specification", "State" },
+                values: new object[,]
+                {
+                    { 1, "LA000001", "Laptop 1", 1, new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "Balls-to-the-walls laptop, specced with the latest CPU and GPU", 1 },
+                    { 2, "LA000002", "Laptop 2", 1, new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0, "An even more balls-to-the-walls laptop, specced with even better CPU and GPU than laptop 1", 1 },
+                    { 3, "PC000001", "PC 1", 2, new DateTime(2020, 11, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "Balls-to-the-walls desktop, designed for ultimate Word experience", 0 },
+                    { 4, "PC000002", "PC 2", 2, new DateTime(2021, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, "An even more balls-to-the-walls laptop, designed for the performant Excel workflow", 1 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Assignments",
+                columns: new[] { "Id", "AssetId", "AssignedByUserId", "AssignedDate", "AssignedToUserId", "Note", "State" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, "Make sure to upgrade RAM when you have spare time. Thanks.", 1 },
+                    { 2, 2, 1, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, "Make sure to upgrade RAM when you have spare time. Thanks.", 1 },
+                    { 3, 3, 4, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, "Make sure to upgrade RAM when you have spare time. Thanks.", 0 },
+                    { 4, 4, 4, new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified), 6, "Make sure to upgrade RAM when you have spare time. Thanks.", 1 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -293,6 +326,11 @@ namespace BackEndAPI.Migrations
                 name: "IX_Assignments_AssignedByUserId",
                 table: "Assignments",
                 column: "AssignedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ReturnRequest_AcceptedByUserId",
+                table: "ReturnRequest",
+                column: "AcceptedByUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ReturnRequest_AssignmentId",

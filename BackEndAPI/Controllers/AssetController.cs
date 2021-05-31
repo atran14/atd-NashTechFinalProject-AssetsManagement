@@ -1,38 +1,31 @@
+using System.Security.Claims;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 using BackEndAPI.Interfaces;
+using BackEndAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using BackEndAPI.Entities;
 
-namespace Namespace
+namespace BackEndAPI.Controllers
 {
-    // [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetsController : ControllerBase
+    public class AssetController : ControllerBase
     {
-
-        private readonly IAssetService _service;
-
-        public AssetsController(IAssetService service)
+        private readonly IAssetService _assetService;
+        public AssetController(IAssetService assetService)
         {
-            _service = service;
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Post([FromBody] CreateAssetModel model)
-        {
-            return Ok(await _service.Create(model));
+            _assetService = assetService;
         }
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("getallasset/{userId}")]
         public async Task<IQueryable<Asset>> GetAll(int userId)
         {
-            return await _service.GetAllAssets(userId);
+            return await _assetService.GetAllAssets(userId);
 
         }
 
@@ -41,7 +34,7 @@ namespace Namespace
         [HttpGet("search/{userId}/{searchText}")]
         public async Task<IQueryable<Asset>> GetUserBySearching(int userId, string searchText)
         {
-            return await _service.GetAssetsBySearching(userId, searchText);
+            return await _assetService.GetAssetsBySearching(userId, searchText);
 
         }
 
@@ -50,9 +43,10 @@ namespace Namespace
         [HttpGet("{id}")]
         public async Task<Asset> GetById(int id)
         {
-            return await _service.GetById(id);
+            return await _assetService.GetById(id);
 
         }
+
 
     }
 }

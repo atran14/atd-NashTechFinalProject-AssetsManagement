@@ -12,5 +12,10 @@ namespace BackEndAPI.Interfaces
 
         Task<Asset> Create(CreateAssetModel model);
 
+        Task<IQueryable<Asset>> GetAllAssets(int userId);
+
+        Task<IQueryable<Asset>> GetAssetsBySearching(int userId, string searchText);
+
+        Task<Asset> GetById(int id);
     }
 }

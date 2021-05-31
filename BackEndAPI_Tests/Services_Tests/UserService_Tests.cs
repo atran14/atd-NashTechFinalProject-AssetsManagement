@@ -16,7 +16,7 @@ using NUnit.Framework;
 namespace BackEndAPI_Tests.Services_Tests
 {
     [TestFixture]
-    public class UserServices_Tests
+    public class UserService_Tests
     {
 
         private static IQueryable<User> Users
@@ -123,7 +123,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
         private Mock<IOptions<AppSettings>> _optionsMock;
 
-        public UserServices_Tests()
+        public UserService_Tests()
         {
             if (_mapper == null)
             {
@@ -390,7 +390,7 @@ namespace BackEndAPI_Tests.Services_Tests
                 }
             );
 
-            Assert.AreEqual("Unauthorized access", exception.Message);
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
         }
 
         [Test]
@@ -550,6 +550,288 @@ namespace BackEndAPI_Tests.Services_Tests
             Assert.AreEqual(result.DateOfBirth, createdUser.DateOfBirth);
 
         }
+         [Test]
+        public async Task Update_Valid_ShouldBeSuccessful()
+        {
+            var dontMatterUser = new User { };
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
+            _userRepositoryMock.Setup(x => x.Update(dontMatterUser)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            var editModel = new EditUserModel
+            {
+                DateOfBirth = new DateTime(1990, 10, 1),
+                Gender = Gender.Male,
+                JoinedDate = new DateTime(2000, 1, 3),
+                Type = UserType.User
+            };
+
+            //Act
+            await userService.Update(It.IsAny<int>(), editModel);
+
+            //Assert
+            _userRepositoryMock.Verify(x => x.Update(dontMatterUser), Times.Once());
+        }
+
+        [Test]
+        public void Update_DateOfBirthEqualsSundayOrSaturday_ShouldThrowToException()
+        {
+            var dontMatterUser = new User { };
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
+            _userRepositoryMock.Setup(x => x.Update(dontMatterUser)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            var editModel = new EditUserModel
+            {
+                DateOfBirth = new DateTime(1999, 10, 1),
+                Gender = Gender.Male,
+                JoinedDate = new DateTime(2021, 5, 9),
+                Type = UserType.User
+            };
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+               async () =>
+               {
+                   await userService.Update(It.IsAny<int>(), editModel);
+               }
+           );
+
+            //Assert
+            Assert.AreEqual(Message.WeekendJoinedDate, exception.Message);
+        }
+
+        [Test]
+        public void Update_JoinDatedIsBeforeDateOfBirth_ShouldThrowToException()
+        {
+            var dontMatterUser = new User { };
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
+            _userRepositoryMock.Setup(x => x.Update(dontMatterUser)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            var editModel = new EditUserModel
+            {
+                DateOfBirth = new DateTime(2001, 10, 1),
+                Gender = Gender.Male,
+                JoinedDate = new DateTime(2000, 5, 3),
+                Type = UserType.User
+            };
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+               async () =>
+               {
+                   await userService.Update(It.IsAny<int>(), editModel);
+               }
+           );
+
+            //Assert
+            Assert.AreEqual(
+                Message.JoinedBeforeBirth,
+                exception.Message
+            );
+        }
+
+
+        [Test]
+        public void Update_UserIsUnder18_ShouldThrowToException()
+        {
+            var dontMatterUser = new User { };
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(dontMatterUser);
+            _userRepositoryMock.Setup(x => x.Update(dontMatterUser)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            var editModel = new EditUserModel
+            {
+                DateOfBirth = new DateTime(2006, 10, 1),
+                Gender = Gender.Male,
+                JoinedDate = new DateTime(2021, 5, 5),
+                Type = UserType.User
+            };
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+               async () =>
+               {
+                   await userService.Update(It.IsAny<int>(), editModel);
+               }
+           );
+
+            //Assert
+            Assert.AreEqual(exception.Message, "User is under 18. Please select a different date");
+        }
+         [Test]
+        public async Task Disable_Valid_ShouldBeSuccessful()
+        {
+            var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
+            _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+            //Act
+            await userService.Disable(1,2);
+
+            //Assert
+            _userRepositoryMock.Verify(x => x.Update(User), Times.Once());
+            Assert.AreEqual(UserStatus.Disabled, User.Status);
+        }
+        [Test]
+        public void Disable_ValidInAssignment_ShouldThrowToException()
+        {
+            var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
+            _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+
+            //Act
+            var exception = Assert.ThrowsAsync<ArgumentException>(
+                async () =>
+                {
+                    await userService.Disable(1,2);
+                }
+             );
+
+
+            //Assert
+            Assert.AreSame("User is still valid assignment", exception.Message);
+        }
+
+        [Test]
+        public void Disable_NotFoundId_ShouldThrowToException()
+        {
+            var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).Returns(Task.FromResult<User>(null));
+            _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+
+            //Act
+            var exception = Assert.ThrowsAsync<InvalidOperationException>(
+                async () =>
+                {
+                    await userService.Disable(1,2);
+                }
+             );
+
+
+            //Assert
+            Assert.AreSame("Can not find user", exception.Message);
+        }
+        [Test]
+        public void Disable_DisableYourself_ShouldThrowToException()
+        {
+            var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(2);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
+            _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () =>
+                {
+                    await userService.Disable(1,1);
+                }
+             );
+
+
+            //Assert
+            Assert.AreSame("Can not disable yourself", exception.Message);
+        }
+
+        [Test]
+        public void Disable_HasOnlyOneAdminRemain_ShouldThrowToException()
+        {
+            var User = new User { };
+            _userRepositoryMock.Setup(x => x.CountAdminRemain()).Returns(1);
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(User);
+            _userRepositoryMock.Setup(x => x.Update(User)).Returns(Task.CompletedTask).Verifiable();
+            _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(It.IsAny<int>());
+            _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
+            var userService = new UserService(
+                _userRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper,
+                _optionsMock.Object
+            );
+
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () =>
+                {
+                    await userService.Disable(1,2);
+                }
+             );
+
+
+            //Assert
+            Assert.AreSame("System has only one admin remain", exception.Message);
+        }
+
+
+
 
         [TearDown]
         public void TearDown()

@@ -1,3 +1,5 @@
+import { AssetCategory } from "./AssetCategory"
+
 export type AssetInfo = {
 
     assetName: string,
@@ -14,13 +16,6 @@ export type AssetInfo = {
 
 }
 
-// export type EditUserModel = {
-//     dateOfBirth: Date,
-//     joinedDate: Date,
-//     gender: number,
-//     type: number
-// }
-
 export interface Asset {
 
     id:number,
@@ -30,6 +25,7 @@ export interface Asset {
     assetCode:string,
 
     categoryId: number,
+    category: AssetCategory,
 
     specification: string,
 

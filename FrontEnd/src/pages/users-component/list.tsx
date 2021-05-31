@@ -35,39 +35,11 @@ import {
 } from '@ant-design/icons'
 import { Link, Redirect } from 'react-router-dom'
 import './users.css'
+import { AssignmentsService } from "../../services/AssignmentService";
+import { Assignment } from '../../models/Assignment'
 
 const { Option } = Select
 const { confirm } = Modal
-
-const listAssignments = [
-  {
-    id: 1,
-    assetId: 1,
-    assignedByUserId: 1,
-    assignedToUserId: 2,
-    assignedDate: new Date(),
-    state: 1,
-    note: 'abc',
-  },
-  {
-    id: 2,
-    assetId: 2,
-    assignedByUserId: 1,
-    assignedToUserId: 4,
-    assignedDate: new Date(),
-    state: 2,
-    note: 'abc',
-  },
-  {
-    id: 3,
-    assetId: 3,
-    assignedByUserId: 2,
-    assignedToUserId: 1,
-    assignedDate: new Date(),
-    state: 2,
-    note: 'abc',
-  },
-]
 
 interface PassedInEditedUserProps {
   editedUser: User
@@ -86,17 +58,19 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
   let [filterSelected, setFilterSelected] = useState(false)
+  let [assignmentList, setAssignmentList] = useState<Assignment[]>([])
   let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>({
     action: 'search',
     query: '',
   })
+  let assignmentService = AssignmentsService.getInstance()
 
   useEffect(() => {
     if (isAdminAuthorized) {
       ;(async () => {
         setIsFetchingData(true)
-        let userServices = UserService.getInstance()
-        let usersPagedResponse = await userServices.getUsers()
+        let userService = UserService.getInstance()
+        let usersPagedResponse = await userService.getUsers()
 
         setUsersPagedList(usersPagedResponse)
         setUsersList(usersPagedResponse.items)
@@ -108,6 +82,20 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
       })()
     }
   }, [editedUser])
+
+  useEffect(() => {
+    (async () => {
+      let list = await assignmentService.getAllNoCondition();
+      setAssignmentList(list);
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      let list = await assignmentService.getAllNoCondition();
+      setAssignmentList(list);
+    })();
+  }, []);
 
   function notDisabledYourself(id: number) {
     if (id === JSON.parse(sessionStorage.getItem('id')!)) {
@@ -135,8 +123,8 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   }
 
   function disabledUser(id: number) {
-    var count = 0
-    listAssignments.map((a: any) => {
+    var count = 0;
+    assignmentList.map((a: any) => {
       if (a.assignedToUserId === id && a.state !== 2) {
         count++
       }
@@ -167,7 +155,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
               userId.filter((item) => item.id !== id),
             )
           } catch {
-            message.success('Something went wrong')
+            message.error("Something went wrong");
           }
         },
         onCancel() {

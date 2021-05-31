@@ -65,7 +65,7 @@ namespace BackEndAPI_Tests.Services_Tests
         private static IMapper _mapper;
 
         private Mock<IAsyncAssetRepository> _assetRepositoryMock;
-
+        private Mock<IAsyncUserRepository> _userRepositoryMock;
         private Mock<IAsyncAssetCategoryRepository> _categoryRepositoryMock;
 
         public AssetService_Tests()
@@ -85,6 +85,7 @@ namespace BackEndAPI_Tests.Services_Tests
         public void SetUp()
         {
             _assetRepositoryMock = new Mock<IAsyncAssetRepository>(behavior: MockBehavior.Strict);
+            _userRepositoryMock = new Mock<IAsyncUserRepository>(behavior: MockBehavior.Strict);
             _categoryRepositoryMock = new Mock<IAsyncAssetCategoryRepository>(behavior: MockBehavior.Strict);
         }
 
@@ -97,6 +98,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var assetService = new AssetService(
                 _assetRepositoryMock.Object,
+                _userRepositoryMock.Object,
                 _categoryRepositoryMock.Object,
                 _mapper
             );
@@ -126,6 +128,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var assetService = new AssetService(
                 _assetRepositoryMock.Object,
+                _userRepositoryMock.Object,
                 _categoryRepositoryMock.Object,
                 _mapper
             );
@@ -157,6 +160,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var assetService = new AssetService(
                 _assetRepositoryMock.Object,
+                _userRepositoryMock.Object,
                 _categoryRepositoryMock.Object,
                 _mapper
             );
@@ -197,6 +201,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var assetService = new AssetService(
                 _assetRepositoryMock.Object,
+                _userRepositoryMock.Object,
                 _categoryRepositoryMock.Object,
                 _mapper
             );

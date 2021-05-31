@@ -1,10 +1,15 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import { CreateAsset } from '../pages/asset-component/create';
+import { CreateAssignment } from '../pages/assignment-component/create';
+import { ListAssignments } from '../pages/assignment-component/list';
+import { ListAssignmentsForEachUser } from '../pages/assignment-component/list-by-user';
+import { UpdateAssignment } from '../pages/assignment-component/update';
 import { AccessDenied } from '../pages/error-component/AccessDenied';
 import { NotFound } from '../pages/error-component/NotFound';
 import { Home } from '../pages/home-component/home';
 import { Login } from '../pages/login-component/login';
+import { ListReturnRequests } from '../pages/return-request-component/list';
 import { CreateUser } from '../pages/users-component/create';
 import { ListUsers } from '../pages/users-component/list';
 import { UpdateUser } from '../pages/users-component/update';
@@ -43,12 +48,37 @@ const routes = [
   {
     path: '/users/create',
     component: CreateUser,
-    key: '/users/update',
+    key: '/users/create',
+  },
+  {
+    path: '/assignments',
+    component: ListAssignments,
+    key: '/assignments',
+  },
+  {
+    path: '/assignments/list',
+    component: ListAssignmentsForEachUser,
+    key: '/assignments/list',
+  },
+  {
+    path: '/assignments/create',
+    component: CreateAssignment,
+    key: '/assignments/create',
+  },
+  {
+    path: '/assignments/update/:assignmentId',
+    component: UpdateAssignment,
+    key: '/assignments/update/:assignmentId',
+  },
+  {
+    path: '/return-requests',
+    component: ListReturnRequests,
+    key: '/return-requests',
   },
   {
     path: '/assets/create',
     component: CreateAsset,
-    key: '/assets/update',
+    key: '/assets/create',
   },
 ];
 
