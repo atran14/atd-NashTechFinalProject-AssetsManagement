@@ -51,7 +51,8 @@ namespace BackEndAPI.Services
                                 +        ",Recycled = (SELECT COUNT(A.Id) "
                                 +                    "FROM [Assets] A "
                                 +                    "WHERE A.CategoryId = AC.Id AND A.State = 4)"
-                                +"FROM AssetCategories AC";
+                                +"FROM AssetCategories AC"
+                                +"ORDER BY AC.CategoryCode";
 
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
