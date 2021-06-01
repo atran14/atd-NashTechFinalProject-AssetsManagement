@@ -315,5 +315,44 @@ namespace BackEndAPI.Services
                                                     && u.AssignedDate.Date <= DateTime.Now.Date)
                                         .AsQueryable();
         }
+        
+    public async Task AcceptAssignment(int id)
+    {
+        var assignment = await _repository.GetById(id);
+        if (assignment == null)
+        {
+            throw new InvalidOperationException("Can not find assignment");
+        } 
+        
+        assignment.State = AssignmentState.Accepted;
+
+        await _repository.Update(assignment);
+    }
+
+    public async Task DeclineAssignment(int id)
+    {
+      var assignment = await _repository.GetById(id);
+        if (assignment == null)
+        {
+            throw new InvalidOperationException("Can not find assignment");
+        } 
+        
+        assignment.State = AssignmentState.Declined;
+
+        await _repository.Update(assignment);
+    }
+
+    public async Task UndoResponeAssignment(int id)
+    {
+      var assignment = await _repository.GetById(id);
+        if (assignment == null)
+        {
+            throw new InvalidOperationException("Can not find assignment");
+        } 
+        
+        assignment.State = AssignmentState.WaitingForAcceptance;
+
+        await _repository.Update(assignment);
+    }
     }
 }

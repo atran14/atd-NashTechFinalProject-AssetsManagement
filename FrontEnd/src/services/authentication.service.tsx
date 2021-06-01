@@ -14,24 +14,21 @@ export const authenticationService = {
   },
 };
 
-function login(username: string, password: string) {
+async function login(username: string, password: string) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userName: username, password: password }),
   };
 
-  return fetch(
+  const response = await fetch(
     `https://localhost:5001/Authentication/authenticate`,
     requestOptions
-  )
-    .then(handleResponse)
-    .then((user) => {
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      currentUserSubject.next(user);
-
-      return user;
-    });
+  );
+  const user = await handleResponse(response);
+  localStorage.setItem("currentUser", JSON.stringify(user));
+  currentUserSubject.next(user);
+  return user;
 }
 
 function logout() {
