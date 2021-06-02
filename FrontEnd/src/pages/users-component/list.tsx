@@ -38,6 +38,8 @@ import './users.css'
 import { AssignmentsService } from '../../services/AssignmentService'
 import { Assignment } from '../../models/Assignment'
 import { UserSearchFilterParameters } from '../../models/SearchFilterParameters'
+import { ConvertToColumnEnum as convertToColumnEnum, UserSortParameters } from '../../models/sort-parameters/UserSortParameters'
+import { ConvertToSortOrderEnum as convertToSortOrderEnum } from '../../models/sort-parameters/SortOrder'
 
 const { Option } = Select
 const { confirm } = Modal
@@ -49,7 +51,7 @@ interface PassedInEditedUserProps {
 const ADMIN = 'ADMIN'
 
 export function ListUsers({ editedUser }: PassedInEditedUserProps) {
-  let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === ADMIN)
+  let [isAdminAuthorized] = useState(sessionStorage.getItem('type')?.toUpperCase() === ADMIN)
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
@@ -63,7 +65,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     PageNumber: 1,
     PageSize: 10,
   })
-  let [userSearchFieldValue, setUserSearchFieldValue] = useState('')
+  let [sortParams, setSortParams] = useState<UserSortParameters>({})
   let assignmentService = AssignmentsService.getInstance()
   let userService = UserService.getInstance()
 
@@ -163,12 +165,12 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     }
   }
 
-  const onSearchButtonClicked = async () => {
-    setIsFetchingData(true)
+  const onSearchButtonClicked = async (values: any) => {
+    setIsFetchingData(true)    
 
     let newSearchFilterParams: UserSearchFilterParameters = {
       ...searchFilterParams,
-      searchQuery: userSearchFieldValue,
+      searchQuery: values.searchFieldValue,
     }
 
     let newPaginationParams: PaginationParameters = {
@@ -179,6 +181,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     let usersPagedResponse: UsersPagedListResponse = await userService.searchAndFilter(
       newSearchFilterParams,
       newPaginationParams,
+      sortParams
     )
 
     setSearchFilterParams(newSearchFilterParams)
@@ -244,6 +247,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     let usersPagedResponse = await userService.searchAndFilter(
       newSearchFilterParams,
       newPaginationParams,
+      sortParams
     )
 
     setSearchFilterParams(newSearchFilterParams)
@@ -269,6 +273,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     let usersPagedResponse = await userService.searchAndFilter(
       newSearchFilterParams,
       newPaginationParams,
+      sortParams
     )
 
     setSearchFilterParams(newSearchFilterParams)
@@ -298,7 +303,26 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   }
 
   const onTableAction = async (pagination: any, filters: any, sorter: any, extra: any) => {
-    console.log({pagination, sorter, extra})
+    if (extra.action === "sort") {
+      setIsFetchingData(true)
+
+      console.log({key: sorter.columnKey?.toLowerCase(), order: sorter.order?.toLowerCase()})
+      let newSortParams : UserSortParameters = {
+        column: convertToColumnEnum(sorter.columnKey),
+        order: convertToSortOrderEnum(sorter.order)
+      }
+
+      let usersPagedResponse = await userService.searchAndFilter(
+        searchFilterParams,
+        paginationParams,
+        newSortParams
+      )
+  
+      setSortParams(newSortParams)
+      setUsersPagedList(usersPagedResponse)
+      setUsersList(usersPagedResponse.items)
+      setIsFetchingData(false)
+    }
   }
 
   const columns: any = [
@@ -396,7 +420,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
       {isAdminAuthorized && usersPagedList !== undefined && (
         <>
           <Row>
-            <Col span={5}>
+            <Col span={6}>
               <Row justify="start">
                 <Col span={15}>
                   <Select
@@ -421,8 +445,8 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
               </Row>
             </Col>
 
-            <Col span={4} offset={10}>
-              <Form>
+            <Col span={5} offset={7}>
+              <Form onFinish={onSearchButtonClicked}>
                 <Row justify="end">
                   <Col span={18}>
                     <Form.Item name="searchFieldValue" className="no-margin-no-padding">
@@ -441,7 +465,6 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
                         icon={<SearchOutlined />}
                         type="primary"
                         htmlType="submit"
-                        onClick={onSearchButtonClicked}
                         disabled={isFetchingData}
                       />
                     </Form.Item>
@@ -450,7 +473,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
               </Form>
             </Col>
 
-            <Col span={4} offset={1}>
+            <Col span={5} offset={1}>
               <Link to="/users/create">
                 <Button
                   style={{
