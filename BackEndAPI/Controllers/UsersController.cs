@@ -93,7 +93,7 @@ namespace BackEndAPI.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("params")]
-        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchAndFilter(
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersWithParams(
                     [FromQuery] UserSearchFilterParameters searchFilterParameters,
                     [FromQuery] UserSortParameters sortParameters,
                     [FromQuery] PaginationParameters paginationParameters
