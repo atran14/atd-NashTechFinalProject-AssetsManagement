@@ -38,28 +38,6 @@ export class UserService extends HttpClient {
 
   public getUser = (id: number) => this.instance.get<UserInfo>(`/api/Users/${id}`);
 
-  //deprecated
-  public filterByType = (type: UserType, parameters?: PaginationParameters) => {
-    return this.instance.get<UsersPagedListResponse>(`/api/Users/type/${type.valueOf()}`,
-      {
-        params: {
-          PageNumber: parameters?.PageNumber ?? 1,
-          PageSize: parameters?.PageSize ?? 10
-        }
-      })
-  }
-
-  //deprecated
-  public searchUsers = (searchText: string, parameters?: PaginationParameters) => this.instance.get<UsersPagedListResponse>(
-    `/api/Users/search`,
-    {
-      params: {
-        query: searchText,
-        PageNumber: parameters?.PageNumber ?? 1,
-        PageSize: parameters?.PageSize ?? 10
-      }
-    })
-
   public searchAndFilter = (
     searchFilterParameters: UserSearchFilterParameters,
     paginationParameters?: PaginationParameters

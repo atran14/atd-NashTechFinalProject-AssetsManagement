@@ -1,6 +1,7 @@
 import {
   Button,
   Col,
+  Form,
   Input,
   message,
   Modal,
@@ -52,7 +53,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
-  let [assignmentList, setAssignmentList] = useState<Assignment[]>([])  
+  let [assignmentList, setAssignmentList] = useState<Assignment[]>([])
   let [searchFilterParams, setSearchFilterParams] = useState<
     UserSearchFilterParameters
   >({
@@ -62,7 +63,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     PageNumber: 1,
     PageSize: 10,
   })
-  let [userSearchFieldValue] = useState('')
+  let [userSearchFieldValue, setUserSearchFieldValue] = useState('')
   let assignmentService = AssignmentsService.getInstance()
   let userService = UserService.getInstance()
 
@@ -287,13 +288,17 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
 
     let usersPagedResponse: UsersPagedListResponse = await userService.searchAndFilter(
       searchFilterParams,
-      newPaginationParams
+      newPaginationParams,
     )
 
     setPaginationParams(newPaginationParams)
     setUsersPagedList(usersPagedResponse)
     setUsersList(usersPagedResponse.items)
     setIsFetchingData(false)
+  }
+
+  const onTableAction = async (pagination: any, filters: any, sorter: any, extra: any) => {
+    console.log({pagination, sorter, extra})
   }
 
   const columns: any = [
@@ -417,27 +422,32 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
             </Col>
 
             <Col span={4} offset={10}>
-              <Row justify="end">
-                <Col span={18}>
-                  <Input
-                    allowClear
-                    disabled={isFetchingData}
-                    style={{ width: '100%' }}
-                    placeholder="e.g. Bob/SD0001"
-                    value={userSearchFieldValue}
-                  />
-                </Col>
-                <Col offset={1}>
-                  <Button
-                    size="middle"
-                    icon={<SearchOutlined />}
-                    type="primary"
-                    htmlType="submit"
-                    onClick={onSearchButtonClicked}
-                    disabled={isFetchingData}
-                  />
-                </Col>
-              </Row>
+              <Form>
+                <Row justify="end">
+                  <Col span={18}>
+                    <Form.Item name="searchFieldValue" className="no-margin-no-padding">
+                      <Input
+                        allowClear
+                        disabled={isFetchingData}
+                        style={{ width: '100%' }}
+                        placeholder="e.g. Bob/SD0001"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col offset={1}>
+                    <Form.Item className="no-margin-no-padding">
+                      <Button
+                        size="middle"
+                        icon={<SearchOutlined />}
+                        type="primary"
+                        htmlType="submit"
+                        onClick={onSearchButtonClicked}
+                        disabled={isFetchingData}
+                      />
+                    </Form.Item>
+                  </Col>
+                </Row>
+              </Form>
             </Col>
 
             <Col span={4} offset={1}>
@@ -466,6 +476,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
             scroll={{ y: 400 }}
             pagination={false}
             loading={isFetchingData}
+            onChange={onTableAction}
           />
 
           <Row justify="center">
