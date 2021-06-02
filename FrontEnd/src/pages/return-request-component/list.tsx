@@ -92,7 +92,7 @@ export function ListReturnRequests() {
         try {
           returnRequestService.approve(rrId)
           message.success('Request approved!')
-          history.push('/return-requests')
+          window.location.reload()
         } catch (e) {
           message.error("Something went wrong")
         }        
@@ -108,7 +108,7 @@ export function ListReturnRequests() {
         try {
           returnRequestService.deny(rrId)
           message.success('Request denied!')
-          history.push('/return-requests')
+          window.location.reload()
         } catch (e) {
           message.error("Something went wrong")
         }        
