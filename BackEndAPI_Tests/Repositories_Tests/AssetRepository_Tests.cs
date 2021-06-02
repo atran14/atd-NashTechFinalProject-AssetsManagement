@@ -56,6 +56,159 @@ namespace BackEndAPI_Tests.Repositories_Tests
 
         }
 
+        [TestCase(1)]
+        public async Task GetById_GetDataOfAssetByAnId_ReturnsAnAsset(int id)
+        {
+
+            //Arrange
+            var assets = new List<Asset>
+            {
+                new Asset
+                {
+                    AssetName = "Asus 2021",
+                    CategoryId = 1,
+                    AssetCode = "LA0000001",
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                },
+                new Asset
+                {
+                    AssetName = "Asus 2022",
+                    AssetCode = "LA0000002",
+                    CategoryId = 1,
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                },
+                new Asset
+                {
+                    AssetName = "Asus 2023",
+                    CategoryId = 1,
+                    AssetCode = "LA0000003",
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                }
+            };
+            await _context.Assets.AddRangeAsync(assets);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var _asset = await _repository.GetById(id);
+
+            //Assert
+            Assert.AreEqual(_asset.Id, id);
+
+        }
+
+        [TestCase(1)]
+        public async Task Update_UpdateAnAsset_WritesToDatabase(int id)
+        {
+
+            //Arrange
+            var assets = new List<Asset>
+            {
+                new Asset
+                {
+                    AssetName = "Asus 2021",
+                    CategoryId = 1,
+                    AssetCode = "LA0000001",
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                },
+                new Asset
+                {
+                    AssetName = "Asus 2022",
+                    AssetCode = "LA0000002",
+                    CategoryId = 1,
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                },
+                new Asset
+                {
+                    AssetName = "Asus 2023",
+                    CategoryId = 1,
+                    AssetCode = "LA0000003",
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                }
+            };
+            await _context.Assets.AddRangeAsync(assets);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var _asset = await _repository.GetById(id);
+            _asset.State = AssetState.WaitingForRecycling;
+            await _repository.Update(_asset);
+
+            //Assert
+            Assert.AreEqual(3, _context.Assets.Count());
+            Assert.AreEqual(_asset.State, AssetState.WaitingForRecycling);
+
+        }
+
+        [TestCase(1)]
+        public async Task Delete_DeleteAnAsset_WritesToDatabase(int id)
+        {
+
+            //Arrange
+            var assets = new List<Asset>
+            {
+                new Asset
+                {
+                    AssetName = "Asus 2021",
+                    CategoryId = 1,
+                    AssetCode = "LA0000001",
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                },
+                new Asset
+                {
+                    AssetName = "Asus 2022",
+                    AssetCode = "LA0000002",
+                    CategoryId = 1,
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                },
+                new Asset
+                {
+                    AssetName = "Asus 2023",
+                    CategoryId = 1,
+                    AssetCode = "LA0000003",
+                    InstalledDate = DateTime.Now,
+                    Location = 0,
+                    Specification = "None",
+                    State = 0
+                }
+            };
+            await _context.Assets.AddRangeAsync(assets);
+            await _context.SaveChangesAsync();
+
+            //Act
+            var _asset = await _repository.GetById(id);
+            await _repository.Delete(_asset);
+            var asset = await _repository.GetById(id);
+
+            //Assert
+            Assert.AreEqual(2, _context.Assets.Count());
+            Assert.AreEqual(asset, null);
+
+        }
+
         [TestCase(-1)]
         [TestCase(0)]
         public void CountingAssetNumber_ZeroOrNegativeNumberInserted_ThrowExceptionMessage(int cateId)
