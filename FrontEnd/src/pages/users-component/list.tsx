@@ -6,7 +6,6 @@ import {
   message,
   Modal,
   Pagination,
-  Popover,
   Row,
   Select,
   Table,
@@ -38,7 +37,10 @@ import './users.css'
 import { AssignmentsService } from '../../services/AssignmentService'
 import { Assignment } from '../../models/Assignment'
 import { UserSearchFilterParameters } from '../../models/SearchFilterParameters'
-import { ConvertToColumnEnum as convertToColumnEnum, UserSortParameters } from '../../models/sort-parameters/UserSortParameters'
+import {
+  ConvertToColumnEnum as convertToColumnEnum,
+  UserSortParameters,
+} from '../../models/sort-parameters/UserSortParameters'
 import { ConvertToSortOrderEnum as convertToSortOrderEnum } from '../../models/sort-parameters/SortOrder'
 
 const { Option } = Select
@@ -51,7 +53,9 @@ interface PassedInEditedUserProps {
 const ADMIN = 'ADMIN'
 
 export function ListUsers({ editedUser }: PassedInEditedUserProps) {
-  let [isAdminAuthorized] = useState(sessionStorage.getItem('type')?.toUpperCase() === ADMIN)
+  let [isAdminAuthorized] = useState(
+    sessionStorage.getItem('type')?.toUpperCase() === ADMIN,
+  )
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
@@ -166,7 +170,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   }
 
   const onSearchButtonClicked = async (values: any) => {
-    setIsFetchingData(true)    
+    setIsFetchingData(true)
 
     let newSearchFilterParams: UserSearchFilterParameters = {
       ...searchFilterParams,
@@ -181,7 +185,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     let usersPagedResponse: UsersPagedListResponse = await userService.searchAndFilter(
       newSearchFilterParams,
       newPaginationParams,
-      sortParams
+      sortParams,
     )
 
     setSearchFilterParams(newSearchFilterParams)
@@ -193,8 +197,10 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   }
 
   const generateDetailedUserContent = (record: User) => {
-    return (
-      <table>
+    Modal.info({
+      title: "User Details",
+      content: (
+        <table>
         <tr>
           <th>Staff code</th>
           <td>{record.staffCode}</td>
@@ -228,7 +234,9 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
           <td>{Location[record.location]}</td>
         </tr>
       </table>
-    )
+      ),
+      onOk: () => {}
+    })
   }
 
   const onTypeFilterSelected = async (value: UserType) => {
@@ -247,7 +255,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     let usersPagedResponse = await userService.searchAndFilter(
       newSearchFilterParams,
       newPaginationParams,
-      sortParams
+      sortParams,
     )
 
     setSearchFilterParams(newSearchFilterParams)
@@ -273,7 +281,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     let usersPagedResponse = await userService.searchAndFilter(
       newSearchFilterParams,
       newPaginationParams,
-      sortParams
+      sortParams,
     )
 
     setSearchFilterParams(newSearchFilterParams)
@@ -302,22 +310,30 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     setIsFetchingData(false)
   }
 
-  const onTableAction = async (pagination: any, filters: any, sorter: any, extra: any) => {
-    if (extra.action === "sort") {
+  const onTableAction = async (
+    pagination: any,
+    filters: any,
+    sorter: any,
+    extra: any,
+  ) => {
+    if (extra.action === 'sort') {
       setIsFetchingData(true)
 
-      console.log({key: sorter.columnKey?.toLowerCase(), order: sorter.order?.toLowerCase()})
-      let newSortParams : UserSortParameters = {
+      console.log({
+        key: sorter.columnKey?.toLowerCase(),
+        order: sorter.order?.toLowerCase(),
+      })
+      let newSortParams: UserSortParameters = {
         column: convertToColumnEnum(sorter.columnKey),
-        order: convertToSortOrderEnum(sorter.order)
+        order: convertToSortOrderEnum(sorter.order),
       }
 
       let usersPagedResponse = await userService.searchAndFilter(
         searchFilterParams,
         paginationParams,
-        newSortParams
+        newSortParams,
       )
-  
+
       setSortParams(newSortParams)
       setUsersPagedList(usersPagedResponse)
       setUsersList(usersPagedResponse.items)
@@ -386,14 +402,18 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
         return (
           <Row>
             <Col offset={1}>
-              <Popover
+              {/* <Popover
                 title="User details"
                 content={generateDetailedUserContent(record)}
                 placement="right"
                 trigger="click"
               >
                 <Button icon={<InfoCircleOutlined />} />
-              </Popover>
+              </Popover> */}
+              <Button
+                icon={<InfoCircleOutlined />}
+                onClick={() => generateDetailedUserContent(record)}
+              />
             </Col>
             <Col offset={1}>
               <Link to={`/users/update/${record.id}`}>
@@ -449,7 +469,10 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
               <Form onFinish={onSearchButtonClicked}>
                 <Row justify="end">
                   <Col span={18}>
-                    <Form.Item name="searchFieldValue" className="no-margin-no-padding">
+                    <Form.Item
+                      name="searchFieldValue"
+                      className="no-margin-no-padding"
+                    >
                       <Input
                         allowClear
                         disabled={isFetchingData}
