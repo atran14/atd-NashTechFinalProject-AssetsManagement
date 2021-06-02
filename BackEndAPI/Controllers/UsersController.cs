@@ -70,7 +70,6 @@ namespace BackEndAPI.Controllers
 
         }
 
-
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("search/{userId}/{searchText}")]
         public async Task<IQueryable<UserDTO>> GetUserBySearching(int userId, string searchText)
