@@ -42,5 +42,8 @@ namespace BackEndAPI.Interfaces
             int adminId,
             string searchText
         );
+        Task AcceptAssignment(int id);
+        Task DeclineAssignment(int id);
+        Task UndoResponeAssignment(int id);
     }
 }

@@ -31,5 +31,9 @@ namespace BackEndAPI.Helpers
         public const string NullAsset = "Asset can not be null!";
         public const string AssetNumberError = "Can not get number of assets!";
         public const string NullOrEmptyPrefix = "Prefix can not be empty or contains only spaces!";
+
+        public const string AssignmentAccepted = "Assignment accepted!";
+        public const string AssignmentDeclined = "Assignment declined!";
+        public const string AssignmentUndidRespone = "Assignment undid respone!";
     }
 }

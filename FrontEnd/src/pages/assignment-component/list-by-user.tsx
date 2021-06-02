@@ -5,13 +5,24 @@ import { User } from "../../models/User";
 import { AssignmentsService } from "../../services/AssignmentService";
 import { UserService } from "../../services/UserService";
 import {
-    InfoCircleOutlined,
-    RedoOutlined,
-    ExclamationCircleOutlined,
+  InfoCircleOutlined,
+  RedoOutlined,
+  ExclamationCircleOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  UndoOutlined,
   } from "@ant-design/icons";
 import { ReturnRequestService } from "../../services/ReturnRequestService";
 
 const { confirm } = Modal
+
+
+export enum ResponeAction {
+  NoAction,
+  Accept,
+  Decline,
+  UndoRespone,
+}
 
 export function ListAssignmentsForEachUser() {
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([]);
@@ -21,6 +32,55 @@ export function ListAssignmentsForEachUser() {
   let userService = UserService.getInstance();
   let assignmentService = AssignmentsService.getInstance();
   let returnRequestService = ReturnRequestService.getInstance();
+
+
+  //Respone to Assignment
+  const [visible, setVisible] = React.useState(false);
+  const [confirmLoading, setConfirmLoading] = React.useState(false);
+  const [modalText, setModalText] = React.useState("");
+  const [responeAction, setResponeAction] = React.useState(
+    ResponeAction.NoAction
+  );
+  const [assignmentId, setAssignmentId] = React.useState(0);
+  const [update, setUpdate] = useState(false);
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleOk = () => {
+    if (responeAction == ResponeAction.NoAction) {
+      setVisible(false);
+      setConfirmLoading(false);
+    }
+    if (responeAction == ResponeAction.Accept) {
+      setConfirmLoading(true);
+      assignmentService.acceptAssignment(assignmentId);
+    }
+    if (responeAction == ResponeAction.Decline) {
+      setConfirmLoading(true);
+      assignmentService.declineAssignment(assignmentId);
+    }
+    if (responeAction == ResponeAction.UndoRespone) {
+      setConfirmLoading(true);
+      assignmentService.undoResponeAssignment(assignmentId);
+    }
+    setConfirmLoading(false);
+    setVisible(false);
+    setAssignmentId(0);
+    setResponeAction(ResponeAction.NoAction);
+    window.location.reload();
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setVisible(false);
+    setAssignmentId(0);
+    setResponeAction(ResponeAction.NoAction);
+  };
+
+  //
+
 
   useEffect(() => {
     (async () => {
@@ -53,7 +113,7 @@ export function ListAssignmentsForEachUser() {
       setIsDisabledStates(disabledButtonStates)
       setAssignmentList(listAssignments);
     })();
-  }, []);
+  }, [update]);
 
   async function detailAssignment(id: number) {
     let assignment = await assignmentService.getAssignment(id);
@@ -95,6 +155,31 @@ export function ListAssignmentsForEachUser() {
     })
   }
 
+   //Respone to assignment
+   const acceptAssignment = (id: number) => {
+    setAssignmentId(id);
+    setResponeAction(ResponeAction.Accept);
+    setModalText("Do you want to accept to this assignment?");
+    showModal();
+    setUpdate((pre) => !pre);
+  };
+
+  const declineAssignment = (id: number) => {
+    setAssignmentId(id);
+    setResponeAction(ResponeAction.Decline);
+    setModalText("Do you want to decline to this assignment?");
+    showModal();
+    setUpdate((pre) => !pre);
+  };
+
+  const undoResponeAssignment = (id: number) => {
+    setAssignmentId(id);
+    setResponeAction(ResponeAction.UndoRespone);
+    setModalText("Do you want to respone to this assignment?");
+    showModal();
+    setUpdate((pre) => !pre);
+  };
+
   const columns: any = [
     {
       title: "Asset Code",
@@ -106,6 +191,7 @@ export function ListAssignmentsForEachUser() {
         return <div>{record.asset.assetCode}</div>;
       },
       sortDirections: ["ascend", "descend"],
+     
     },
     {
       title: "Asset Name",
@@ -141,6 +227,7 @@ export function ListAssignmentsForEachUser() {
         );
       },
       sortDirections: ["ascend", "descend"],
+      
     },
     {
       title: "Assigned by",
@@ -203,6 +290,33 @@ export function ListAssignmentsForEachUser() {
                 onClick={() => createReturnRequest(index, record)}
               />
             </Col>
+            <Col>
+              <Button
+                ghost
+                type="link"
+                icon={<CheckOutlined />}
+                disabled={record.state != AssignmentState.WaitingForAcceptance}
+                onClick={() => acceptAssignment(record.id)}
+              />
+            </Col>
+            <Col>
+              <Button
+                ghost
+                type="link"
+                icon={<CloseOutlined />}
+                disabled={record.state != AssignmentState.WaitingForAcceptance}
+                onClick={() => declineAssignment(record.id)}
+              />
+            </Col>
+            <Col>
+              <Button
+                ghost
+                type="link"
+                icon={<UndoOutlined rotate={180} />}
+                disabled={record.state == AssignmentState.WaitingForAcceptance}
+                onClick={() => undoResponeAssignment(record.id)}
+              />
+            </Col>
             </Row>
           );
         },
@@ -219,6 +333,15 @@ export function ListAssignmentsForEachUser() {
         scroll={{ y: 400 }}
         pagination={false}
       />
+        <Modal
+        title="Are you sure?"
+        visible={visible}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
     </>
   );
 }

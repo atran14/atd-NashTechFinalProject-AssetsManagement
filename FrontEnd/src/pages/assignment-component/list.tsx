@@ -198,9 +198,8 @@ export function ListAssignments() {
       title: 'Assigned by',
       dataIndex: 'assignedByUserId',
       key: 'assignedByUserId',
-      sorter: (a: Assignment, b: Assignment) => {
-        a.assignedByUser.userName.localeCompare(b.assignedByUser.userName)
-      },
+      sorter: (a: Assignment, b: Assignment) => 
+        a.assignedByUser.userName.localeCompare(b.assignedByUser.userName),
       render: (text: any, record: Assignment, index: number) => {
         return <div>{record.assignedByUser.userName}</div>
       },
