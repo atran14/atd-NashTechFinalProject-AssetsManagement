@@ -91,6 +91,7 @@ namespace BackEndAPI.Controllers
             return Ok(users);
         }
 
+        #region Endpoint to be removed
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("type/{type}")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersByType(
@@ -107,7 +108,9 @@ namespace BackEndAPI.Controllers
 
             return Ok(users);
         }
+        #endregion
 
+        #region Endpoint to be removed
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("search")]
         public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchUsers(
@@ -124,6 +127,7 @@ namespace BackEndAPI.Controllers
 
             return Ok(users);
         }
+        #endregion
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("search-and-filter")]
