@@ -42,7 +42,7 @@ export class UserService extends HttpClient {
     searchFilterParameters: UserSearchFilterParameters,
     paginationParameters?: PaginationParameters
     ) => this.instance.get<UsersPagedListResponse>(
-      `api/Users/search-and-filter`,
+      `api/Users/params`,
       {
         params: {
           SearchQuery: searchFilterParameters.searchQuery,

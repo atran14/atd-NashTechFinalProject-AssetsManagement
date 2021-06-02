@@ -102,12 +102,12 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     var count = 0
     var user = await userService.getUser(id)
     usersList.forEach((u: any) => {
-      if (u.type === UserType.ADMIN && u.status === UserStatus.ACTIVE) {
+      if (u.type === UserType.Admin && u.status === UserStatus.Active) {
         count++
       }
     })
 
-    if (count < 2 && user.type === UserType.ADMIN) {
+    if (count < 2 && user.type === UserType.Admin) {
       return false
     }
 
