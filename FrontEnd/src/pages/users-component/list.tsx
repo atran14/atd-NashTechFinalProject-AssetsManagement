@@ -1,7 +1,6 @@
 import {
   Button,
   Col,
-  Form,
   Input,
   message,
   Modal,
@@ -35,8 +34,9 @@ import {
 } from '@ant-design/icons'
 import { Link, Redirect } from 'react-router-dom'
 import './users.css'
-import { AssignmentsService } from "../../services/AssignmentService";
+import { AssignmentsService } from '../../services/AssignmentService'
 import { Assignment } from '../../models/Assignment'
+import { UserSearchFilterParameters } from '../../models/SearchFilterParameters'
 
 const { Option } = Select
 const { confirm } = Modal
@@ -45,57 +45,49 @@ interface PassedInEditedUserProps {
   editedUser: User
 }
 
-interface SearchAction {
-  action: 'filter' | 'search'
-  query: number | string
-}
-
-const ADMIN = "ADMIN";
+const ADMIN = 'ADMIN'
 
 export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === ADMIN)
   let [isFetchingData, setIsFetchingData] = useState(false)
   let [usersPagedList, setUsersPagedList] = useState<UsersPagedListResponse>()
   let [usersList, setUsersList] = useState<User[]>([])
-  let [filterSelected, setFilterSelected] = useState(false)
-  let [assignmentList, setAssignmentList] = useState<Assignment[]>([])
-  let [latestSearchAction, setLatestSearchAction] = useState<SearchAction>({
-    action: 'search',
-    query: '',
+  let [assignmentList, setAssignmentList] = useState<Assignment[]>([])  
+  let [searchFilterParams, setSearchFilterParams] = useState<
+    UserSearchFilterParameters
+  >({
+    searchQuery: '',
   })
+  let [paginationParams, setPaginationParams] = useState<PaginationParameters>({
+    PageNumber: 1,
+    PageSize: 10,
+  })
+  let [userSearchFieldValue] = useState('')
   let assignmentService = AssignmentsService.getInstance()
+  let userService = UserService.getInstance()
 
   useEffect(() => {
     if (isAdminAuthorized) {
       ;(async () => {
         setIsFetchingData(true)
-        let userService = UserService.getInstance()
+        setSearchFilterParams({
+          searchQuery: '',
+        })
         let usersPagedResponse = await userService.getUsers()
 
         setUsersPagedList(usersPagedResponse)
         setUsersList(usersPagedResponse.items)
-        setLatestSearchAction({
-          action: 'search',
-          query: '',
-        })
         setIsFetchingData(false)
       })()
     }
-  }, [editedUser])
+  }, [])
 
   useEffect(() => {
-    (async () => {
-      let list = await assignmentService.getAllNoCondition();
-      setAssignmentList(list);
-    })();
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      let list = await assignmentService.getAllNoCondition();
-      setAssignmentList(list);
-    })();
-  }, []);
+    ;(async () => {
+      let list = await assignmentService.getAllNoCondition()
+      setAssignmentList(list)
+    })()
+  }, [])
 
   function notDisabledYourself(id: number) {
     if (id === JSON.parse(sessionStorage.getItem('id')!)) {
@@ -106,10 +98,9 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   }
 
   let notOnlyOneAdminRemain = async (id: number) => {
-    let userService = UserService.getInstance()
     var count = 0
     var user = await userService.getUser(id)
-    usersList.map((u: any) => {
+    usersList.forEach((u: any) => {
       if (u.type === UserType.ADMIN && u.status === UserStatus.ACTIVE) {
         count++
       }
@@ -123,8 +114,8 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
   }
 
   function disabledUser(id: number) {
-    var count = 0;
-    assignmentList.map((a: any) => {
+    var count = 0
+    assignmentList.forEach((a: any) => {
       if (a.assignedToUserId === id && a.state !== 2) {
         count++
       }
@@ -155,7 +146,7 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
               userId.filter((item) => item.id !== id),
             )
           } catch {
-            message.error("Something went wrong");
+            message.error('Something went wrong')
           }
         },
         onCancel() {
@@ -171,48 +162,30 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     }
   }
 
-  const onSearchButtonClicked = (values: any) => {
-    ;(async () => {
-      setIsFetchingData(true)
-      let { searchText } = values
-      let userService = UserService.getInstance()
-      let usersPagedResponse: UsersPagedListResponse
+  const onSearchButtonClicked = async () => {
+    setIsFetchingData(true)
 
-      if (searchText.length === 0) {
-        usersPagedResponse = await userService.getUsers()
-      } else {
-        usersPagedResponse = await userService.searchUsers(searchText)
-      }
+    let newSearchFilterParams: UserSearchFilterParameters = {
+      ...searchFilterParams,
+      searchQuery: userSearchFieldValue,
+    }
 
-      setLatestSearchAction({
-        action: 'search',
-        query: searchText as string,
-      })
-      setUsersPagedList(usersPagedResponse)
-      setUsersList(usersPagedResponse.items)
-      setIsFetchingData(false)
-    })()
-  }
+    let newPaginationParams: PaginationParameters = {
+      ...paginationParams,
+      PageNumber: 1,
+    }
 
-  const onFilterButtonClicked = (values: any) => {
-    ;(async () => {
-      setIsFetchingData(true)
+    let usersPagedResponse: UsersPagedListResponse = await userService.searchAndFilter(
+      newSearchFilterParams,
+      newPaginationParams,
+    )
 
-      let { filteredUserType } = values
-      let userService = UserService.getInstance()
-      let usersPagedResponse: UsersPagedListResponse = await userService.filterByType(
-        filteredUserType as number,
-      )
+    setSearchFilterParams(newSearchFilterParams)
+    setPaginationParams(newPaginationParams)
+    setUsersPagedList(usersPagedResponse)
+    setUsersList(usersPagedResponse.items)
 
-      setLatestSearchAction({
-        action: 'filter',
-        query: filteredUserType as number,
-      })
-      setUsersPagedList(usersPagedResponse)
-      setUsersList(usersPagedResponse.items)
-
-      setIsFetchingData(false)
-    })()
+    setIsFetchingData(false)
   }
 
   const generateDetailedUserContent = (record: User) => {
@@ -254,41 +227,73 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     )
   }
 
-  const onPaginationConfigChanged = (page: number, pageSize?: number) => {
-    ;(async () => {
-      setIsFetchingData(true)
-      let userService = UserService.getInstance()
-      let parameters: PaginationParameters = {
-        PageNumber: page,
-        PageSize: pageSize ?? 10,
-      }
+  const onTypeFilterSelected = async (value: UserType) => {
+    setIsFetchingData(true)
 
-      let usersPagedResponse: UsersPagedListResponse
-      switch (latestSearchAction.action) {
-        case 'search':
-          let searchQuery = latestSearchAction.query as string
-          if (searchQuery.length === 0) {
-            usersPagedResponse = await userService.getUsers(parameters)
-          } else {
-            usersPagedResponse = await userService.searchUsers(
-              searchQuery,
-              parameters,
-            )
-          }
-          break
-        case 'filter':
-          let filterQuery = latestSearchAction.query as number
-          usersPagedResponse = await userService.filterByType(
-            filterQuery,
-            parameters,
-          )
-          break
-      }
+    let newSearchFilterParams: UserSearchFilterParameters = {
+      ...searchFilterParams,
+      type: value,
+    }
 
-      setUsersPagedList(usersPagedResponse)
-      setUsersList(usersPagedResponse.items)
-      setIsFetchingData(false)
-    })()
+    let newPaginationParams: PaginationParameters = {
+      ...paginationParams,
+      PageNumber: 1,
+    }
+
+    let usersPagedResponse = await userService.searchAndFilter(
+      newSearchFilterParams,
+      newPaginationParams,
+    )
+
+    setSearchFilterParams(newSearchFilterParams)
+    setPaginationParams(paginationParams)
+    setUsersPagedList(usersPagedResponse)
+    setUsersList(usersPagedResponse.items)
+    setIsFetchingData(false)
+  }
+
+  const onTypeFilerClear = async () => {
+    setIsFetchingData(true)
+
+    let newSearchFilterParams: UserSearchFilterParameters = {
+      ...searchFilterParams,
+      type: undefined,
+    }
+
+    let newPaginationParams: PaginationParameters = {
+      ...paginationParams,
+      PageNumber: 1,
+    }
+
+    let usersPagedResponse = await userService.searchAndFilter(
+      newSearchFilterParams,
+      newPaginationParams,
+    )
+
+    setSearchFilterParams(newSearchFilterParams)
+    setPaginationParams(paginationParams)
+    setUsersPagedList(usersPagedResponse)
+    setUsersList(usersPagedResponse.items)
+    setIsFetchingData(false)
+  }
+
+  const onPaginationConfigChanged = async (page: number, pageSize?: number) => {
+    setIsFetchingData(true)
+
+    let newPaginationParams: PaginationParameters = {
+      PageNumber: page,
+      PageSize: pageSize ?? 10,
+    }
+
+    let usersPagedResponse: UsersPagedListResponse = await userService.searchAndFilter(
+      searchFilterParams,
+      newPaginationParams
+    )
+
+    setPaginationParams(newPaginationParams)
+    setUsersPagedList(usersPagedResponse)
+    setUsersList(usersPagedResponse.items)
+    setIsFetchingData(false)
   }
 
   const columns: any = [
@@ -387,77 +392,54 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
         <>
           <Row>
             <Col span={5}>
-              <Form onFinish={onFilterButtonClicked}>
-                <Row justify="start">
-                  <Col span={15}>
-                    <Form.Item
-                      name="filteredUserType"
-                      className="no-margin-no-padding"
-                    >
-                      <Select
-                        placeholder="Select user type"
-                        style={{ width: '100%' }}
-                        onSelect={() => setFilterSelected(true)}
-                        disabled={isFetchingData}
-                      >
-                        <Option key="admin" value={0}>
-                          Admin
-                        </Option>
-                        <Option key="user" value={1}>
-                          User
-                        </Option>
-                      </Select>
-                    </Form.Item>
-                  </Col>
+              <Row justify="start">
+                <Col span={15}>
+                  <Select
+                    placeholder="Select user type"
+                    style={{ width: '100%' }}
+                    onSelect={onTypeFilterSelected}
+                    disabled={isFetchingData}
+                    allowClear
+                    onClear={onTypeFilerClear}
+                  >
+                    <Option key="admin" value={0}>
+                      Admin
+                    </Option>
+                    <Option key="user" value={1}>
+                      User
+                    </Option>
+                  </Select>
+                </Col>
+                <Col offset={1}>
+                  <FilterFilled />
+                </Col>
+              </Row>
+            </Col>
 
-                  <Col offset={1}>
-                    <Form.Item className="no-margin-no-padding">
-                      <Button
-                        size="middle"
-                        icon={<FilterFilled />}
-                        htmlType="submit"
-                        disabled={!filterSelected || isFetchingData}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
-            </Col>
             <Col span={4} offset={10}>
-              <Form
-                onFinish={onSearchButtonClicked}
-                initialValues={{
-                  searchText: '',
-                }}
-              >
-                <Row justify="end">
-                  <Col span={18}>
-                    <Form.Item
-                      name="searchText"
-                      className="no-margin-no-padding"
-                    >
-                      <Input
-                        allowClear
-                        disabled={isFetchingData}
-                        style={{ width: '100%' }}
-                        placeholder="e.g. Bob/SD0001"
-                      />
-                    </Form.Item>
-                  </Col>
-                  <Col offset={1}>
-                    <Form.Item className="no-margin-no-padding">
-                      <Button
-                        size="middle"
-                        icon={<SearchOutlined />}
-                        type="primary"
-                        htmlType="submit"
-                        disabled={isFetchingData}
-                      />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
+              <Row justify="end">
+                <Col span={18}>
+                  <Input
+                    allowClear
+                    disabled={isFetchingData}
+                    style={{ width: '100%' }}
+                    placeholder="e.g. Bob/SD0001"
+                    value={userSearchFieldValue}
+                  />
+                </Col>
+                <Col offset={1}>
+                  <Button
+                    size="middle"
+                    icon={<SearchOutlined />}
+                    type="primary"
+                    htmlType="submit"
+                    onClick={onSearchButtonClicked}
+                    disabled={isFetchingData}
+                  />
+                </Col>
+              </Row>
             </Col>
+
             <Col span={4} offset={1}>
               <Link to="/users/create">
                 <Button
