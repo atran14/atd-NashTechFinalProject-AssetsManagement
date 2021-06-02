@@ -14,6 +14,7 @@ namespace BackEndAPI.Interfaces
             int adminId
         );
 
+        #region Methods to be removed
         Task<GetUsersListPagedResponseDTO> GetUsersByType(
             PaginationParameters paginationParameters,
             int adminId,
@@ -24,6 +25,13 @@ namespace BackEndAPI.Interfaces
             PaginationParameters paginationParameters,
             int adminId,
             string searchText
+        );
+        #endregion
+
+        Task<GetUsersListPagedResponseDTO> SearchAndFilter(
+            int adminId,
+            UserSearchFilterParameters searchFilterParameters,
+            PaginationParameters paginationParameters
         );
 
         AuthenticateResponse Authenticate(AuthenticateRequest model);
