@@ -74,6 +74,7 @@ namespace BackEndAPI.Services
             };
         }
 
+        #region Method to be removed
         public async Task<GetUsersListPagedResponseDTO> GetUsersByType(
             PaginationParameters paginationParameters,
             int adminId,
@@ -108,6 +109,7 @@ namespace BackEndAPI.Services
                 Items = users.Select(u => _mapper.Map<UserDTO>(u))
             };
         }
+        #endregion
 
         public IEnumerable<User> GetAll()
         {
@@ -131,7 +133,7 @@ namespace BackEndAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        
+
         public async Task Disable(int userId, int id)
         {
             int countAdmin = _repository.CountAdminRemain();
@@ -260,7 +262,8 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
-        
+
+        #region Method to be removed
         public async Task<GetUsersListPagedResponseDTO> SearchUsers(
             PaginationParameters paginationParameters,
             int adminId,
@@ -304,7 +307,8 @@ namespace BackEndAPI.Services
                 Items = users.Select(u => _mapper.Map<UserDTO>(u))
             };
         }
-        
+        #endregion
+
         public async Task ChangePassword(int id, ChangePasswordRequest model)
         {
             var user = await _repository.GetById(id);
@@ -312,9 +316,9 @@ namespace BackEndAPI.Services
             if (user.OnFirstLogin == OnFirstLogin.Yes)
             {
                 user.OnFirstLogin = OnFirstLogin.No;
-            } 
-            
-            user.Password = model.NewPassword ;
+            }
+
+            user.Password = model.NewPassword;
 
             await _repository.Update(user);
         }
@@ -325,10 +329,10 @@ namespace BackEndAPI.Services
             {
                 throw new InvalidOperationException(Message.UserNotFound);
             }
-            
+
             return user;
         }
-    
+
         public async Task<IQueryable<UserDTO>> GetAllUsers(int userId)
         {
             var user = await _repository.GetById(userId);
@@ -363,5 +367,47 @@ namespace BackEndAPI.Services
             return sendListUser;
         }
 
+        public async Task<GetUsersListPagedResponseDTO> SearchAndFilter(
+            int adminId,
+            UserSearchFilterParameters searchFilterParameters,
+            PaginationParameters paginationParameters
+        )
+        {
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception("Unauthorized access");
+            }
+
+            var searchFilterRawResults = _repository.GetAll()
+                .Where(u => u.Location == adminUser.Location
+                        && u.Status == UserStatus.Active);
+            if (searchFilterParameters.Type is not null)
+            {
+                searchFilterRawResults = searchFilterRawResults
+                    .Where(u => u.Type == searchFilterParameters.Type);
+            }
+
+            searchFilterRawResults = searchFilterRawResults
+                .Where(x => (x.FirstName + " " + x.LastName).Contains(searchFilterParameters.SearchQuery)
+                            || x.StaffCode.Contains(searchFilterParameters.SearchQuery));
+
+            var pagedListResult = PagedList<User>.ToPagedList(
+                searchFilterRawResults,
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = pagedListResult.CurrentPage,
+                PageSize = pagedListResult.PageSize,
+                TotalCount = pagedListResult.TotalCount,
+                TotalPages = pagedListResult.TotalPages,
+                HasNext = pagedListResult.HasNext,
+                HasPrevious = pagedListResult.HasPrevious,
+                Items = pagedListResult.Select(u => _mapper.Map<UserDTO>(u))
+            };
+        }
     }
 }
