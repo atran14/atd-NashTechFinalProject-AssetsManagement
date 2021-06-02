@@ -1,6 +1,6 @@
 import {} from "module";
 import { Asset } from "./Asset";
-import {  User } from "./User";
+import { User } from "./User";
 
 export type AssignmentModel = {
     assetId: number;
@@ -23,6 +23,7 @@ export type Assignment = {
     asset : Asset;
     assignedToUserId: number;
     assignedToUser: User;
+    assignedToUserName:string;
     assignedByUserId:number;
     assignedByUser : User;
     assignedDate: Date;

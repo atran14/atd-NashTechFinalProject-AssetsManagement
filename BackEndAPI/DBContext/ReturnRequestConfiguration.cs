@@ -15,8 +15,8 @@ namespace BackEndAPI.DBContext
             builder.Property(e => e.Id)
                     .ValueGeneratedOnAdd();
 
-            builder.Property(e => e.AssignmentId)
-                    .IsRequired();
+        //     builder.Property(e => e.AssignmentId)
+        //             .IsRequired();
 
             builder.Property(e => e.RequestedByUserId)
                     .IsRequired();
@@ -24,8 +24,8 @@ namespace BackEndAPI.DBContext
             builder.Property(e => e.State)
                     .IsRequired();
 
-            builder.HasOne(a => a.Assignment)
-                    .WithOne(c => c.Request);
+        //     builder.HasOne(a => a.Assignment)
+        //             .WithOne(c => c.Request);
 
             builder.HasOne(a => a.RequestedByUser)
                     .WithMany(c => c.Requests)

@@ -13,6 +13,8 @@ namespace BackEndAPI.Entities
         public int AssignedByUserId { get; set; }
         public virtual User AssignedByUser { get; set; }
 
+        public string AssignedToUserName { get; set; }
+
         public int AssignedToUserId { get; set; }
         public virtual User AssignedToUser { get; set; }
 
@@ -21,6 +23,8 @@ namespace BackEndAPI.Entities
         public AssignmentState State { get; set; }
 
         public string Note { get; set; }
+
+        public DateTime CreateEditDate { get; set;}
 
         public virtual ReturnRequest Request { get; set; }
         

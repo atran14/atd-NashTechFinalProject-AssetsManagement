@@ -31,7 +31,8 @@ namespace BackEndAPI.Helpers
         public const string NullAsset = "Asset can not be null!";
         public const string AssetNumberError = "Can not get number of assets!";
         public const string NullOrEmptyPrefix = "Prefix can not be empty or contains only spaces!";
-
+        public const string ReturnRequestNotFound = "Return request not found";
+        public const string AssetHadHistoricalAssignment = "Cannot delete the asset because it belongs to one or more historical assignments. If the asset is not able to be used anymore, please update its state in Edit Asset page!";
         public const string AssignmentAccepted = "Assignment accepted!";
         public const string AssignmentDeclined = "Assignment declined!";
         public const string AssignmentUndidRespone = "Assignment undid respone!";

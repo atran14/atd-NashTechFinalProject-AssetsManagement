@@ -159,6 +159,13 @@ namespace BackEndAPI.Migrations
                     b.Property<int>("AssignedToUserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AssignedToUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateEditDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
@@ -181,6 +188,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 1,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 2,
+                            AssignedToUserName = "binhnt",
+                            CreateEditDate = new DateTime(2021, 6, 1, 21, 7, 14, 823, DateTimeKind.Local).AddTicks(1156),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 1
                         },
@@ -191,6 +200,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 1,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 3,
+                            AssignedToUserName = "binhnt2",
+                            CreateEditDate = new DateTime(2021, 5, 31, 21, 7, 14, 824, DateTimeKind.Local).AddTicks(13),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 1
                         },
@@ -201,6 +212,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 4,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 5,
+                            AssignedToUserName = "binhnt",
+                            CreateEditDate = new DateTime(2021, 5, 30, 21, 7, 14, 824, DateTimeKind.Local).AddTicks(30),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 0
                         },
@@ -211,6 +224,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 4,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 6,
+                            AssignedToUserName = "binhnt2",
+                            CreateEditDate = new DateTime(2021, 5, 29, 21, 7, 14, 824, DateTimeKind.Local).AddTicks(32),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 1
                         });
@@ -226,7 +241,16 @@ namespace BackEndAPI.Migrations
                     b.Property<int?>("AcceptedByUserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("AssignmentId")
+                    b.Property<string>("AssetCodeCopy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AssetNameCopy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("AssignedDateCopy")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("AssignmentId")
                         .HasColumnType("int");
 
                     b.Property<int>("RequestedByUserId")
@@ -243,7 +267,8 @@ namespace BackEndAPI.Migrations
                     b.HasIndex("AcceptedByUserId");
 
                     b.HasIndex("AssignmentId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[AssignmentId] IS NOT NULL");
 
                     b.HasIndex("RequestedByUserId");
 
@@ -389,7 +414,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "9f6836df-55b7-4532-a8ba-422e47177bd1",
+                            ConcurrencyStamp = "9c47fd4c-0fdc-4737-ac2e-0587e9e72cca",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -411,7 +436,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "76b2cf9c-d183-4432-9d81-0f5f4f7ec577",
+                            ConcurrencyStamp = "aa285199-97ae-48c2-95f5-0471c9af78c3",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -433,7 +458,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7e951aea-7b55-4baa-84ca-1d64e1eb58c0",
+                            ConcurrencyStamp = "bb1df822-cde5-4680-89c3-30806a13bef1",
                             DateOfBirth = new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -455,7 +480,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2bd6694c-10a9-40e3-952e-56866b363d09",
+                            ConcurrencyStamp = "848a1cf7-bc3f-4e80-aa8c-d0993f5610a4",
                             DateOfBirth = new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Anh",
@@ -477,7 +502,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ca69352c-63b5-45af-9f21-81a283c628e5",
+                            ConcurrencyStamp = "9c0358ef-5cc3-4ae9-b7a4-bc5479b99c63",
                             DateOfBirth = new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Van",
@@ -499,7 +524,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 6,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "0eb7ed23-322b-412a-9222-5341432c5ed5",
+                            ConcurrencyStamp = "088d1c29-2eda-4c3a-a2be-6467a39869db",
                             DateOfBirth = new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -657,8 +682,7 @@ namespace BackEndAPI.Migrations
                     b.HasOne("BackEndAPI.Entities.Assignment", "Assignment")
                         .WithOne("Request")
                         .HasForeignKey("BackEndAPI.Entities.ReturnRequest", "AssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("BackEndAPI.Entities.User", "RequestedByUser")
                         .WithMany("Requests")

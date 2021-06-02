@@ -71,9 +71,14 @@ namespace BackEndAPI_Tests.Services_Tests
                     {
                         Id = 1,
                         AssetId = 1,
+                        Asset = new Asset {
+                            AssetName = "Laptop 1",
+                            AssetCode = "LA000001"
+                        },
                         AssignedByUserId = 1,
                         AssignedToUserId = 2,
                         Note = "Testing1",
+                        AssignedDate = DateTime.Now.Date,
                         State = AssignmentState.Accepted
                     }
                 }
@@ -130,6 +135,7 @@ namespace BackEndAPI_Tests.Services_Tests
         private Mock<IAsyncReturnRequestRepository> _returnRequestRepositoryMock;
         private Mock<IAsyncUserRepository> _userRepositoryMock;
         private Mock<IAsyncAssignmentRepository> _assignmentRepositoryMock;
+        private Mock<IAsyncAssetRepository> _assetRepositoryMock;
         private readonly IMapper _mapper;
 
         public ReturnRequestService_Tests()
@@ -149,6 +155,7 @@ namespace BackEndAPI_Tests.Services_Tests
         public void SetUp()
         {
             _userRepositoryMock = new Mock<IAsyncUserRepository>(behavior: MockBehavior.Strict);
+            _assetRepositoryMock = new Mock<IAsyncAssetRepository>(behavior: MockBehavior.Strict);
             _assignmentRepositoryMock = new Mock<IAsyncAssignmentRepository>(behavior: MockBehavior.Strict);
             _returnRequestRepositoryMock = new Mock<IAsyncReturnRequestRepository>(behavior: MockBehavior.Strict);
         }
@@ -161,6 +168,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -192,6 +200,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(It.IsAny<IQueryable<ReturnRequest>>()).Verifiable();
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -280,6 +289,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -355,6 +365,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -430,6 +441,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -506,6 +518,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _assignmentRepositoryMock.Setup(x => x.GetCountUser(It.IsAny<int>())).Returns(1);
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -536,6 +549,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(It.IsAny<IQueryable<ReturnRequest>>()).Verifiable();
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -639,6 +653,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(returnRequests.AsQueryable());
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -742,6 +757,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(returnRequests.AsQueryable());
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -845,6 +861,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(returnRequests.AsQueryable());
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -874,6 +891,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(It.IsAny<IQueryable<ReturnRequest>>()).Verifiable();
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -920,6 +938,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -944,6 +963,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -977,6 +997,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -1017,6 +1038,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -1057,6 +1079,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -1102,6 +1125,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -1120,7 +1144,7 @@ namespace BackEndAPI_Tests.Services_Tests
             _returnRequestRepositoryMock.Verify(x => x.Create(It.IsAny<ReturnRequest>()), Times.Never());
         }
 
-[Test]
+        [Test]
         public void Create_AssetNotYetAccepted_ShouldThrowException()
         {
             //Arrange
@@ -1147,6 +1171,7 @@ namespace BackEndAPI_Tests.Services_Tests
 
             var service = new ReturnRequestService(
                 _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
                 _returnRequestRepositoryMock.Object,
                 _assignmentRepositoryMock.Object,
                 _mapper
@@ -1164,139 +1189,366 @@ namespace BackEndAPI_Tests.Services_Tests
             Assert.AreEqual(Message.AssignedAssetNotAccepted, exception.Message);
             _returnRequestRepositoryMock.Verify(x => x.Create(It.IsAny<ReturnRequest>()), Times.Never());
         }
-        
 
-        // [Test]
-        // public void Create_UserAgeUnder18_ThrowsExceptionMessage()
-        // {
 
-        //     //Arrange
-        //     CreateUserModel user = new CreateUserModel
-        //     {
-        //         DateOfBirth = new DateTime(2010, 12, 12)
-        //     };
+        [TestCase("LA000001", 1)]
+        [TestCase("LA000002", 1)]
+        public void GetAssociatedCount_Valid_ShouldReturnCorrectCount(string validAssetCode, int expectedCount)
+        {
+            //Arrange
+            var rrList = new List<ReturnRequest>
+            {
+                new ReturnRequest
+                {
+                    Assignment = new Assignment
+                    {
+                        Asset = new Asset
+                        {
+                            AssetCode = "LA000001"
+                        }
+                    }
+                },
+                new ReturnRequest
+                {
+                    Assignment = new Assignment
+                    {
+                        Asset = new Asset
+                        {
+                            AssetCode = "LA000002"
+                        }
+                    }
+                }
+            };
 
-        //     _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
-        //     var userService = new UserService(
-        //         _userRepositoryMock.Object,
-        //         _assignmentRepositoryMock.Object,
-        //         _mapper,
-        //         _optionsMock.Object
-        //     );
+            _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(rrList.AsQueryable());
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
 
-        //     //Act
-        //     var result = Assert.ThrowsAsync<Exception>(async () => await userService.Create(user));
+            //Act
+            var actualCount = service.GetAssociatedActiveCount(validAssetCode);
 
-        //     //Assert
-        //     Assert.AreEqual(Message.RestrictedAge, result.Message);
+            //Assert
+            Assert.That(actualCount == expectedCount);
+        }
 
-        // }
+        [Test]
+        public void GetAssociatedCount_NullAssetCode_ShouldReturnZero()
+        {
+            //Arrange            
+            _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(It.IsAny<IQueryable<ReturnRequest>>()).Verifiable();
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
 
-        // [Test]
-        // public void Create_JoinedDateEarlierThanDob_ThrowsExceptionMessage()
-        // {
+            //Act
+            var actualCount = service.GetAssociatedActiveCount(null);
 
-        //     //Arrange
-        //     CreateUserModel user = new CreateUserModel
-        //     {
-        //         DateOfBirth = new DateTime(2000, 12, 12),
-        //         JoinedDate = new DateTime(2000, 01, 01)
-        //     };
+            //Assert
+            Assert.That(actualCount == 0);
+            _returnRequestRepositoryMock.Verify(x => x.GetAll(), Times.Never());
+        }
 
-        //     _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
-        //     var userService = new UserService(
-        //         _userRepositoryMock.Object,
-        //         _assignmentRepositoryMock.Object,
-        //         _mapper,
-        //         _optionsMock.Object
-        //     );
+        [Test]
+        public void GetAssociatedCount_EmptyAssetCode_ShouldReturnZero()
+        {
+            //Arrange            
+            _returnRequestRepositoryMock.Setup(x => x.GetAll()).Returns(It.IsAny<IQueryable<ReturnRequest>>()).Verifiable();
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
 
-        //     //Act
-        //     var result = Assert.ThrowsAsync<Exception>(async () => await userService.Create(user));
+            //Act
+            var actualCount = service.GetAssociatedActiveCount("");
 
-        //     //Assert
-        //     Assert.AreEqual(Message.JoinedBeforeBirth, result.Message);
+            //Assert
+            Assert.That(actualCount == 0);
+            _returnRequestRepositoryMock.Verify(x => x.GetAll(), Times.Never());
+        }
 
-        // }
+        [Test]
+        public async Task Approve_Valid_ShouldBeSuccessful()
+        {
+            //Arrange
+            var simulatedAssignment = new Assignment
+            {
+                AssetId = 1,
+                State = AssignmentState.Accepted
+            };
 
-        // [Test]
-        // public void Create_JoinedDateAtWeekend_ThrowsExceptionMessage()
-        // {
+            var simulatedReturnRequest = new ReturnRequest
+            {
+                Id = 1,
+                Assignment = simulatedAssignment
+            };
 
-        //     //Arrange
-        //     CreateUserModel user = new CreateUserModel
-        //     {
-        //         JoinedDate = new DateTime(2010, 05, 16)
-        //     };
+            var simulatedAsset = new Asset
+            {
+                Id = 1,
+                State = AssetState.Assigned
+            };
 
-        //     _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
-        //     var userService = new UserService(
-        //         _userRepositoryMock.Object,
-        //         _assignmentRepositoryMock.Object,
-        //         _mapper,
-        //         _optionsMock.Object
-        //     );
+            _returnRequestRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(simulatedReturnRequest);
+            _assetRepositoryMock.Setup(x => x.GetById(simulatedReturnRequest.Assignment.AssetId)).ReturnsAsync(simulatedAsset);
+            _userRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(new User { Id = 1, UserName = "abc", Type = UserType.Admin });
+            _returnRequestRepositoryMock.Setup(x => x.Update(simulatedReturnRequest)).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(simulatedAsset)).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(simulatedReturnRequest.Assignment)).Returns(Task.CompletedTask);
 
-        //     //Act
-        //     var result = Assert.ThrowsAsync<Exception>(async () => await userService.Create(user));
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
 
-        //     //Assert
-        //     Assert.AreEqual(Message.WeekendJoinedDate, result.Message);
+            //Act
+            await service.Approve(1, 1);
 
-        // }
+            //Assert
+            _assetRepositoryMock.VerifyAll();
+            _assignmentRepositoryMock.VerifyAll();
+            _returnRequestRepositoryMock.VerifyAll();
+        }
 
-        // [Test]
-        // public void Create_ValidUserInserted_ReturnsCreatedUser()
-        // {
+        [Test]
+        public void Approve_UserNotAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new User {Type = UserType.User});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
 
-        //     //Arrange
-        //     CreateUserModel user = new CreateUserModel
-        //     {
-        //         FirstName = "Thang",
-        //         LastName = "Doan Viet",
-        //         DateOfBirth = new DateTime(1995, 06, 03),
-        //         Gender = Gender.Male,
-        //         JoinedDate = new DateTime(2021, 05, 19),
-        //         Type = UserType.Admin,
-        //         Location = Location.HaNoi
-        //     };
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
 
-        //     User _user = _mapper.Map<User>(user);
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Approve(2, 1)
+            );
 
-        //     User createdUser = new User
-        //     {
-        //         FirstName = "Thang",
-        //         LastName = "Doan Viet",
-        //         DateOfBirth = new DateTime(1995, 06, 03),
-        //         Gender = Gender.Male,
-        //         JoinedDate = new DateTime(2021, 05, 19),
-        //         Type = UserType.Admin,
-        //         Location = Location.HaNoi,
-        //         StaffCode = "SD0001",
-        //         UserName = "thangdv",
-        //         Password = "thangdv@03061995"
-        //     };
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
 
-        //     _userRepositoryMock.Setup(x => x.CountUsername("thangdv")).Returns(0);
-        //     _userRepositoryMock.Setup(x => x.Create(_user)).ReturnsAsync(createdUser);
-        //     _optionsMock.SetupGet(x => x.Value).Returns(Settings.Value);
-        //     var userService = new UserService(
-        //         _userRepositoryMock.Object,
-        //         _assignmentRepositoryMock.Object,
-        //         _mapper,
-        //         _optionsMock.Object
-        //     );
+        [Test]
+        public void Approve_DisabledAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(
+                new User {Type = UserType.Admin, Status = UserStatus.Disabled});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
 
-        //     //Act
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
 
-        //     var result = userService.Create(user);
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Approve(2, 1)
+            );
 
-        //     //Assert
-        //     Assert.AreEqual("Thang", createdUser.FirstName);
-        //     Assert.AreEqual("Doan Viet", createdUser.LastName);
-        //     Assert.AreEqual(new DateTime(1995, 06, 03), createdUser.DateOfBirth);
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
 
-        // }
+        [Test]
+        public void Approve_ReturnRequestNotExist_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(null as ReturnRequest);
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<User>());
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Approve(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.ReturnRequestNotFound, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
+
+        [Test]
+        public async Task Deny_Valid_ShouldBeSuccessful()
+        {
+            //Arrange
+            var simulatedAssignment = new Assignment
+            {
+                AssetId = 1,
+                State = AssignmentState.Accepted
+            };
+
+            var simulatedReturnRequest = new ReturnRequest
+            {
+                Id = 1,
+                Assignment = simulatedAssignment
+            };
+
+            var simulatedAsset = new Asset
+            {
+                Id = 1,
+                State = AssetState.Assigned
+            };
+
+            _userRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(new User { Id = 1, UserName = "abc", Type = UserType.Admin });
+            _returnRequestRepositoryMock.Setup(x => x.GetById(1)).ReturnsAsync(simulatedReturnRequest);
+            _returnRequestRepositoryMock.Setup(x => x.Delete(simulatedReturnRequest)).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            await service.Deny(1, 1);
+
+            //Assert
+            _assetRepositoryMock.VerifyAll();
+            _assignmentRepositoryMock.VerifyAll();
+            _returnRequestRepositoryMock.VerifyAll();
+        }
+
+        [Test]
+        public void Deny_UserNotAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new User {Type = UserType.User});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Deny(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
+
+        [Test]
+        public void Deny_DisabledAdmin_ShouldThrowException()
+        {
+            //Arrange     
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(new ReturnRequest { });
+            _assetRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<Asset>());
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(
+                new User {Type = UserType.Admin, Status = UserStatus.Disabled});
+            _returnRequestRepositoryMock.Setup(x => x.Update(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+            _assetRepositoryMock.Setup(x => x.Update(It.IsAny<Asset>())).Returns(Task.CompletedTask);
+            _assignmentRepositoryMock.Setup(x => x.Delete(It.IsAny<Assignment>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Deny(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.UnauthorizedUser, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Update(It.IsAny<ReturnRequest>()), Times.Never());
+            _assetRepositoryMock.Verify(x => x.Update(It.IsAny<Asset>()), Times.Never());
+            _assignmentRepositoryMock.Verify(x => x.Delete(It.IsAny<Assignment>()), Times.Never());
+        }
+
+        [Test]
+        public void Deny_ReturnRequestNotExist_ShouldThrowException()
+        {
+            //Arrange
+            _userRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(It.IsAny<User>());
+            _returnRequestRepositoryMock.Setup(x => x.GetById(It.IsAny<int>())).ReturnsAsync(null as ReturnRequest);
+            _returnRequestRepositoryMock.Setup(x => x.Delete(It.IsAny<ReturnRequest>())).Returns(Task.CompletedTask);
+
+            var service = new ReturnRequestService(
+                _userRepositoryMock.Object,
+                _assetRepositoryMock.Object,
+                _returnRequestRepositoryMock.Object,
+                _assignmentRepositoryMock.Object,
+                _mapper
+            );
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(
+                async () => await service.Deny(2, 1)
+            );
+
+            //Assert
+            Assert.AreEqual(Message.ReturnRequestNotFound, exception.Message);
+            _returnRequestRepositoryMock.Verify(x => x.Delete(It.IsAny<ReturnRequest>()), Times.Never());
+        }
 
         [TearDown]
         public void TearDown()

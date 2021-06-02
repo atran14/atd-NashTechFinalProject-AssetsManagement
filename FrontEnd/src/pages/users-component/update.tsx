@@ -17,20 +17,7 @@ import moment from "moment";
 import { UserService } from "../../services/UserService";
 
 export function UpdateUser() {
-  const layout = {
-    labelCol: {
-      span: 14,
-      offset: 3,
-      pull: 9,
-    },
-    wrapperCol: {
-      span: 16,
-      pull: 9,
-    },
-  }
-  const tailLayout = {
-    wrapperCol: {},
-  }
+
 
   const { Option } = Select
 
@@ -112,18 +99,20 @@ export function UpdateUser() {
       <Col span={9}>
         <h4>Edit User</h4>
       </Col>
-      <Col span={16}>
+      <Col span={22}>
         <Form
-          {...layout}
           form={form}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
+          style= {{marginLeft : 200}}
         >
-          <Form.Item name="firstName" label="Last Name">
-            <Input disabled />
+          <Form.Item name="firstName" label="Last Name"  
+          labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left">
+            <Input style={{width: "83%" }} disabled />
           </Form.Item>
-          <Form.Item name="lastName" label="First Name">
-            <Input disabled />
+          <Form.Item name="lastName" label="First Name" 
+           labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left">
+            <Input style={{width: "83%" }} disabled />
           </Form.Item>
 
           <Form.Item
@@ -131,11 +120,13 @@ export function UpdateUser() {
             name="dateOfBirth"
             label="Date Of Birth"
             rules={[{ required: true, message: "Please select date of birth!" }, { validator: validateDateOfBirth }]}
+            labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left"
           >
-            <DatePicker format={dateFormat} />
+            <DatePicker format={dateFormat} style={{width: "83%" }}/>
           </Form.Item>
 
-          <Form.Item name="gender" label="Gender" hasFeedback>
+          <Form.Item name="gender" label="Gender" hasFeedback 
+           labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left">
             <Radio.Group>
               <Radio value={UserGender.MALE}>Male</Radio>
               <Radio value={UserGender.FEMALE}>Female</Radio>
@@ -147,8 +138,9 @@ export function UpdateUser() {
             name="joinedDate"
             label="Joined Date"
             rules={[{ required: true, message: "Please select join date !" }, { validator: validateJoinedDate }]}
+            labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left"
           >
-            <DatePicker format={dateFormat} />
+            <DatePicker format={dateFormat} style={{width: "83%" }}/>
           </Form.Item>
 
           <Form.Item
@@ -156,16 +148,15 @@ export function UpdateUser() {
             label="Type"
             hasFeedback
             rules={[{ required: true, message: "Please select type of user!" }]}
+            labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left"
           >
-            <Select>
+            <Select style={{width: "83%" }}>
               <Option value={UserType.ADMIN}>Admin</Option>
               <Option value={UserType.USER}>User</Option>
             </Select>
           </Form.Item>
 
-          <Form.Item
-            {...tailLayout}
-          >
+          <Form.Item style ={{marginLeft : 24}}>
             <Space>
               <Button type="primary" htmlType="submit"
                 style={{ backgroundColor: '#e9424d', color: 'white' }}>

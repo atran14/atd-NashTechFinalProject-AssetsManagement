@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Modal, Row, Table } from "antd";
+import { Button, Col, Modal, Row, Table, Tag } from "antd";
 import { Assignment, AssignmentState } from "../../models/Assignment";
 import { User } from "../../models/User";
 import { AssignmentsService } from "../../services/AssignmentService";
@@ -11,11 +11,8 @@ import {
   CheckOutlined,
   CloseOutlined,
   UndoOutlined,
-  } from "@ant-design/icons";
+} from "@ant-design/icons";
 import { ReturnRequestService } from "../../services/ReturnRequestService";
-
-const { confirm } = Modal
-
 
 export enum ResponeAction {
   NoAction,
@@ -24,15 +21,17 @@ export enum ResponeAction {
   UndoRespone,
 }
 
+const { confirm } = Modal;
+
+
+
 export function ListAssignmentsForEachUser() {
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([]);
-  const [user, setUser] = useState<User[]>([]);
-  let [isDisabledStates, setIsDisabledStates] = useState<boolean[]>([])
+  let [isDisabledStates, setIsDisabledStates] = useState<boolean[]>([]);
 
-  let userService = UserService.getInstance();
+ 
   let assignmentService = AssignmentsService.getInstance();
   let returnRequestService = ReturnRequestService.getInstance();
-
 
   //Respone to Assignment
   const [visible, setVisible] = React.useState(false);
@@ -42,7 +41,6 @@ export function ListAssignmentsForEachUser() {
     ResponeAction.NoAction
   );
   const [assignmentId, setAssignmentId] = React.useState(0);
-  const [update, setUpdate] = useState(false);
 
   const showModal = () => {
     setVisible(true);
@@ -69,7 +67,6 @@ export function ListAssignmentsForEachUser() {
     setVisible(false);
     setAssignmentId(0);
     setResponeAction(ResponeAction.NoAction);
-    window.location.reload();
   };
 
   const handleCancel = () => {
@@ -82,56 +79,46 @@ export function ListAssignmentsForEachUser() {
   //
 
 
-  useEffect(() => {
-    (async () => {
-      let listUser = await userService.getAllNoCondition();
-      setUser(listUser);
-    })();
-  }, []);
 
   useEffect(() => {
     (async () => {
       let listAssignments = await assignmentService.getAllForEachUser(
         JSON.parse(sessionStorage.getItem("id")!)
       );
-      let disabledButtonStates: boolean[] = []
+      let disabledButtonStates: boolean[] = [];
 
       for (const element of listAssignments) {
         let associatedRRCount = await returnRequestService.getAssociatedCount(
           element.asset.assetCode
-        )
-        let isWaitingForAdminDecision =
-          associatedRRCount > 0
-        let isAcceptedState = element.state === AssignmentState.Accepted
+        );
+        let isWaitingForAdminDecision = associatedRRCount > 0;
+        let isAcceptedState = element.state === AssignmentState.Accepted;
         if (!isAcceptedState) {
-          disabledButtonStates.push(true)
+          disabledButtonStates.push(true);
         } else {
-          disabledButtonStates.push(isWaitingForAdminDecision)
+          disabledButtonStates.push(isWaitingForAdminDecision);
         }
       }
 
-      setIsDisabledStates(disabledButtonStates)
+      setIsDisabledStates(disabledButtonStates);
       setAssignmentList(listAssignments);
     })();
-  }, [update]);
+  }, []);
 
   async function detailAssignment(id: number) {
     let assignment = await assignmentService.getAssignment(id);
     Modal.info({
-      title: `Detail of Assignment No. ${assignment.id}`,
+      title: `Detail of Assignment`,
       content: (
         <div>
           <p>Asset Code : {assignment.asset.assetCode}</p>
           <p>Asset Name : {assignment.asset.assetName}</p>
-          <p>
-            Assigned to :
-            {user.map((c: User) => {
-              if (c.id === assignment.assignedToUserId) return c.userName;
-            })}
-          </p>
+          <p>Assigned to : {assignment.assignedToUserName}</p>
           <p>Assigned by : {assignment.assignedByUser.userName}</p>
           <p>Assigned Date : {assignment.assignedDate}</p>
-          <p>State : {AssignmentState[assignment.state]}</p>
+          {assignment.state === AssignmentState.WaitingForAcceptance && <p>State : <span style={{color : 'blue'}}>Waiting for acceptance</span></p>}
+          {assignment.state === AssignmentState.Accepted &&<p>State : <span style={{color : 'green'}}>Accepted</span></p>}
+          {assignment.state === AssignmentState.Declined &&<p>State : <span style={{color : 'red'}}>Declined</span></p>}
           <p>Note : {assignment.note}</p>
         </div>
       ),
@@ -141,19 +128,20 @@ export function ListAssignmentsForEachUser() {
 
   const createReturnRequest = (index: number, record: Assignment) => {
     confirm({
-      title: 'Do you want to return this asset?',
+      title: "Do you want to return this asset?",
       icon: <ExclamationCircleOutlined />,
       onOk: async () => {
         await returnRequestService.create({
           assignmentId: record.id,
-        })
+        });
 
-        let newIsDisabledStates = [...isDisabledStates]
-        newIsDisabledStates[index] = !newIsDisabledStates[index]
-        setIsDisabledStates(newIsDisabledStates)
+        let newIsDisabledStates = [...isDisabledStates];
+        newIsDisabledStates[index] = !newIsDisabledStates[index];
+        setIsDisabledStates(newIsDisabledStates);
       },
-    })
-  }
+    });
+  };
+ 
 
    //Respone to assignment
    const acceptAssignment = (id: number) => {
@@ -161,7 +149,6 @@ export function ListAssignmentsForEachUser() {
     setResponeAction(ResponeAction.Accept);
     setModalText("Do you want to accept to this assignment?");
     showModal();
-    setUpdate((pre) => !pre);
   };
 
   const declineAssignment = (id: number) => {
@@ -169,7 +156,6 @@ export function ListAssignmentsForEachUser() {
     setResponeAction(ResponeAction.Decline);
     setModalText("Do you want to decline to this assignment?");
     showModal();
-    setUpdate((pre) => !pre);
   };
 
   const undoResponeAssignment = (id: number) => {
@@ -177,7 +163,6 @@ export function ListAssignmentsForEachUser() {
     setResponeAction(ResponeAction.UndoRespone);
     setModalText("Do you want to respone to this assignment?");
     showModal();
-    setUpdate((pre) => !pre);
   };
 
   const columns: any = [
@@ -206,23 +191,13 @@ export function ListAssignmentsForEachUser() {
     },
     {
       title: "Assigned to",
-      dataIndex: "assignedToUserId",
-      key: "assignedToUserId",
-      sorter: (a: Assignment, b: Assignment) => {
-        let userA = user.map((x: User) => {
-          if (x.id === a.assignedToUserId) return x.userName;
-        });
-        let userB = user.map((x: User) => {
-          if (x.id === b.assignedToUserId) return x.userName;
-        });
-        return userA.toString().localeCompare(userB.toString());
-      },
+      dataIndex: "assignedToUserName",
+      key: "assignedToUserName",
+      sorter: (a: Assignment, b: Assignment) => a.assignedToUserName.localeCompare(b.assignedToUserName),
       render: (text: any, record: Assignment, index: number) => {
         return (
           <div>
-            {user.map((c: User) => {
-              if (c.id === record.assignedToUserId) return c.userName;
-            })}
+         {record.assignedToUserName}
           </div>
         );
       },
@@ -261,35 +236,46 @@ export function ListAssignmentsForEachUser() {
       dataIndex: "state",
       key: "state",
       render: (text: any, record: Assignment, index: number) => {
-        return <div>{AssignmentState[record.state]}</div>;
+        return (
+          <>
+            {record.state === AssignmentState.Accepted && (
+              <Tag color="green" key={record.state}>
+                Accepted
+              </Tag>
+            )}
+            {record.state === AssignmentState.WaitingForAcceptance && (
+              <Tag color="blue" key={record.state}>
+                Waiting for acceptance
+              </Tag>
+            )}
+            {record.state === AssignmentState.Declined && (
+              <Tag color="red" key={record.state}>
+                Declined
+              </Tag>
+            )}
+          </>
+        );
       },
       sorter: (a: Assignment, b: Assignment) => a.state - b.state,
       sortDirections: ["ascend", "descend"],
     },
     {
-        title: "",
-        dataIndex: "action",
-        key: "action",
-        render: (text: any, record: Assignment, index: number) => {
-          return (
-            <Row >
-              <Col>
-                <Button
-                  ghost
-                  type="primary"
-                  icon={<InfoCircleOutlined />}
-                  onClick={() => detailAssignment(record.id)}
-                />
-              </Col>
-              <Col>
+      title: "",
+      dataIndex: "action",
+      key: "action",
+      render: (text: any, record: Assignment, index: number) => {
+        return (
+          <Row>
+            <Col>
               <Button
                 ghost
-                type="primary"
-                icon={<RedoOutlined />}
-                disabled={isDisabledStates[index]}
-                onClick={() => createReturnRequest(index, record)}
+                type="link"
+                icon={<InfoCircleOutlined />}
+                onClick={() => detailAssignment(record.id)}
               />
             </Col>
+         
+            {/* Respone to Assignment */}
             <Col>
               <Button
                 ghost
@@ -312,15 +298,15 @@ export function ListAssignmentsForEachUser() {
               <Button
                 ghost
                 type="link"
-                icon={<UndoOutlined rotate={180} />}
-                disabled={record.state == AssignmentState.WaitingForAcceptance}
-                onClick={() => undoResponeAssignment(record.id)}
+                icon={<RedoOutlined />}
+                disabled={isDisabledStates[index]}
+                onClick={() => createReturnRequest(index, record)}
               />
             </Col>
-            </Row>
-          );
-        },
-    }
+          </Row>
+        );
+      },
+    },
   ];
   return (
     <>
@@ -333,7 +319,7 @@ export function ListAssignmentsForEachUser() {
         scroll={{ y: 400 }}
         pagination={false}
       />
-        <Modal
+      <Modal
         title="Are you sure?"
         visible={visible}
         onOk={handleOk}

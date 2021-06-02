@@ -135,7 +135,6 @@ namespace BackEndAPI.Controllers
             await _assignmentService.Delete(id);
             return Ok();
         }
-
         
         [HttpPut("accept/{id}")]
         public async Task<IActionResult> AcceptAssignment(int id)
