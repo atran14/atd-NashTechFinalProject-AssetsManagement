@@ -14,23 +14,10 @@ namespace BackEndAPI.Interfaces
             int adminId
         );
 
-        #region Methods to be removed
-        Task<GetUsersListPagedResponseDTO> GetUsersByType(
-            PaginationParameters paginationParameters,
-            int adminId,
-            UserType type
-        );
-
-        Task<GetUsersListPagedResponseDTO> SearchUsers(
-            PaginationParameters paginationParameters,
-            int adminId,
-            string searchText
-        );
-        #endregion
-
-        Task<GetUsersListPagedResponseDTO> SearchAndFilter(
+        Task<GetUsersListPagedResponseDTO> GetUsers(
             int adminId,
             UserSearchFilterParameters searchFilterParameters,
+            UserSortParameters sortParameters,
             PaginationParameters paginationParameters
         );
 
