@@ -145,7 +145,6 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
         title: 'Do you want to disable this user?',
         icon: <ExclamationCircleOutlined />,
         onOk() {
-          let userService = UserService.getInstance()
           try {
             userService.disableUser(id)
             message.success('Disabled Successfully')
@@ -401,29 +400,22 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
       render: (text: any, record: User, index: number) => {
         return (
           <Row>
-            <Col offset={1}>
-              {/* <Popover
-                title="User details"
-                content={generateDetailedUserContent(record)}
-                placement="right"
-                trigger="click"
-              >
-                <Button icon={<InfoCircleOutlined />} />
-              </Popover> */}
+            <Col offset={1}>              
               <Button
                 icon={<InfoCircleOutlined />}
                 onClick={() => generateDetailedUserContent(record)}
+                type="link"
               />
             </Col>
             <Col offset={1}>
               <Link to={`/users/update/${record.id}`}>
-                <Button type="primary" icon={<EditOutlined />} />
+                <Button type="link" icon={<EditOutlined />} />
               </Link>
             </Col>
             <Col offset={1}>
               <Button
                 danger
-                type="primary"
+                type="link"
                 icon={<DeleteOutlined />}
                 onClick={() => disabledUser(record.id)}
               />
