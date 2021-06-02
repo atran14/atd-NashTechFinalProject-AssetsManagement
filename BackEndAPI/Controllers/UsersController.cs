@@ -124,6 +124,23 @@ namespace BackEndAPI.Controllers
 
             return Ok(users);
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
+        [HttpGet("search-and-filter")]
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchAndFilter(
+                    [FromQuery] UserSearchFilterParameters searchFilterParameters,
+                    [FromQuery] PaginationParameters paginationParameters
+                )
+        {
+            var adminClaim = HttpContext.User.FindFirst(ClaimTypes.Name);
+            var users = await _userService.SearchAndFilter(
+                Int32.Parse(adminClaim.Value),
+                searchFilterParameters,
+                paginationParameters
+            );            
+            
+            return Ok(users);
+        }
         
         [Authorize(AuthenticationSchemes = "Bearer")]
         [HttpPut("change-password/{id}")]

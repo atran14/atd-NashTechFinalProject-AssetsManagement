@@ -388,12 +388,15 @@ namespace BackEndAPI.Services
                     .Where(u => u.Type == searchFilterParameters.Type);
             }
 
-            searchFilterRawResults = searchFilterRawResults
-                .Where(x => (x.FirstName + " " + x.LastName).Contains(searchFilterParameters.SearchQuery)
-                            || x.StaffCode.Contains(searchFilterParameters.SearchQuery));
+            if (!string.IsNullOrWhiteSpace(searchFilterParameters.SearchQuery))
+            {
+                searchFilterRawResults = searchFilterRawResults
+                    .Where(x => (x.FirstName + " " + x.LastName).Contains(searchFilterParameters.SearchQuery)
+                                || x.StaffCode.Contains(searchFilterParameters.SearchQuery));
+            }
 
             var pagedListResult = PagedList<User>.ToPagedList(
-                searchFilterRawResults,
+                searchFilterRawResults.OrderBy(u => u.Id),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
