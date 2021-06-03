@@ -42,10 +42,10 @@ namespace BackEndAPI.Controllers
                 return request.CreateErrorResponse(HttpStatusCode.BadRequest, "Wrong location parameter!");
             }
             if(location == 0){
-                fileName = string.Concat("Report_HaNoi_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_sss") + ".xlsx");
+                fileName = string.Concat("Report_HaNoi_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
             }
             if(location == 1){
-                fileName = string.Concat("Report_HoChiMinh_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_sss") + ".xlsx");
+                fileName = string.Concat("Report_HoChiMinh_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
             }
             var folderReport = "./Reports";
             string filePath = "C:/" + folderReport;
