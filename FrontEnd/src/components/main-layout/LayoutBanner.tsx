@@ -24,10 +24,7 @@ function LayoutBanner() {
   };
 
   useEffect(() => {
-    if (
-      authenticationService.currentUserValue.onFirstLogin == 1 &&
-      authenticationService.currentUserValue.type != Role.Admin
-    ) {
+    if (authenticationService.currentUserValue.onFirstLogin == 1) {
       setShow(true);
     }
   });
