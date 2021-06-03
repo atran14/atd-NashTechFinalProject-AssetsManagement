@@ -233,7 +233,7 @@ function LayoutBanner() {
               render={({ errors, status, touched, isSubmitting }) => (
                 <Form>
                   <Modal.Body>
-                    <div className="form-group row">
+                    <div className="form-group row m-3">
                       <div className="col-4">Old Password</div>
                       <div className="col-8">
                         <Field
@@ -248,11 +248,10 @@ function LayoutBanner() {
                         />
                         {status && (
                           <div
-                            className={""}
+                            className={"mt-2"}
                             style={{
                               backgroundColor: "#ffe6e6",
                               color: "red",
-                              margin: "1em 0 1em 0",
                               borderRadius: "4px",
                             }}
                           >
@@ -266,7 +265,7 @@ function LayoutBanner() {
                         className="invalid-feedback"
                       />
                     </div>
-                    <div className="form-group row">
+                    <div className="form-group row m-3">
                       <div className="col-4">New Password</div>
                       <div className="col-8">
                         <Field
