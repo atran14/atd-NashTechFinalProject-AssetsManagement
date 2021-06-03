@@ -52,6 +52,7 @@ interface FilterAction {
 export function ListReturnRequests() {
   let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === ADMIN)
   let [isFetchingData, setIsFetchingData] = useState(false)
+  let [hasUpdated, setHasUpdated] = useState(true)
   let [returnRequestsPagedList, setReturnRequestsPagedList] = useState<
     ReturnRequestPagedListResponse
   >()
@@ -63,7 +64,6 @@ export function ListReturnRequests() {
     query: '',
   })
   let returnRequestService = ReturnRequestService.getInstance()
-  let history = useHistory()
 
   useEffect(() => {
     if (isAdminAuthorized) {
@@ -80,9 +80,10 @@ export function ListReturnRequests() {
           query: '',
         })
         setIsFetchingData(false)
+        setHasUpdated(false)
       })()
     }
-  }, [])
+  }, [hasUpdated])
 
   const approveRequest = (rrId: number) => {
     confirm({
@@ -92,7 +93,7 @@ export function ListReturnRequests() {
         try {
           returnRequestService.approve(rrId)
           message.success('Request approved!')
-          window.location.reload()
+          setHasUpdated(true)
         } catch (e) {
           message.error("Something went wrong")
         }        
@@ -108,7 +109,7 @@ export function ListReturnRequests() {
         try {
           returnRequestService.deny(rrId)
           message.success('Request denied!')
-          window.location.reload()
+          setHasUpdated(true)
         } catch (e) {
           message.error("Something went wrong")
         }        
