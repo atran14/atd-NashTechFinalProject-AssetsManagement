@@ -18,7 +18,7 @@ export function ReportView() {
   const handleExport = async () => {
     let respone = await reportService.exportExcel();
     // setResponeExport(respone);
-    alert("Your report file save in D:/Reports");
+    alert("Your report file save in C:/Reports");
   };
 
   useEffect(() => {
