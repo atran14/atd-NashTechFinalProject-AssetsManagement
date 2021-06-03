@@ -23,36 +23,34 @@ namespace BackEndAPI.Services
             _configuration = configuration;
         }
 
-    public IEnumerable<ReportModel> GetReport()
+    public IEnumerable<ReportModel> GetReport(int location)
     {
         IList<ReportModel> reportList = new List<ReportModel>();
         try{
             var con= _configuration.GetConnectionString("SqlConnection");
             using (SqlConnection connection = new SqlConnection(con))
                 {
-                    connection.Open();       
-
+                    connection.Open();
                     string sql = "SELECT CategoryName"
                                 +        ",Total = (SELECT COUNT(A.Id) " 
                                 +                    "FROM [Assets] A "
-                                +                    "WHERE A.CategoryId = AC.Id)"
+                                +                    "WHERE A.CategoryId = AC.Id AND A.Location = "+location.ToString()+")"
                                 +        ",Assigned = (SELECT COUNT(A.Id)" 
                                 +                    "FROM [Assets] A "
-                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 2)"
+                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 2 AND A.Location = "+location.ToString()+")"
                                 +        ",Available = (SELECT COUNT(A.Id) "
                                 +                    "FROM [Assets] A "
-                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 0)"
+                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 0 AND A.Location = "+location.ToString()+")"
                                 +        ",NotAvailable = (SELECT COUNT(A.Id) "
                                 +                    "FROM [Assets] A "
-                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 1)"
+                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 1 AND A.Location = "+location.ToString()+")"
                                 +        ",WaitingForRecycling = (SELECT COUNT(A.Id) "
                                 +                    "FROM [Assets] A "
-                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 3)"
+                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 3 AND A.Location = "+location.ToString()+")"
                                 +        ",Recycled = (SELECT COUNT(A.Id) "
                                 +                    "FROM [Assets] A "
-                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 4)"
-                                +"FROM AssetCategories AC"
-                                +"ORDER BY AC.CategoryCode";
+                                +                    "WHERE A.CategoryId = AC.Id AND A.State = 4 AND A.Location = "+location.ToString()+")"
+                                +"FROM AssetCategories AC";
 
                     using (SqlCommand command = new SqlCommand(sql, connection))
                     {
@@ -61,7 +59,6 @@ namespace BackEndAPI.Services
                             int count = 1;
                             while (reader.Read())
                             {
-                                // Console.WriteLine("{0} {1}", reader.GetString(0), reader.GetString(1));
                                 reportList.Add(new ReportModel
                                 {
                                     ID = count,
