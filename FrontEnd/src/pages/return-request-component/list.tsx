@@ -10,6 +10,7 @@ import {
   Row,
   Select,
   Table,
+  Tag,
   Typography,  
 } from 'antd'
 import { useEffect, useState } from 'react'
@@ -294,10 +295,10 @@ export function ListReturnRequests() {
       key: 'state',
       render: (text: any, record: ReturnRequest, index: number) => {
         if (record.state === ReturnRequestState.Completed) {
-          return <Text strong type="success">Completed</Text>
+          return <Tag color="success">Completed</Tag>
         }
         
-        return <div>{ReturnRequestState[record.state]}</div>
+        return <Tag color="processing">Waiting</Tag>
       },
       sorter: (a: ReturnRequestState, b: ReturnRequestState) => a - b,
       sortDirections: ['ascend', 'descend'],
@@ -312,15 +313,15 @@ export function ListReturnRequests() {
             <Row>
               <Col offset={1}>
                 <Button
-                  style={{ backgroundColor: 'green' }}
-                  icon={<CheckOutlined style={{ color: 'white' }} />}
+                  type='link'
+                  icon={<CheckOutlined style={{ color: 'green' }} />}
                   onClick={() => approveRequest(record.id)}
                 />
               </Col>
               <Col offset={1}>
                 <Button
                   danger
-                  type="primary"
+                  type="link"
                   icon={<CloseOutlined />}
                   onClick={() => denyRequest(record.id)}
                 />
