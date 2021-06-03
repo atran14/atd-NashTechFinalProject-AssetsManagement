@@ -35,8 +35,6 @@ export interface User {
   status: number;
 }
 
-
-
 export type CreateUserModel = {
   firstName: string;
   lastName: string;
@@ -52,21 +50,21 @@ export interface LoggedInUser extends User {
 }
 
 export enum UserGender {
-  MALE,
-  FEMALE,
+  Male,
+  Female,
 }
 
 export enum UserType {
-  ADMIN,
-  USER,
+  Admin,
+  User,
 }
 
 export enum UserStatus {
-  ACTIVE,
-  DISABLED,
+  Active,
+  Disabled,
 }
 
 export enum Location {
-  HANOI,
-  HOCHIMINH,
+  Hanoi,
+  HoChiMinh,
 }

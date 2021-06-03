@@ -45,7 +45,7 @@ function SiderMenu() {
             <Link to="/assignments/list">Home</Link>
           </Menu.Item>
         )}
-        {userType && userType === UserType[UserType.ADMIN] && (
+        {userType && userType === UserType[UserType.Admin].toUpperCase() && (
           <>
             <Menu.Item
               icon={<UserOutlined />}
@@ -83,7 +83,7 @@ function SiderMenu() {
             </Menu.Item>
           </>
         )}
-        {userType && userType === UserType[UserType.USER] && (
+        {userType && userType === UserType[UserType.User].toUpperCase() && (
           <>
             {/* <Menu.Item
               icon={<UserOutlined />}

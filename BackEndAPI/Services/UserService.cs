@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
@@ -12,6 +13,7 @@ using System;
 using System.Threading.Tasks;
 using BackEndAPI.Entities;
 using BackEndAPI.Enums;
+using BackEndAPI.Enums.Sort;
 using AutoMapper;
 
 namespace BackEndAPI.Services
@@ -74,41 +76,6 @@ namespace BackEndAPI.Services
             };
         }
 
-        public async Task<GetUsersListPagedResponseDTO> GetUsersByType(
-            PaginationParameters paginationParameters,
-            int adminId,
-            UserType type
-        )
-        {
-            var adminUser = await _repository.GetById(adminId);
-            if (adminUser.Type != UserType.Admin)
-            {
-                throw new Exception("Unauthorized access");
-            }
-
-            var users = PagedList<User>.ToPagedList(
-                _repository.GetAll()
-                    .Where(u =>
-                    u.Status == UserStatus.Active
-                    && u.Location == adminUser.Location
-                    && u.Type == type
-                ),
-                paginationParameters.PageNumber,
-                paginationParameters.PageSize
-            );
-
-            return new GetUsersListPagedResponseDTO
-            {
-                CurrentPage = users.CurrentPage,
-                PageSize = users.PageSize,
-                TotalCount = users.TotalCount,
-                TotalPages = users.TotalPages,
-                HasNext = users.HasNext,
-                HasPrevious = users.HasPrevious,
-                Items = users.Select(u => _mapper.Map<UserDTO>(u))
-            };
-        }
-
         public IEnumerable<User> GetAll()
         {
             return _repository.GetAll().WithoutPasswords();
@@ -131,7 +98,7 @@ namespace BackEndAPI.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        
+
         public async Task Disable(int userId, int id)
         {
             int countAdmin = _repository.CountAdminRemain();
@@ -260,51 +227,7 @@ namespace BackEndAPI.Services
             };
             return userInfo;
         }
-        
-        public async Task<GetUsersListPagedResponseDTO> SearchUsers(
-            PaginationParameters paginationParameters,
-            int adminId,
-            string searchText
-        )
-        {
-            if (searchText == null)
-            {
-                throw new Exception(Message.NullSearchQuery);
-            }
 
-            var adminUser = await _repository.GetById(adminId);
-            if (adminUser.Type != UserType.Admin)
-            {
-                throw new Exception(Message.UnauthorizedUser);
-            }
-
-            var users = PagedList<User>.ToPagedList(
-                _repository.GetAll()
-                    .Where(u =>
-                    u.Status == UserStatus.Active
-                    && u.Location == adminUser.Location
-                    &&
-                    (
-                        (u.FirstName + " " + u.LastName).StartsWith(searchText)
-                        || u.StaffCode.StartsWith(searchText)
-                    )
-                    ),
-                paginationParameters.PageNumber,
-                paginationParameters.PageSize
-            );
-
-            return new GetUsersListPagedResponseDTO
-            {
-                CurrentPage = users.CurrentPage,
-                PageSize = users.PageSize,
-                TotalCount = users.TotalCount,
-                TotalPages = users.TotalPages,
-                HasNext = users.HasNext,
-                HasPrevious = users.HasPrevious,
-                Items = users.Select(u => _mapper.Map<UserDTO>(u))
-            };
-        }
-        
         public async Task ChangePassword(int id, ChangePasswordRequest model)
         {
             var user = await _repository.GetById(id);
@@ -312,9 +235,9 @@ namespace BackEndAPI.Services
             if (user.OnFirstLogin == OnFirstLogin.Yes)
             {
                 user.OnFirstLogin = OnFirstLogin.No;
-            } 
-            
-            user.Password = model.NewPassword ;
+            }
+
+            user.Password = model.NewPassword;
 
             await _repository.Update(user);
         }
@@ -325,10 +248,10 @@ namespace BackEndAPI.Services
             {
                 throw new InvalidOperationException(Message.UserNotFound);
             }
-            
+
             return user;
         }
-    
+
         public async Task<IQueryable<UserDTO>> GetAllUsers(int userId)
         {
             var user = await _repository.GetById(userId);
@@ -363,5 +286,120 @@ namespace BackEndAPI.Services
             return sendListUser;
         }
 
+        public async Task<GetUsersListPagedResponseDTO> GetUsers(
+            int adminId,
+            UserSearchFilterParameters searchFilterParameters,
+            UserSortParameters sortParameters,
+            PaginationParameters paginationParameters
+        )
+        {         
+            var adminUser = await _repository.GetById(adminId);
+            if (adminUser.Type != UserType.Admin)
+            {
+                throw new Exception(Message.UnauthorizedUser);
+            }
+
+            var searchFilterResults = _repository.GetAll()
+                .Where(u => u.Location == adminUser.Location
+                        && u.Status == UserStatus.Active);
+
+            searchFilterResults = Filter(searchFilterParameters, searchFilterResults);
+            searchFilterResults = Search(searchFilterParameters, searchFilterResults);
+            searchFilterResults = Sort(searchFilterResults, sortParameters);
+
+            var pagedListResult = PagedList<User>.ToPagedList(
+                searchFilterResults,
+                paginationParameters.PageNumber,
+                paginationParameters.PageSize
+            );
+
+            return new GetUsersListPagedResponseDTO
+            {
+                CurrentPage = pagedListResult.CurrentPage,
+                PageSize = pagedListResult.PageSize,
+                TotalCount = pagedListResult.TotalCount,
+                TotalPages = pagedListResult.TotalPages,
+                HasNext = pagedListResult.HasNext,
+                HasPrevious = pagedListResult.HasPrevious,
+                Items = pagedListResult.Select(u => _mapper.Map<UserDTO>(u))
+            };
+        }
+
+        private IQueryable<User> Search(
+            UserSearchFilterParameters searchFilterParameters,
+            IQueryable<User> searchFilterRawResults
+        )
+        {
+            if (!string.IsNullOrWhiteSpace(searchFilterParameters.SearchQuery))
+            {
+                searchFilterRawResults = searchFilterRawResults
+                    .Where(x => (x.FirstName + " " + x.LastName).Contains(searchFilterParameters.SearchQuery)
+                                || x.StaffCode.Contains(searchFilterParameters.SearchQuery));
+            }
+
+            return searchFilterRawResults;
+        }
+
+        private IQueryable<User> Filter(
+            UserSearchFilterParameters searchFilterParameters,
+            IQueryable<User> searchFilterRawResults
+        )
+        {
+            if (searchFilterParameters.Type is not null)
+            {
+                searchFilterRawResults = searchFilterRawResults
+                    .Where(u => u.Type == searchFilterParameters.Type);
+            }
+
+            return searchFilterRawResults;
+        }
+
+        private IQueryable<User> Sort(
+            IQueryable<User> searchFilterRawResults,
+            UserSortParameters sortParameters
+        )
+        {
+            IOrderedQueryable<User> orderedResult;
+            switch (sortParameters.SortCol)
+            {
+                case Enums.Sort.UserSortColumn.STAFF_CODE:
+                    orderedResult = sortParameters.Order == SortOrder.DESCEND
+                    ? searchFilterRawResults.OrderByDescending(u => u.StaffCode)
+                    : searchFilterRawResults.OrderBy(u => u.StaffCode);
+                    break;
+
+                case Enums.Sort.UserSortColumn.FULL_NAME:
+                    orderedResult = sortParameters.Order == SortOrder.DESCEND
+                    ? searchFilterRawResults.OrderByDescending(u => u.FirstName)
+                                            .ThenByDescending(u => u.LastName)
+                    : searchFilterRawResults.OrderBy(u => u.FirstName)
+                                            .ThenBy(u => u.LastName);
+                    break;
+
+                case Enums.Sort.UserSortColumn.USERNAME:
+                    orderedResult = sortParameters.Order == SortOrder.DESCEND                    
+                    ? searchFilterRawResults.OrderByDescending(u => u.UserName)
+                    : searchFilterRawResults.OrderBy(u => u.UserName);
+                    break;
+
+                case Enums.Sort.UserSortColumn.JOINED_DATE:
+                    orderedResult = sortParameters.Order == SortOrder.DESCEND                    
+                    ? searchFilterRawResults.OrderByDescending(u => u.JoinedDate)
+                    : searchFilterRawResults.OrderBy(u => u.JoinedDate);
+                    break;
+
+                case Enums.Sort.UserSortColumn.TYPE:
+                    orderedResult = sortParameters.Order == SortOrder.DESCEND                    
+                    ? searchFilterRawResults.OrderByDescending(u => u.Type)
+                    : searchFilterRawResults.OrderBy(u => u.Type);
+                    break;
+
+                default:
+                    orderedResult = searchFilterRawResults.OrderBy(u => u.Id);
+                    break;
+            }
+
+            return orderedResult;
+        }
     }
 }

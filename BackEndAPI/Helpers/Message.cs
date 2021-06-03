@@ -36,5 +36,6 @@ namespace BackEndAPI.Helpers
         public const string AssignmentAccepted = "Assignment accepted!";
         public const string AssignmentDeclined = "Assignment declined!";
         public const string AssignmentUndidRespone = "Assignment undid respone!";
+        public const string AmbiguousSortConfig = "Ambiguous sort configuration";
     }
 }
