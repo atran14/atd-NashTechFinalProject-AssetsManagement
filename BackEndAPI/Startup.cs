@@ -119,6 +119,8 @@ namespace BackEndAPI
             services.AddScoped<IAssetCategoryService, AssetCategoryService>();
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<IAssetService, AssetService>();
+            services.AddScoped<IAssignmentService, AssignmentService>();
+            services.AddScoped<IReportService, ReportService>();
 
             services.AddIdentity<User, Role>()
                              .AddEntityFrameworkStores<AssetsManagementDBContext>()

@@ -1,6 +1,6 @@
 import {} from "module";
 import { Asset } from "./Asset";
-import {  User } from "./User";
+import { User } from "./User";
 
 export type AssignmentModel = {
     assetId: number;

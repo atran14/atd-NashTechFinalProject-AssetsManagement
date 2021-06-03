@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using BackEndAPI.Entities;
 using BackEndAPI.Enums;
+using BackEndAPI.Helpers;
 using BackEndAPI.Interfaces;
 using BackEndAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -133,6 +134,27 @@ namespace BackEndAPI.Controllers
         {
             await _assignmentService.Delete(id);
             return Ok();
+        }
+        
+        [HttpPut("accept/{id}")]
+        public async Task<IActionResult> AcceptAssignment(int id)
+        {
+            await _assignmentService.AcceptAssignment(id);
+            return Ok(new {message = Message.AssignmentAccepted});
+        }
+
+        [HttpPut("decline/{id}")]
+        public async Task<IActionResult> DeclineAssignment(int id)
+        {
+            await _assignmentService.DeclineAssignment(id);
+            return Ok(new {message = Message.AssignmentDeclined});
+        }
+        
+        [HttpPut("undo-respone/{id}")]
+        public async Task<IActionResult> UndoResponeAssignment(int id)
+        {
+            await _assignmentService.UndoResponeAssignment(id);
+            return Ok(new {message = Message.AssignmentUndidRespone});
         }
     }
 }
