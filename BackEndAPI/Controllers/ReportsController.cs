@@ -25,24 +25,28 @@ namespace BackEndAPI.Controllers
             _reportService = reportService;
         }
 
-        [HttpGet("report/HaNoi")]
-        public IActionResult GetReportFromHaNoi()
+        [HttpGet("{location}")]
+        public IActionResult GetReport(int location)
         {
-            var report = _reportService.GetReportFromHaNoi();
-            return Ok(report);
-        }
-        [HttpGet("report/HoChiMinh")]
-        public IActionResult GetReportFromHoChiMinh()
-        {
-            var report = _reportService.GetReportFromHoChiMinh();
+            var report = _reportService.GetReport(location);
             return Ok(report);
         }
 
-        [HttpGet("exportXls/HaNoi")]
-        public async Task<HttpResponseMessage> ExportXlsFromHaNoi()
+        [HttpGet("ExportXls/{location}")]
+        public async Task<HttpResponseMessage> ExportXls(int location)
         {
             HttpRequestMessage request = new HttpRequestMessage();
-            string fileName = string.Concat("Report_HaNoi_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
+            string fileName = "";
+            if(location != 0 && location != 1)
+            {
+                return request.CreateErrorResponse(HttpStatusCode.BadRequest, "Wrong location parameter!");
+            }
+            if(location == 0){
+                fileName = string.Concat("Report_HaNoi_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_sss") + ".xlsx");
+            }
+            if(location == 1){
+                fileName = string.Concat("Report_HoChiMinh_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_sss") + ".xlsx");
+            }
             var folderReport = "./Reports";
             string filePath = "C:/" + folderReport;
             if (!Directory.Exists(filePath))
@@ -52,30 +56,7 @@ namespace BackEndAPI.Controllers
             string fullPath = Path.Combine(filePath, fileName);
             try
             {
-                var data = _reportService.GetReportFromHaNoi().ToList();
-                await ReportHelper.GenerateXls(data, fullPath);
-                return request.CreateErrorResponse(HttpStatusCode.OK, Path.Combine(folderReport, fileName));
-            }
-            catch (Exception ex)
-            {
-                return request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
-            }
-        }
-        [HttpGet("exportXls/HoChiMinh")]
-        public async Task<HttpResponseMessage> ExportXlsFromHoChiMinh()
-        {
-            HttpRequestMessage request = new HttpRequestMessage();
-            string fileName = string.Concat("Report_HoChiMinh_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
-            var folderReport = "./Reports";
-            string filePath = "C:/" + folderReport;
-            if (!Directory.Exists(filePath))
-            {
-                Directory.CreateDirectory(filePath);
-            }
-            string fullPath = Path.Combine(filePath, fileName);
-            try
-            {
-                var data = _reportService.GetReportFromHoChiMinh().ToList();
+                var data = _reportService.GetReport(location).ToList();
                 await ReportHelper.GenerateXls(data, fullPath);
                 return request.CreateErrorResponse(HttpStatusCode.OK, Path.Combine(folderReport, fileName));
             }

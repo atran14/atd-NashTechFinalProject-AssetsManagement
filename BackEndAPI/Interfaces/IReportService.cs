@@ -6,8 +6,7 @@ namespace BackEndAPI.Interfaces
     public interface IReportService
     {
         
-        IEnumerable<ReportModel> GetReportFromHaNoi();
-        IEnumerable<ReportModel> GetReportFromHoChiMinh();
+        IEnumerable<ReportModel> GetReport(int location);
         
     }
 }
