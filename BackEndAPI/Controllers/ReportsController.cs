@@ -44,7 +44,7 @@ namespace BackEndAPI.Controllers
             HttpRequestMessage request = new HttpRequestMessage();
             string fileName = string.Concat("Report_HaNoi_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
             var folderReport = "./Reports";
-            string filePath = "D:/" + folderReport;
+            string filePath = "C:/" + folderReport;
             if (!Directory.Exists(filePath))
             {
                 Directory.CreateDirectory(filePath);
@@ -67,7 +67,7 @@ namespace BackEndAPI.Controllers
             HttpRequestMessage request = new HttpRequestMessage();
             string fileName = string.Concat("Report_HoChiMinh_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
             var folderReport = "./Reports";
-            string filePath = "D:/" + folderReport;
+            string filePath = "C:/" + folderReport;
             if (!Directory.Exists(filePath))
             {
                 Directory.CreateDirectory(filePath);
