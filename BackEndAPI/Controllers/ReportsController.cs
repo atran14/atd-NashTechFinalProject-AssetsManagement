@@ -33,8 +33,9 @@ namespace BackEndAPI.Controllers
         }
 
         [HttpGet("ExportXls")]
-        public async Task<HttpResponseMessage> ExportXls(HttpRequestMessage request)
+        public async Task<HttpResponseMessage> ExportXls()
         {
+            HttpRequestMessage request = new HttpRequestMessage();
             string fileName = string.Concat("Report_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_sss") + ".xlsx");
             var folderReport = "./Report";
             string filePath = "./Report";

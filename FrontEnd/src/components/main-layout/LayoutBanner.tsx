@@ -18,6 +18,7 @@ function LayoutBanner() {
   const [showModal, setshowModal] = useState(false);
   const [passwordChanged, setpasswordChanged] = useState(false);
   const handleShowModal = () => setshowModal(true);
+  const handleCloseModal = () => setshowModal(false);
   const handlePasswordChange = () => {
     setpasswordChanged(true);
   };
@@ -248,7 +249,19 @@ function LayoutBanner() {
                               : "")
                           }
                         />
-                        {status && <div className={""}>{status}</div>}
+                        {status && (
+                          <div
+                            className={""}
+                            style={{
+                              backgroundColor: "#ffe6e6",
+                              color: "red",
+                              margin: "1em 0 1em 0",
+                              borderRadius: "4px",
+                            }}
+                          >
+                            {status}
+                          </div>
+                        )}
                       </div>
                       <ErrorMessage
                         name="newpassword"
@@ -290,7 +303,7 @@ function LayoutBanner() {
                         <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
                       )}
                     </div>
-                    <Button variant="secondary" onClick={OnLogout}>
+                    <Button variant="secondary" onClick={handleCloseModal}>
                       Cancel
                     </Button>
                   </Modal.Footer>
@@ -304,7 +317,7 @@ function LayoutBanner() {
                 <p>Your Password has been changed successfully!</p>
               </Modal.Body>
               <Modal.Footer>
-                <Button variant="secondary" onClick={OnLogout}>
+                <Button variant="secondary" onClick={handleCloseModal}>
                   Close
                 </Button>
               </Modal.Footer>
