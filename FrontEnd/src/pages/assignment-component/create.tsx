@@ -137,7 +137,12 @@ export function CreateAssignment() {
       dataIndex: "type",
       key: "type",
       render: (text: any, record: User, index: number) => {
-        return <div>{UserType[record.type]}</div>;
+        return (
+          <>
+          {record.type === UserType.ADMIN && <div>Admin</div>}
+          {record.type === UserType.USER && <div>User</div>}
+          </>
+        )
       },
       sorter: (a: User, b: User) => a.type - b.type,
       sortDirections: ["ascend", "descend"],
@@ -347,24 +352,24 @@ export function CreateAssignment() {
         cancelButtonProps={{ style: { display: 'none' } }}
         onCancel={handleUserCancel}
       >
-        <Col span={10} offset={15}>
+        <Col span={18} offset={8}>
           <Form
             onFinish={onSearchUserButtonClicked}
             initialValues={{
               searchText: null,
             }}
           >
-            <Row justify="end">
+            <Row style={{marginBottom : 20}}>
               <Col span={18}>
                 <Form.Item name="searchText" className="no-margin-no-padding">
                   <Input
                     allowClear
-                    style={{ width: "100%" }}
+                    style={{ width: "116%" }}
                     placeholder="e.g. Bob/SD0001"
                   />
                 </Form.Item>
               </Col>
-              <Col offset={1} >
+              <Col offset={3} >
                 <Form.Item className="no-margin-no-padding">
                   <Button
                     size="middle"
@@ -394,24 +399,24 @@ export function CreateAssignment() {
         cancelButtonProps={{ style: { display: 'none' } }}
         onCancel={handleAssetCancel}
       >
-        <Col span={10} offset={15}>
+        <Col span={18} offset={8} >
           <Form
             onFinish={onSearchAssetButtonClicked}
             initialValues={{
               searchText: null,
             }}
           >
-            <Row justify="end">
+            <Row style={{marginBottom : 20}}>
               <Col span={18}>
                 <Form.Item name="searchText" className="no-margin-no-padding">
                   <Input
                     allowClear
-                    style={{ width: "100%" }}
+                    style={{ width: "116%" }}
                     placeholder="e.g. Personal Computer/SD0001"
                   />
                 </Form.Item>
               </Col>
-              <Col offset={1}>
+              <Col offset={3}>
                 <Form.Item className="no-margin-no-padding">
                   <Button
                     size="middle"

@@ -22,6 +22,7 @@ import {
   InfoCircleOutlined,
   RedoOutlined,
   ExclamationCircleOutlined,
+  PlusCircleOutlined
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import {
@@ -549,9 +550,9 @@ export function ListAssignments() {
                     border: "#e9424d",
                   }}
                   type="primary"
-                  icon={<UserAddOutlined />}
+                  icon = {<PlusCircleOutlined /> }
                 >
-                  Create new assignment
+               Create new assignment
                 </Button>
               </Link>
             </Col>
