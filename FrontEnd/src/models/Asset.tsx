@@ -1,4 +1,5 @@
 import { AssetCategory } from "./AssetCategory"
+import { Assignment } from "./Assignment"
 
 export type AssetInfo = {
 
@@ -25,6 +26,7 @@ export interface Asset {
     assetCode:string,
 
     categoryId: number,
+    
     category: AssetCategory,
 
     specification: string,
@@ -33,7 +35,9 @@ export interface Asset {
 
     state: number,
 
-    location: number
+    location: number,
+    
+    assignments: Assignment[]
 
 }
 
@@ -53,16 +57,28 @@ export type CreateAssetModel = {
 
 }
 
+export type EditAssetModel = {
+
+    assetName: string,
+
+    specification: string,
+
+    installedDate: Date,
+
+    state: number
+
+}
+
 
 export enum AssetState {
 
     AVAILABLE,
 
-    NOTAVAILABLE,
+    NOT_AVAILABLE,
     
     ASSIGNED,
 
-    WAITINGFORRECYCLING,
+    WAITING_FOR_RECYCLING,
 
     RECYCLED
     

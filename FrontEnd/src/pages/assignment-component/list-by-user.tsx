@@ -5,22 +5,77 @@ import { User } from "../../models/User";
 import { AssignmentsService } from "../../services/AssignmentService";
 import { UserService } from "../../services/UserService";
 import {
-    InfoCircleOutlined,
-    RedoOutlined,
-    ExclamationCircleOutlined,
-  } from "@ant-design/icons";
+  InfoCircleOutlined,
+  RedoOutlined,
+  ExclamationCircleOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  UndoOutlined,
+} from "@ant-design/icons";
 import { ReturnRequestService } from "../../services/ReturnRequestService";
 
-const { confirm } = Modal
+export enum ResponeAction {
+  NoAction,
+  Accept,
+  Decline,
+  UndoRespone,
+}
+
+const { confirm } = Modal;
 
 export function ListAssignmentsForEachUser() {
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([]);
   const [user, setUser] = useState<User[]>([]);
-  let [isDisabledStates, setIsDisabledStates] = useState<boolean[]>([])
+  let [isDisabledStates, setIsDisabledStates] = useState<boolean[]>([]);
 
   let userService = UserService.getInstance();
   let assignmentService = AssignmentsService.getInstance();
   let returnRequestService = ReturnRequestService.getInstance();
+
+  //Respone to Assignment
+  const [visible, setVisible] = React.useState(false);
+  const [confirmLoading, setConfirmLoading] = React.useState(false);
+  const [modalText, setModalText] = React.useState("");
+  const [responeAction, setResponeAction] = React.useState(
+    ResponeAction.NoAction
+  );
+  const [assignmentId, setAssignmentId] = React.useState(0);
+
+  const showModal = () => {
+    setVisible(true);
+  };
+
+  const handleOk = () => {
+    if (responeAction == ResponeAction.NoAction) {
+      setVisible(false);
+      setConfirmLoading(false);
+    }
+    if (responeAction == ResponeAction.Accept) {
+      setConfirmLoading(true);
+      assignmentService.acceptAssignment(assignmentId);
+    }
+    if (responeAction == ResponeAction.Decline) {
+      setConfirmLoading(true);
+      assignmentService.declineAssignment(assignmentId);
+    }
+    if (responeAction == ResponeAction.UndoRespone) {
+      setConfirmLoading(true);
+      assignmentService.undoResponeAssignment(assignmentId);
+    }
+    setConfirmLoading(false);
+    setVisible(false);
+    setAssignmentId(0);
+    setResponeAction(ResponeAction.NoAction);
+  };
+
+  const handleCancel = () => {
+    console.log("Clicked cancel button");
+    setVisible(false);
+    setAssignmentId(0);
+    setResponeAction(ResponeAction.NoAction);
+  };
+
+  //
 
   useEffect(() => {
     (async () => {
@@ -34,23 +89,22 @@ export function ListAssignmentsForEachUser() {
       let listAssignments = await assignmentService.getAllForEachUser(
         JSON.parse(sessionStorage.getItem("id")!)
       );
-      let disabledButtonStates: boolean[] = []
+      let disabledButtonStates: boolean[] = [];
 
       for (const element of listAssignments) {
         let associatedRRCount = await returnRequestService.getAssociatedCount(
           element.asset.assetCode
-        )
-        let isWaitingForAdminDecision =
-          associatedRRCount > 0
-        let isAcceptedState = element.state === AssignmentState.Accepted
+        );
+        let isWaitingForAdminDecision = associatedRRCount > 0;
+        let isAcceptedState = element.state === AssignmentState.Accepted;
         if (!isAcceptedState) {
-          disabledButtonStates.push(true)
+          disabledButtonStates.push(true);
         } else {
-          disabledButtonStates.push(isWaitingForAdminDecision)
+          disabledButtonStates.push(isWaitingForAdminDecision);
         }
       }
 
-      setIsDisabledStates(disabledButtonStates)
+      setIsDisabledStates(disabledButtonStates);
       setAssignmentList(listAssignments);
     })();
   }, []);
@@ -81,19 +135,40 @@ export function ListAssignmentsForEachUser() {
 
   const createReturnRequest = (index: number, record: Assignment) => {
     confirm({
-      title: 'Do you want to return this asset?',
+      title: "Do you want to return this asset?",
       icon: <ExclamationCircleOutlined />,
       onOk: async () => {
         await returnRequestService.create({
           assignmentId: record.id,
-        })
+        });
 
-        let newIsDisabledStates = [...isDisabledStates]
-        newIsDisabledStates[index] = !newIsDisabledStates[index]
-        setIsDisabledStates(newIsDisabledStates)
+        let newIsDisabledStates = [...isDisabledStates];
+        newIsDisabledStates[index] = !newIsDisabledStates[index];
+        setIsDisabledStates(newIsDisabledStates);
       },
-    })
-  }
+    });
+  };
+  //Respone to assignment
+  const acceptAssignment = (id: number) => {
+    setAssignmentId(id);
+    setResponeAction(ResponeAction.Accept);
+    setModalText("Do you want to accept to this assignment?");
+    showModal();
+  };
+
+  const declineAssignment = (id: number) => {
+    setAssignmentId(id);
+    setResponeAction(ResponeAction.Decline);
+    setModalText("Do you want to decline to this assignment?");
+    showModal();
+  };
+
+  const undoResponeAssignment = (id: number) => {
+    setAssignmentId(id);
+    setResponeAction(ResponeAction.UndoRespone);
+    setModalText("Do you want to respone to this assignment?");
+    showModal();
+  };
 
   const columns: any = [
     {
@@ -180,33 +255,62 @@ export function ListAssignmentsForEachUser() {
       sortDirections: ["ascend", "descend"],
     },
     {
-        title: "",
-        dataIndex: "action",
-        key: "action",
-        render: (text: any, record: Assignment, index: number) => {
-          return (
-            <Row >
-              <Col>
-                <Button
-                  ghost
-                  type="primary"
-                  icon={<InfoCircleOutlined />}
-                  onClick={() => detailAssignment(record.id)}
-                />
-              </Col>
-              <Col>
+      title: "",
+      dataIndex: "action",
+      key: "action",
+      render: (text: any, record: Assignment, index: number) => {
+        return (
+          <Row>
+            <Col>
               <Button
                 ghost
-                type="primary"
+                type="link"
+                icon={<InfoCircleOutlined />}
+                onClick={() => detailAssignment(record.id)}
+              />
+            </Col>
+            <Col>
+              <Button
+                ghost
+                type="link"
                 icon={<RedoOutlined />}
                 disabled={isDisabledStates[index]}
                 onClick={() => createReturnRequest(index, record)}
               />
             </Col>
-            </Row>
-          );
-        },
-    }
+
+            {/* Respone to Assignment */}
+            <Col>
+              <Button
+                ghost
+                type="link"
+                icon={<CheckOutlined />}
+                disabled={record.state != AssignmentState.WaitingForAcceptance}
+                onClick={() => acceptAssignment(record.id)}
+              />
+            </Col>
+            <Col>
+              <Button
+                ghost
+                type="link"
+                icon={<CloseOutlined />}
+                disabled={record.state != AssignmentState.WaitingForAcceptance}
+                onClick={() => declineAssignment(record.id)}
+              />
+            </Col>
+            <Col>
+              <Button
+                ghost
+                type="link"
+                icon={<UndoOutlined rotate={180} />}
+                disabled={record.state == AssignmentState.WaitingForAcceptance}
+                onClick={() => undoResponeAssignment(record.id)}
+              />
+            </Col>
+          </Row>
+        );
+      },
+    },
   ];
   return (
     <>
@@ -219,6 +323,15 @@ export function ListAssignmentsForEachUser() {
         scroll={{ y: 400 }}
         pagination={false}
       />
+      <Modal
+        title="Are you sure?"
+        visible={visible}
+        onOk={handleOk}
+        confirmLoading={confirmLoading}
+        onCancel={handleCancel}
+      >
+        <p>{modalText}</p>
+      </Modal>
     </>
   );
 }

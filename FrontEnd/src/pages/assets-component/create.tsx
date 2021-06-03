@@ -95,7 +95,7 @@ export function CreateAsset() {
                         rules={[
                             { required: true, message: "Name is required!" },
                             { max: 100, message: "Maximum 100 characters!" },
-                            { whitespace: true, message: "First Name can not be empty!" },
+                            { whitespace: true, message: "Asset Name can not be empty!" },
                         ]}
                         hasFeedback
                     >
@@ -112,11 +112,9 @@ export function CreateAsset() {
                         >
                             <Select>
                                 {
-                                    categories &&
-                                    categories.length > 0 &&
-                                    categories.map((category: AssetCategory) =>
+                                    categories.map((p) =>
                                     (
-                                        <Option key={category.id} value={category.id}>{category.categoryName}</Option>
+                                        <Option key={p.id} value={p.id}>{p.categoryName}</Option>
                                     ))
                                 }
                             </Select>
@@ -135,8 +133,8 @@ export function CreateAsset() {
                         label="Specification"
                         name="specification"
                         rules={[
-                            { required: true, message: "Last Name is required!" },
-                            { whitespace: true, message: "Last Name can not be empty!" },
+                            { required: true, message: "Specification is required!" },
+                            { whitespace: true, message: "Specification can not be empty!" },
                         ]}
                         hasFeedback
                     >
@@ -152,10 +150,15 @@ export function CreateAsset() {
                         <DatePicker format={dateFormat} />
                     </Form.Item>
 
-                    <Form.Item name="state" label="State" hasFeedback>
+                    <Form.Item 
+                    name="state" 
+                    label="State" 
+                    hasFeedback
+                    rules={[{ required: true, message: "Please select state!" }]}
+                    >
                         <Radio.Group>
                             <Radio value={AssetState.AVAILABLE}>Available</Radio>
-                            <Radio value={AssetState.NOTAVAILABLE}>Not Available</Radio>
+                            <Radio value={AssetState.NOT_AVAILABLE}>Not Available</Radio>
                         </Radio.Group>
                     </Form.Item>
 

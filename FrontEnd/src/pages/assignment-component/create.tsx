@@ -264,7 +264,6 @@ export function CreateAssignment() {
               { required: true, message: "User is required!" },
               { max: 50, message: "Maximum 50 characters!" },
               {
-                pattern: /^[A-Za-z ]+$/i,
                 message: "Alphabet characters only!",
               },
               { whitespace: true, message: "User can not be empty!" },
@@ -292,7 +291,6 @@ export function CreateAssignment() {
             rules={[
               { required: true, message: "Asset is required!" },
               {
-                pattern: /^[A-Za-z ]+$/i,
                 message: "Alphabet characters only!",
               },
               { max: 50, message: "Maximum 50 characters!" },
