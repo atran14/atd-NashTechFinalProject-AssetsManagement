@@ -128,8 +128,8 @@ export function UpdateUser() {
           <Form.Item name="gender" label="Gender" hasFeedback 
            labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left">
             <Radio.Group>
-              <Radio value={UserGender.MALE}>Male</Radio>
-              <Radio value={UserGender.FEMALE}>Female</Radio>
+              <Radio value={UserGender.Male}>Male</Radio>
+              <Radio value={UserGender.Female}>Female</Radio>
             </Radio.Group>
           </Form.Item>
 
@@ -150,9 +150,9 @@ export function UpdateUser() {
             rules={[{ required: true, message: "Please select type of user!" }]}
             labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left"
           >
-            <Select style={{width: "83%" }}>
-              <Option value={UserType.ADMIN}>Admin</Option>
-              <Option value={UserType.USER}>User</Option>
+            <Select>
+              <Option value={UserType.Admin}>Admin</Option>
+              <Option value={UserType.User}>User</Option>
             </Select>
           </Form.Item>
 

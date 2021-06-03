@@ -22,7 +22,7 @@ import {
   InfoCircleOutlined,
   RedoOutlined,
   ExclamationCircleOutlined,
-  PlusCircleOutlined
+  PlusCircleOutlined,
 } from "@ant-design/icons";
 import React, { useEffect, useState } from "react";
 import {
@@ -37,7 +37,7 @@ import {
 import { AssignmentsService } from "../../services/AssignmentService";
 import { User } from "../../models/User";
 import { UserService } from "../../services/UserService";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { ReturnRequestService } from "../../services/ReturnRequestService";
 
 interface SearchAction {
@@ -48,9 +48,11 @@ const { Option } = Select;
 const { confirm } = Modal;
 
 const dateFormat = "YYYY-MM-DD";
+const ADMIN = "Admin";
 
 export function ListAssignments() {
   let [isFetchingData, setIsFetchingData] = useState(false);
+  let [isAdminAuthorized] = useState(sessionStorage.getItem("type") === ADMIN);
   let [assignmentPagedList, setAssignmentPagedList] =
     useState<AssignmentPagedListResponse>();
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([]);
@@ -65,29 +67,31 @@ export function ListAssignments() {
   let assignmentService = AssignmentsService.getInstance();
   let returnRequestService = ReturnRequestService.getInstance();
   useEffect(() => {
-    (async () => {
-      setIsFetchingData(true);
-      let assignmentPagedResponse = await assignmentService.getAssignments();
-      let disabledButtonStates: boolean[] = [];
+    if (isAdminAuthorized) {
+      (async () => {
+        setIsFetchingData(true);
+        let assignmentPagedResponse = await assignmentService.getAssignments();
+        let disabledButtonStates: boolean[] = [];
 
-      for (const element of assignmentPagedResponse.items) {
-        let associatedRRCount = await returnRequestService.getAssociatedCount(
-          element.asset.assetCode
-        );
-        let isWaitingForAdminDecision = associatedRRCount > 0;
-        let isAcceptedState = element.state === AssignmentState.Accepted;
-        if (!isAcceptedState) {
-          disabledButtonStates.push(true);
-        } else {
-          disabledButtonStates.push(isWaitingForAdminDecision);
+        for (const element of assignmentPagedResponse.items) {
+          let associatedRRCount = await returnRequestService.getAssociatedCount(
+            element.asset.assetCode
+          );
+          let isWaitingForAdminDecision = associatedRRCount > 0;
+          let isAcceptedState = element.state === AssignmentState.Accepted;
+          if (!isAcceptedState) {
+            disabledButtonStates.push(true);
+          } else {
+            disabledButtonStates.push(isWaitingForAdminDecision);
+          }
         }
-      }
 
-      setIsDisabledStates(disabledButtonStates);
-      setAssignmentPagedList(assignmentPagedResponse);
-      setAssignmentList(assignmentPagedResponse.items);
-      setIsFetchingData(false);
-    })();
+        setIsDisabledStates(disabledButtonStates);
+        setAssignmentPagedList(assignmentPagedResponse);
+        setAssignmentList(assignmentPagedResponse.items);
+        setIsFetchingData(false);
+      })();
+    }
   }, []);
 
   async function detailAssignment(id: number) {
@@ -101,9 +105,22 @@ export function ListAssignments() {
           <p>Assigned to : {assignment.assignedToUserName} </p>
           <p>Assigned by : {assignment.assignedByUser.userName}</p>
           <p>Assigned Date : {assignment.assignedDate}</p>
-          {assignment.state === AssignmentState.WaitingForAcceptance && <p>State : <span style={{color : 'blue'}}>Waiting for acceptance</span></p>}
-          {assignment.state === AssignmentState.Accepted &&<p>State : <span style={{color : 'green'}}>Accepted</span></p>}
-          {assignment.state === AssignmentState.Declined &&<p>State : <span style={{color : 'red'}}>Declined</span></p>}
+          {assignment.state === AssignmentState.WaitingForAcceptance && (
+            <p>
+              State :{" "}
+              <span style={{ color: "blue" }}>Waiting for acceptance</span>
+            </p>
+          )}
+          {assignment.state === AssignmentState.Accepted && (
+            <p>
+              State : <span style={{ color: "green" }}>Accepted</span>
+            </p>
+          )}
+          {assignment.state === AssignmentState.Declined && (
+            <p>
+              State : <span style={{ color: "red" }}>Declined</span>
+            </p>
+          )}
           <p>Note : {assignment.note}</p>
         </div>
       ),
@@ -237,45 +254,45 @@ export function ListAssignments() {
         return (
           <Row>
             <Col>
-            <Tooltip placement="top" title="Detail">
-              <Button
-                ghost
-                type="link"
-                icon={<InfoCircleOutlined />}
-                onClick={() => detailAssignment(record.id)}
-              />
-            </Tooltip>
+              <Tooltip placement="top" title="Detail">
+                <Button
+                  ghost
+                  type="link"
+                  icon={<InfoCircleOutlined />}
+                  onClick={() => detailAssignment(record.id)}
+                />
+              </Tooltip>
             </Col>
 
             <Col>
-            <Tooltip placement="top" title="Edit">
-              <Link to={`/assignments/update/${record.id}`}>
-                <Button type="link" icon={<EditOutlined />} />
-              </Link>
-            </Tooltip>
+              <Tooltip placement="top" title="Edit">
+                <Link to={`/assignments/update/${record.id}`}>
+                  <Button type="link" icon={<EditOutlined />} />
+                </Link>
+              </Tooltip>
             </Col>
 
             <Col>
-            <Tooltip placement="top" title="Delete">
-              <Button
-                danger
-                type="link"
-                icon={<DeleteOutlined />}
-                onClick={() => deleteAssignment(record.id)}
-                disabled={!check}
-              />
-            </Tooltip>
+              <Tooltip placement="top" title="Delete">
+                <Button
+                  danger
+                  type="link"
+                  icon={<DeleteOutlined />}
+                  onClick={() => deleteAssignment(record.id)}
+                  disabled={!check}
+                />
+              </Tooltip>
             </Col>
             <Col>
-            <Tooltip placement="top" title="Create return request">
-              <Button
-                ghost
-                type="link"
-                icon={<RedoOutlined />}
-                disabled={isDisabledStates[index]}
-                onClick={() => createReturnRequest(index, record)}
-              />
-            </Tooltip>
+              <Tooltip placement="top" title="Create return request">
+                <Button
+                  ghost
+                  type="link"
+                  icon={<RedoOutlined />}
+                  disabled={isDisabledStates[index]}
+                  onClick={() => createReturnRequest(index, record)}
+                />
+              </Tooltip>
             </Col>
           </Row>
         );
@@ -433,7 +450,8 @@ export function ListAssignments() {
 
   return (
     <>
-      {assignmentPagedList !== undefined && (
+      {!isAdminAuthorized && <Redirect to="/401-access-denied" />}
+      {isAdminAuthorized && assignmentPagedList !== undefined && (
         <>
           <Row>
             <Col span={5}>
@@ -550,9 +568,9 @@ export function ListAssignments() {
                     border: "#e9424d",
                   }}
                   type="primary"
-                  icon = {<PlusCircleOutlined /> }
+                  icon={<PlusCircleOutlined />}
                 >
-               Create new assignment
+                  Create new assignment
                 </Button>
               </Link>
             </Col>

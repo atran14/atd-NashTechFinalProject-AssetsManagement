@@ -25,19 +25,30 @@ namespace BackEndAPI.Controllers
             _reportService = reportService;
         }
 
-        [HttpGet]
-        public IActionResult GetReport()
+        [HttpGet("{location}")]
+        public IActionResult GetReport(int location)
         {
-            var report = _reportService.GetReport();
+            var report = _reportService.GetReport(location);
             return Ok(report);
         }
 
-        [HttpGet("ExportXls")]
-        public async Task<HttpResponseMessage> ExportXls(HttpRequestMessage request)
+        [HttpGet("ExportXls/{location}")]
+        public async Task<HttpResponseMessage> ExportXls(int location)
         {
-            string fileName = string.Concat("Report_" + DateTime.Now.ToString("yyyy_MM_dd_hh_mm_sss") + ".xlsx");
-            var folderReport = "./Report";
-            string filePath = "./Report";
+            HttpRequestMessage request = new HttpRequestMessage();
+            string fileName = "";
+            if(location != 0 && location != 1)
+            {
+                return request.CreateErrorResponse(HttpStatusCode.BadRequest, "Wrong location parameter!");
+            }
+            if(location == 0){
+                fileName = string.Concat("Report_HaNoi_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
+            }
+            if(location == 1){
+                fileName = string.Concat("Report_HoChiMinh_" + DateTime.Now.ToString("yyyy_MM_dd") + ".xlsx");
+            }
+            var folderReport = "./Reports";
+            string filePath = "C:/" + folderReport;
             if (!Directory.Exists(filePath))
             {
                 Directory.CreateDirectory(filePath);
@@ -45,7 +56,7 @@ namespace BackEndAPI.Controllers
             string fullPath = Path.Combine(filePath, fileName);
             try
             {
-                var data = _reportService.GetReport().ToList();
+                var data = _reportService.GetReport(location).ToList();
                 await ReportHelper.GenerateXls(data, fullPath);
                 return request.CreateErrorResponse(HttpStatusCode.OK, Path.Combine(folderReport, fileName));
             }

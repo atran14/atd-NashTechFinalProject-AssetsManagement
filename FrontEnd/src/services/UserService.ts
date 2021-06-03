@@ -1,5 +1,7 @@
 
 import { PaginationParameters, UsersPagedListResponse } from "../models/Pagination";
+import { UserSearchFilterParameters } from "../models/SearchFilterParameters";
+import { UserSortParameters } from "../models/sort-parameters/UserSortParameters";
 import { User, UserInfo, EditUserModel, CreateUserModel, UserType } from "../models/User";
 import { HttpClient } from "./HttpClient";
 export class UserService extends HttpClient {
@@ -21,8 +23,10 @@ export class UserService extends HttpClient {
   public create = (user: CreateUserModel) => this.instance.post<User>("/api/users", user);
 
   public getAllUsers = () => this.instance.get(`/api/Users/getalluser/${JSON.parse(sessionStorage.getItem("id")!)}`);
+
   public getAllNoCondition = () => this.instance.get("/api/Users/getAllNoCondition");
-  public getUsersBySearch = (searchText : string) => this.instance.get(`/api/Users/search/${JSON.parse(sessionStorage.getItem("id")!)}/${searchText}`);
+
+  public getUsersBySearch = (searchText: string) => this.instance.get(`/api/Users/search/${JSON.parse(sessionStorage.getItem("id")!)}/${searchText}`);
 
   public getUsers = (parameters?: PaginationParameters) => this.instance.get<UsersPagedListResponse>(
     "/api/Users",
@@ -35,25 +39,23 @@ export class UserService extends HttpClient {
 
   public getUser = (id: number) => this.instance.get<UserInfo>(`/api/Users/${id}`);
 
-  public filterByType = (type: UserType, parameters?: PaginationParameters) => {
-    return this.instance.get<UsersPagedListResponse>(`/api/Users/type/${type.valueOf()}`,
-      {
-        params: {
-          PageNumber: parameters?.PageNumber ?? 1,
-          PageSize: parameters?.PageSize ?? 10
-        }
-      })
-  }
-
-  public searchUsers = (searchText: string, parameters?: PaginationParameters) => this.instance.get<UsersPagedListResponse>(
-    `/api/Users/search`,
+  public searchAndFilter = (
+    searchFilterParameters: UserSearchFilterParameters,
+    paginationParameters?: PaginationParameters,
+    sortParameters?: UserSortParameters,
+  ) => this.instance.get<UsersPagedListResponse>(
+    `api/Users/params`,
     {
       params: {
-        query: searchText,
-        PageNumber: parameters?.PageNumber ?? 1,
-        PageSize: parameters?.PageSize ?? 10
+        SearchQuery: searchFilterParameters.searchQuery,
+        Type: searchFilterParameters.type,
+        SortCol: sortParameters?.column,
+        Order: sortParameters?.order,
+        PageNumber: paginationParameters?.PageNumber ?? 1,
+        PageSize: paginationParameters?.PageSize ?? 10
       }
-    })
+    }
+  )
 
   public updateUser = (user: EditUserModel, id: number) => this.instance.put<EditUserModel>(`/api/Users/${id}`, user);
 

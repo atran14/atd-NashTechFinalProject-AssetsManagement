@@ -122,8 +122,8 @@ export function CreateUser() {
 
                     <Form.Item name="gender" label="Gender" hasFeedback>
                         <Radio.Group>
-                            <Radio value={UserGender.MALE}>Male</Radio>
-                            <Radio value={UserGender.FEMALE}>Female</Radio>
+                            <Radio value={UserGender.Male}>Male</Radio>
+                            <Radio value={UserGender.Female}>Female</Radio>
                         </Radio.Group>
                     </Form.Item>
 
@@ -143,8 +143,8 @@ export function CreateUser() {
                         rules={[{ required: true, message: "Please select type of user!" }]}
                     >
                         <Select>
-                            <Option value={UserType.ADMIN}>Admin</Option>
-                            <Option value={UserType.USER}>User</Option>
+                            <Option value={UserType.Admin}>Admin</Option>
+                            <Option value={UserType.User}>User</Option>
                         </Select>
                     </Form.Item>
 

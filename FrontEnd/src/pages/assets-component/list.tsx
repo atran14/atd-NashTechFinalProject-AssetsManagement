@@ -65,7 +65,7 @@ interface SearchAction {
   query: number | string
 }
 
-const ADMIN = "ADMIN";
+const ADMIN = "Admin";
 
 export function ListAssets({ editedAsset }: PassedInEditedAssetProps) {
   let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === ADMIN);

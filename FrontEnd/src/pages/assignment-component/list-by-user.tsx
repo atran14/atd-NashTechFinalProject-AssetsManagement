@@ -67,6 +67,7 @@ export function ListAssignmentsForEachUser() {
     setVisible(false);
     setAssignmentId(0);
     setResponeAction(ResponeAction.NoAction);
+    window.location.reload();
   };
 
   const handleCancel = () => {

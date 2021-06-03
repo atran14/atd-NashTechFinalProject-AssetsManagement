@@ -139,8 +139,8 @@ export function CreateAssignment() {
       render: (text: any, record: User, index: number) => {
         return (
           <>
-          {record.type === UserType.ADMIN && <div>Admin</div>}
-          {record.type === UserType.USER && <div>User</div>}
+          {record.type === UserType.Admin && <div>Admin</div>}
+          {record.type === UserType.User && <div>User</div>}
           </>
         )
       },
