@@ -70,7 +70,6 @@ namespace BackEndAPI.Controllers
 
         }
 
-
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("search/{userId}/{searchText}")]
         public async Task<IQueryable<UserDTO>> GetUserBySearching(int userId, string searchText)
@@ -93,7 +92,7 @@ namespace BackEndAPI.Controllers
 
         [Authorize(AuthenticationSchemes = "Bearer", Policy = "Admin")]
         [HttpGet("params")]
-        public async Task<ActionResult<GetUsersListPagedResponseDTO>> SearchAndFilter(
+        public async Task<ActionResult<GetUsersListPagedResponseDTO>> GetUsersWithParams(
                     [FromQuery] UserSearchFilterParameters searchFilterParameters,
                     [FromQuery] UserSortParameters sortParameters,
                     [FromQuery] PaginationParameters paginationParameters
