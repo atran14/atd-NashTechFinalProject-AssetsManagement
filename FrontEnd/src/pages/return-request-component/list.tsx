@@ -10,6 +10,7 @@ import {
   Row,
   Select,
   Table,
+  Tag,
   Typography,  
 } from 'antd'
 import { useEffect, useState } from 'react'
@@ -52,6 +53,7 @@ interface FilterAction {
 export function ListReturnRequests() {
   let [isAdminAuthorized] = useState(sessionStorage.getItem('type') === ADMIN)
   let [isFetchingData, setIsFetchingData] = useState(false)
+  let [hasUpdated, setHasUpdated] = useState(true)
   let [returnRequestsPagedList, setReturnRequestsPagedList] = useState<
     ReturnRequestPagedListResponse
   >()
@@ -63,7 +65,6 @@ export function ListReturnRequests() {
     query: '',
   })
   let returnRequestService = ReturnRequestService.getInstance()
-  let history = useHistory()
 
   useEffect(() => {
     if (isAdminAuthorized) {
@@ -80,9 +81,10 @@ export function ListReturnRequests() {
           query: '',
         })
         setIsFetchingData(false)
+        setHasUpdated(false)
       })()
     }
-  }, [])
+  }, [hasUpdated])
 
   const approveRequest = (rrId: number) => {
     confirm({
@@ -92,7 +94,7 @@ export function ListReturnRequests() {
         try {
           returnRequestService.approve(rrId)
           message.success('Request approved!')
-          window.location.reload()
+          setHasUpdated(true)
         } catch (e) {
           message.error("Something went wrong")
         }        
@@ -108,7 +110,7 @@ export function ListReturnRequests() {
         try {
           returnRequestService.deny(rrId)
           message.success('Request denied!')
-          window.location.reload()
+          setHasUpdated(true)
         } catch (e) {
           message.error("Something went wrong")
         }        
@@ -294,10 +296,10 @@ export function ListReturnRequests() {
       key: 'state',
       render: (text: any, record: ReturnRequest, index: number) => {
         if (record.state === ReturnRequestState.Completed) {
-          return <Text strong type="success">Completed</Text>
+          return <Tag color="success">Completed</Tag>
         }
         
-        return <div>{ReturnRequestState[record.state]}</div>
+        return <Tag color="processing">Waiting</Tag>
       },
       sorter: (a: ReturnRequestState, b: ReturnRequestState) => a - b,
       sortDirections: ['ascend', 'descend'],
@@ -312,15 +314,15 @@ export function ListReturnRequests() {
             <Row>
               <Col offset={1}>
                 <Button
-                  style={{ backgroundColor: 'green' }}
-                  icon={<CheckOutlined style={{ color: 'white' }} />}
+                  type='link'
+                  icon={<CheckOutlined style={{ color: 'green' }} />}
                   onClick={() => approveRequest(record.id)}
                 />
               </Col>
               <Col offset={1}>
                 <Button
                   danger
-                  type="primary"
+                  type="link"
                   icon={<CloseOutlined />}
                   onClick={() => denyRequest(record.id)}
                 />
