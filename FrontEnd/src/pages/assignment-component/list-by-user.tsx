@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Col, Modal, Row, Table } from "antd";
+import { Button, Col, Modal, Row, Table, Tag } from "antd";
 import { Assignment, AssignmentState } from "../../models/Assignment";
 import { User } from "../../models/User";
 import { AssignmentsService } from "../../services/AssignmentService";
@@ -23,12 +23,13 @@ export enum ResponeAction {
 
 const { confirm } = Modal;
 
+
+
 export function ListAssignmentsForEachUser() {
   let [assignmentList, setAssignmentList] = useState<Assignment[]>([]);
-  const [user, setUser] = useState<User[]>([]);
   let [isDisabledStates, setIsDisabledStates] = useState<boolean[]>([]);
 
-  let userService = UserService.getInstance();
+ 
   let assignmentService = AssignmentsService.getInstance();
   let returnRequestService = ReturnRequestService.getInstance();
 
@@ -78,12 +79,7 @@ export function ListAssignmentsForEachUser() {
 
   //
 
-  useEffect(() => {
-    (async () => {
-      let listUser = await userService.getAllNoCondition();
-      setUser(listUser);
-    })();
-  }, []);
+
 
   useEffect(() => {
     (async () => {
@@ -113,20 +109,17 @@ export function ListAssignmentsForEachUser() {
   async function detailAssignment(id: number) {
     let assignment = await assignmentService.getAssignment(id);
     Modal.info({
-      title: `Detail of Assignment No. ${assignment.id}`,
+      title: `Detail of Assignment`,
       content: (
         <div>
           <p>Asset Code : {assignment.asset.assetCode}</p>
           <p>Asset Name : {assignment.asset.assetName}</p>
-          <p>
-            Assigned to :
-            {user.map((c: User) => {
-              if (c.id === assignment.assignedToUserId) return c.userName;
-            })}
-          </p>
+          <p>Assigned to : {assignment.assignedToUserName}</p>
           <p>Assigned by : {assignment.assignedByUser.userName}</p>
           <p>Assigned Date : {assignment.assignedDate}</p>
-          <p>State : {AssignmentState[assignment.state]}</p>
+          {assignment.state === AssignmentState.WaitingForAcceptance && <p>State : <span style={{color : 'blue'}}>Waiting for acceptance</span></p>}
+          {assignment.state === AssignmentState.Accepted &&<p>State : <span style={{color : 'green'}}>Accepted</span></p>}
+          {assignment.state === AssignmentState.Declined &&<p>State : <span style={{color : 'red'}}>Declined</span></p>}
           <p>Note : {assignment.note}</p>
         </div>
       ),
@@ -149,8 +142,10 @@ export function ListAssignmentsForEachUser() {
       },
     });
   };
-  //Respone to assignment
-  const acceptAssignment = (id: number) => {
+ 
+
+   //Respone to assignment
+   const acceptAssignment = (id: number) => {
     setAssignmentId(id);
     setResponeAction(ResponeAction.Accept);
     setModalText("Do you want to accept to this assignment?");
@@ -182,6 +177,7 @@ export function ListAssignmentsForEachUser() {
         return <div>{record.asset.assetCode}</div>;
       },
       sortDirections: ["ascend", "descend"],
+     
     },
     {
       title: "Asset Name",
@@ -196,27 +192,18 @@ export function ListAssignmentsForEachUser() {
     },
     {
       title: "Assigned to",
-      dataIndex: "assignedToUserId",
-      key: "assignedToUserId",
-      sorter: (a: Assignment, b: Assignment) => {
-        let userA = user.map((x: User) => {
-          if (x.id === a.assignedToUserId) return x.userName;
-        });
-        let userB = user.map((x: User) => {
-          if (x.id === b.assignedToUserId) return x.userName;
-        });
-        return userA.toString().localeCompare(userB.toString());
-      },
+      dataIndex: "assignedToUserName",
+      key: "assignedToUserName",
+      sorter: (a: Assignment, b: Assignment) => a.assignedToUserName.localeCompare(b.assignedToUserName),
       render: (text: any, record: Assignment, index: number) => {
         return (
           <div>
-            {user.map((c: User) => {
-              if (c.id === record.assignedToUserId) return c.userName;
-            })}
+         {record.assignedToUserName}
           </div>
         );
       },
       sortDirections: ["ascend", "descend"],
+      
     },
     {
       title: "Assigned by",
@@ -250,7 +237,25 @@ export function ListAssignmentsForEachUser() {
       dataIndex: "state",
       key: "state",
       render: (text: any, record: Assignment, index: number) => {
-        return <div>{AssignmentState[record.state]}</div>;
+        return (
+          <>
+            {record.state === AssignmentState.Accepted && (
+              <Tag color="green" key={record.state}>
+                Accepted
+              </Tag>
+            )}
+            {record.state === AssignmentState.WaitingForAcceptance && (
+              <Tag color="blue" key={record.state}>
+                Waiting for acceptance
+              </Tag>
+            )}
+            {record.state === AssignmentState.Declined && (
+              <Tag color="red" key={record.state}>
+                Declined
+              </Tag>
+            )}
+          </>
+        );
       },
       sorter: (a: Assignment, b: Assignment) => a.state - b.state,
       sortDirections: ["ascend", "descend"],
@@ -270,16 +275,7 @@ export function ListAssignmentsForEachUser() {
                 onClick={() => detailAssignment(record.id)}
               />
             </Col>
-            <Col>
-              <Button
-                ghost
-                type="link"
-                icon={<RedoOutlined />}
-                disabled={isDisabledStates[index]}
-                onClick={() => createReturnRequest(index, record)}
-              />
-            </Col>
-
+         
             {/* Respone to Assignment */}
             <Col>
               <Button
@@ -303,9 +299,9 @@ export function ListAssignmentsForEachUser() {
               <Button
                 ghost
                 type="link"
-                icon={<UndoOutlined rotate={180} />}
-                disabled={record.state == AssignmentState.WaitingForAcceptance}
-                onClick={() => undoResponeAssignment(record.id)}
+                icon={<RedoOutlined />}
+                disabled={isDisabledStates[index]}
+                onClick={() => createReturnRequest(index, record)}
               />
             </Col>
           </Row>

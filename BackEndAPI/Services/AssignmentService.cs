@@ -81,6 +81,8 @@ namespace BackEndAPI.Services
 
             assignment.AssignedByUserId = userId;
             assignment.State = AssignmentState.WaitingForAcceptance;
+            assignment.AssignedToUserName = assignedToUserId.UserName;
+            assignment.CreateEditDate = DateTime.Now;
             await _repository.Create(assignment);
             asset.State = AssetState.NotAvailable;
             await _assetrepository.Update(asset);
@@ -95,7 +97,7 @@ namespace BackEndAPI.Services
             }
 
             var assignments = PagedList<Assignment>.ToPagedList(
-                _repository.GetAll()
+                _repository.GetAll().OrderByDescending(a => a.CreateEditDate)
                 ,
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
@@ -173,6 +175,8 @@ namespace BackEndAPI.Services
             assignment.AssignedToUserId = model.AssignedToUserId;
             assignment.AssignedDate = model.AssignedDate;
             assignment.Note = model.Note;
+            assignment.AssignedToUserName = assignedToUserId.UserName;
+            assignment.CreateEditDate = DateTime.Now;
             await _repository.Update(assignment);
             if (asset.Id != initalAsset.Id)
             {
@@ -196,7 +200,7 @@ namespace BackEndAPI.Services
                 _repository.GetAll()
                     .Where(u =>
                     u.State == state
-                ),
+                ).OrderByDescending(a => a.CreateEditDate),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -232,8 +236,9 @@ namespace BackEndAPI.Services
                     (
                         u.Asset.AssetCode.Contains(searchText)
                         || u.Asset.AssetName.Contains(searchText)
+                        || u.AssignedToUserName.Contains(searchText)
                     )
-                    ),
+                    ).OrderByDescending(a => a.CreateEditDate),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );
@@ -263,7 +268,7 @@ namespace BackEndAPI.Services
                 _repository.GetAll()
                     .Where(u =>
                      u.AssignedDate.Year == year && u.AssignedDate.Month == month && u.AssignedDate.Day == day
-                ),
+                ).OrderByDescending(a => a.CreateEditDate),
                 paginationParameters.PageNumber,
                 paginationParameters.PageSize
             );

@@ -34,7 +34,7 @@ import {
 } from '../../models/ReturnRequest'
 import { ReturnRequestService } from '../../services/ReturnRequestService'
 
-const ADMIN = 'ADMIN'
+const ADMIN = 'Admin'
 
 const { Option } = Select
 const { confirm } = Modal

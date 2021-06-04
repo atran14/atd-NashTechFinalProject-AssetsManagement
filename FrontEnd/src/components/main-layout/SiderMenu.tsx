@@ -39,13 +39,13 @@ function SiderMenu() {
         {userType && (
           <Menu.Item
             icon={<HomeOutlined />}
-            key="/assignments/list"
+            key="/home"
             className="menu-item"
           >
-            <Link to="/assignments/list">Home</Link>
+            <Link to="/home">Home</Link>
           </Menu.Item>
         )}
-        {userType && userType === UserType[UserType.Admin].toUpperCase() && (
+        {userType && userType === UserType[UserType.Admin] && (
           <>
             <Menu.Item
               icon={<UserOutlined />}

@@ -159,6 +159,13 @@ namespace BackEndAPI.Migrations
                     b.Property<int>("AssignedToUserId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AssignedToUserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreateEditDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Note")
                         .HasColumnType("nvarchar(max)");
 
@@ -181,6 +188,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 1,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 2,
+                            AssignedToUserName = "binhnt",
+                            CreateEditDate = new DateTime(2021, 6, 2, 17, 40, 39, 883, DateTimeKind.Local).AddTicks(7485),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 1
                         },
@@ -191,6 +200,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 1,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 3,
+                            AssignedToUserName = "binhnt2",
+                            CreateEditDate = new DateTime(2021, 6, 1, 17, 40, 39, 884, DateTimeKind.Local).AddTicks(5421),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 1
                         },
@@ -201,6 +212,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 4,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 5,
+                            AssignedToUserName = "binhnt",
+                            CreateEditDate = new DateTime(2021, 5, 31, 17, 40, 39, 884, DateTimeKind.Local).AddTicks(5436),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 0
                         },
@@ -211,6 +224,8 @@ namespace BackEndAPI.Migrations
                             AssignedByUserId = 4,
                             AssignedDate = new DateTime(2021, 2, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             AssignedToUserId = 6,
+                            AssignedToUserName = "binhnt2",
+                            CreateEditDate = new DateTime(2021, 5, 30, 17, 40, 39, 884, DateTimeKind.Local).AddTicks(5439),
                             Note = "Make sure to upgrade RAM when you have spare time. Thanks.",
                             State = 1
                         });
@@ -399,7 +414,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "490d40bf-79ed-4886-b383-d1302344483c",
+                            ConcurrencyStamp = "f99d8020-dc6f-4ff6-ac58-9964a1f4005f",
                             DateOfBirth = new DateTime(1993, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -421,7 +436,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 2,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cc8123d2-871b-4e68-8535-72756b23a6c4",
+                            ConcurrencyStamp = "37656048-00a9-4abc-af86-d2605266a4de",
                             DateOfBirth = new DateTime(1994, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -443,7 +458,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 3,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "84c64d96-4f0e-4c9c-b01c-cf7da5db8c72",
+                            ConcurrencyStamp = "ad6557db-e475-41df-b9df-2b80fdf1c0d3",
                             DateOfBirth = new DateTime(1997, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",
@@ -465,7 +480,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 4,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "261df0d2-704f-4aff-ace7-24b544dc2a77",
+                            ConcurrencyStamp = "ed3f5369-116f-4745-b484-8c7d5c0bea84",
                             DateOfBirth = new DateTime(2000, 1, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Anh",
@@ -487,7 +502,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 5,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "b49666fa-a2b9-4a06-8e59-b41fadbbc67a",
+                            ConcurrencyStamp = "c385c7d4-402a-44aa-ae60-5df850e6ced6",
                             DateOfBirth = new DateTime(1990, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Van",
@@ -509,7 +524,7 @@ namespace BackEndAPI.Migrations
                         {
                             Id = 6,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "eb0b9645-da75-4ab7-aa53-0542afc64196",
+                            ConcurrencyStamp = "750cea8a-9a64-4610-8a69-c25407fbc495",
                             DateOfBirth = new DateTime(1987, 1, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             EmailConfirmed = false,
                             FirstName = "Binh",

@@ -129,9 +129,12 @@ export function ListUsers({ editedUser }: PassedInEditedUserProps) {
     })
 
     if (!notDisabledYourself(id)) {
-      Modal.error({
-        title: 'You can not disable yourself',
-      })
+      if(count === 0)
+      {
+        Modal.error({
+          title: 'You can not disable yourself',
+        })
+      }
     }
 
     if (!notOnlyOneAdminRemain(id)) {

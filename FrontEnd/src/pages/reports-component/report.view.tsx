@@ -7,7 +7,7 @@ import { reportService } from "../../services/report.service";
 
 export function ReportView() {
   let [isAdminAuthorized] = useState(
-    sessionStorage.getItem("type") === "ADMIN"
+    sessionStorage.getItem("type") === "Admin"
   );
   let [isFetchingData, setIsFetchingData] = useState(false);
   let [reportList, setReportList] = useState<ReportModel[]>([]);

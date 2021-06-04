@@ -25,20 +25,6 @@ import {
   const { TextArea } = Input;
   
   export function UpdateAssignment() {
-    const layout = {
-      labelCol: {
-        span: 14,
-        offset: 3,
-        pull: 9,
-      },
-      wrapperCol: {
-        span: 16,
-        pull: 9,
-      },
-    };
-    const tailLayout = {
-      wrapperCol: {},
-    };
   
     const [form] = Form.useForm();
     const [, forceUpdate] = useState({}); // To disable submit button at the beginning.
@@ -117,6 +103,7 @@ import {
     const dateFormat = "YYYY-MM-DD";
   
     const onFinishFailed = (errorInfo: any) => {
+      message.error("Create Failed")
       console.log("Failed:", errorInfo);
     };
   
@@ -272,13 +259,13 @@ import {
         <Col span={9}>
           <h4>Edit Assignment</h4>
         </Col>
-        <Col span={16}>
+        <Col span={22}>
           <Form
-            {...layout}
             name="basic"
             form={form}
             onFinish={onFinish}
             onFinishFailed={onFinishFailed}
+            style= {{marginLeft : 200}}
           >
             <Form.Item
               label="User"
@@ -288,11 +275,14 @@ import {
                 { max: 50, message: "Maximum 50 characters!" },
                 { whitespace: true, message: "User can not be empty!" },
               ]}
+              labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left"
+              hasFeedback
             >
               <Input.Search
                 placeholder="click icon to search user"
                 onSearch={onSearchUser}
                 readOnly
+                style={{width: "83%" }}
               />
             </Form.Item>
   
@@ -313,11 +303,14 @@ import {
                 { max: 50, message: "Maximum 50 characters!" },
                 { whitespace: true, message: "Asset can not be empty!" },
               ]}
+              labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left"
+              hasFeedback
             >
               <Input.Search
                 placeholder="click icon to search asset"
                 onSearch={onSearchAsset}
                 readOnly
+                style={{width: "83%" }}
               />
             </Form.Item>
             <Form.Item
@@ -337,15 +330,16 @@ import {
                 { required: true, message: "Please select assigned date!" },
                 { validator: validateAssignedDate },
               ]}
+              labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left"
             >
-              <DatePicker format={dateFormat} />
+              <DatePicker format={dateFormat}   style={{ width : "83%"}}/>
             </Form.Item>
   
-            <Form.Item name="note" label="Note">
-              <TextArea rows={4} />
+            <Form.Item name="note" label="Note" labelCol={{ span: 4 }} wrapperCol={{ span: 11 }} labelAlign="left" shouldUpdate hasFeedback>
+              <TextArea rows={4} style={{width: "83%" }}/>
             </Form.Item>
   
-            <Form.Item {...tailLayout} shouldUpdate>
+            <Form.Item  style ={{marginLeft : 24}} shouldUpdate>
               {() => (
                 <Space>
                   <Button
@@ -376,24 +370,24 @@ import {
           onOk={handleUserOk}
           onCancel={handleUserCancel}
         >
-          <Col span={10} offset={15}>
+          <Col span={18} offset={8}>
             <Form
               onFinish={onSearchUserButtonClicked}
               initialValues={{
                 searchText: null,
               }}
             >
-              <Row justify="end">
+              <Row style={{marginBottom : 20}}>
                 <Col span={18}>
                   <Form.Item name="searchText" className="no-margin-no-padding">
                     <Input
                       allowClear
-                      style={{ width: "100%" }}
+                      style={{ width: "116%" }}
                       placeholder="e.g. Bob/SD0001"
                     />
                   </Form.Item>
                 </Col>
-                <Col offset={1}>
+                <Col offset={3}>
                   <Form.Item className="no-margin-no-padding">
                     <Button
                       size="middle"
@@ -422,24 +416,24 @@ import {
           onOk={handleAssetOk}
           onCancel={handleAssetCancel}
         >
-          <Col span={10} offset={15}>
+          <Col span={18} offset={8}>
             <Form
               onFinish={onSearchAssetButtonClicked}
               initialValues={{
                 searchText: null,
               }}
             >
-              <Row justify="end">
+              <Row style={{marginBottom : 20}}>
                 <Col span={18}>
                   <Form.Item name="searchText" className="no-margin-no-padding">
                     <Input
                       allowClear
-                      style={{ width: "100%" }}
+                      style={{ width: "116%" }}
                       placeholder="e.g. Personal Computer/SD0001"
                     />
                   </Form.Item>
                 </Col>
-                <Col offset={1}>
+                <Col offset={3}>
                   <Form.Item className="no-margin-no-padding">
                     <Button
                       size="middle"

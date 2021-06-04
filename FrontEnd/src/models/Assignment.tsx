@@ -23,6 +23,7 @@ export type Assignment = {
     asset : Asset;
     assignedToUserId: number;
     assignedToUser: User;
+    assignedToUserName:string;
     assignedByUserId:number;
     assignedByUser : User;
     assignedDate: Date;

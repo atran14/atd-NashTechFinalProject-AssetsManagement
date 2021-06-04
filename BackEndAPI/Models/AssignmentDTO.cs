@@ -14,6 +14,8 @@ namespace BackEndAPI.Models
         public int AssignedByUserId { get; set; }
         public virtual User AssignedByUser { get; set; }
 
+        public string AssignedToUserName { get; set; }
+
         public int AssignedToUserId { get; set; }
         public virtual User AssignedToUser { get; set; }
 
